@@ -2,4 +2,7 @@
 
 List of participants:
 
-- 
+- MANEL DÍAZ CALVO
+- JAVIER JORGE FERNANDEZ
+- Itxaso MUÑOZ ALDALUR
+- ARTHUR IAN MURPHY 
