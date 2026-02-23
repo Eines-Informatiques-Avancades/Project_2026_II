@@ -1,8 +1,7 @@
-# Projecte_2026_II
+# Project_2026_II
 
 List of participants:
 
 - MANEL DÍAZ CALVO
-- JAVIER JORGE FERNANDEZ
 - Itxaso MUÑOZ ALDALUR
 - ARTHUR IAN MURPHY 
