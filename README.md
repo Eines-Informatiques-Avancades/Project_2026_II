@@ -7,6 +7,9 @@ List of participants:
 - ARTHUR IAN MURPHY  (github: ai-murphy)
 - OLIWIER MISZTAL (github: omisztal)
 
-List of tasks:
+#### List of tasks:
 
-- 
+- MonteCarlo: Manel Díaz Calvo
+- Initial Conditions: Itxaso Muñoz Aldalur
+- Post-Processing: Arthur Ian Murphy
+- Energy: Olivier Misztal
