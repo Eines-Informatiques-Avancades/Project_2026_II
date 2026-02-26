@@ -2,10 +2,10 @@
 
 List of participants:
 
-- MANEL DÍAZ CALVO
-- Itxaso MUÑOZ ALDALUR
-- ARTHUR IAN MURPHY  (ai-murphy github id)
-- OLIWIER MISZTAL
+- MANEL DÍAZ CALVO (github: ManelDC55)
+- Itxaso MUÑOZ ALDALUR (github: itxasoma)
+- ARTHUR IAN MURPHY  (github: ai-murphy)
+- OLIWIER MISZTAL (github: omisztal)
 
 List of tasks:
 
