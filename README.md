@@ -4,5 +4,5 @@ List of participants:
 
 - MANEL DÍAZ CALVO
 - Itxaso MUÑOZ ALDALUR
-- ARTHUR IAN MURPHY
+- ARTHUR IAN MURPHY  (ai-murphy github id)
 - OLIWIER MISZTAL 
