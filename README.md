@@ -4,7 +4,7 @@ List of participants:
 
 - MANEL DÍAZ CALVO (github: ManelDC55)
 - Itxaso MUÑOZ ALDALUR (github: itxasoma)
-- ARTHUR IAN MURPHY  (github: ai-murphy)
+- ARTHUR IAN MURPHY  (github: ai-murphy, Project Leader)
 - OLIWIER MISZTAL (github: omisztal)
 
 #### List of tasks:
