@@ -12,14 +12,13 @@
 module initial_conf
   use parameters
   implicit none
-
-  double precision, parameter :: deg2rad = pi / 180.0d0
-  double precision, parameter :: angle_tetra_deg = 109.4712206d0
-  double precision, parameter :: bond_ch = 1.09d0                 ! Angstrom
-  double precision, parameter :: overlap_cut = 0.85d0 * sigma_cc   ! Angstrom
-
+  double precision, parameter:: deg2rad = pi / 180.0d0
+  double precision, parameter:: angle_tetra_deg = 109.4712206d0
+  double precision, parameter:: bond_ch = 1.09d0                 ! Angstrom
+  double precision, parameter:: overlap_cut = 0.85d0 * sigma_cc   ! Angstrom
 contains
 
+! 1.
 ! Propose a dihedral angle phi based on conf_type
   double precision function propose_phi(conf_type) result(phi)
     ! Author: itxasoma
@@ -48,6 +47,7 @@ contains
     end select
   end function propose_phi
 
+! 2.
 ! Implements the internal-coordinate rule, as we do when building a Zmatrix from scratch.
   function place_next_atom(r_im3, r_im2, r_im1, phi) result(r_i)
     ! Author: itxasoma
@@ -88,16 +88,20 @@ contains
     r_i = r_im1 + bond_len * dir
   end function place_next_atom
 
+! 3.
+! Make sure that new atom does not overlap with the previous ones!
+! With an overlap cutoff of 0.85*sigma_cc
+! Skips near neighbors (i-1, i-2) because we define them closely.
   logical function ok_no_overlap(coords_c, i_new) result(ok)
-    ! Author: YOUR_NAME
-    double precision, intent(in) :: coords_c(:, :)
-    integer, intent(in) :: i_new
-    integer :: j
-    double precision :: rij(3)
+    ! Author: itxasoma
+    double precision, intent(in):: coords_c(:, :)
+    integer, intent(in):: i_new
+    integer:: j
+    double precision:: rij(3)
 
     ok = .true.
 
-    ! Only check against atoms 1..i_new-3 (skip near neighbors)
+    ! Only check against atoms 1..i_new-3 
     do j = 1, i_new-3
       rij = coords_c(i_new,:) - coords_c(j,:)
       if (vnorm(rij) < overlap_cut) then
@@ -107,29 +111,15 @@ contains
     enddo
   end function ok_no_overlap
 
-  subroutine seed_rng(rng_seed)
-    ! Author: YOUR_NAME
-    integer, intent(in) :: rng_seed
-    integer :: n, k
-    integer, allocatable :: seed(:)
-
-    call random_seed(size=n)
-    allocate(seed(n))
-    do k = 1, n
-      seed(k) = rng_seed + 37*(k-1)
-    enddo
-    call random_seed(put=seed)
-    deallocate(seed)
-  end subroutine seed_rng
-
+! 4.
+! First, we build the chain with only C's (as requested)
   subroutine build_chain_c_only(n_carbons, conf_type, rng_seed, coords_c)
-    ! Author: YOUR_NAME
-    integer, intent(in) :: n_carbons, conf_type, rng_seed
-    double precision, intent(out) :: coords_c(n_carbons, 3)
-
-    integer :: i, tries
-    double precision :: theta, phi
-    double precision :: v23(3)
+    ! Author: itxasoma
+    integer, intent(in):: n_carbons, conf_type, rng_seed
+    double precision, intent(out):: coords_c(n_carbons, 3)
+    integer:: i, tries
+    double precision:: theta, phi
+    double precision:: v23(3)
 
     call seed_rng(rng_seed)
 
@@ -158,16 +148,16 @@ contains
     enddo
   end subroutine build_chain_c_only
 
+! 5.
+! Now, add H if asked. We add 3H for C at the end of the chain (CH3).
+! Roughly tetrahedral.
   subroutine place_ch3_terminal(r_c, r_neighbor, h_xyz)
-    ! Author: YOUR_NAME
-    !
-    ! Place 3 hydrogens around a terminal carbon (CH3), roughly tetrahedral.
-    double precision, intent(in) :: r_c(3), r_neighbor(3)
-    double precision, intent(out) :: h_xyz(3,3)
-
-    double precision :: u(3), e2(3), e3(3)
-    double precision :: a, b, phi(3), dir(3)
-    integer :: k
+    ! Author: itxasoma
+    double precision, intent(in):: r_c(3), r_neighbor(3)
+    double precision, intent(out):: h_xyz(3,3)
+    double precision:: u(3), e2(3), e3(3)
+    double precision:: a, b, phi(3), dir(3)
+    integer:: k
 
     u = unit_vec(r_neighbor - r_c)   ! direction to neighbor carbon
 
@@ -191,17 +181,16 @@ contains
       h_xyz(k,:) = r_c + bond_ch * unit_vec(dir)
     enddo
   end subroutine place_ch3_terminal
-
+! ... and 2H for internal carbons (CH2)
+!  approximate tetrahedral: the two H's are placed symmetrically around 
+! the bisector of the two C-C bonds, at an angle of 109.47° from the bisector.
   subroutine place_ch2_internal(r_prev, r_c, r_next, h_xyz2)
-    ! Author: YOUR_NAME
-    !
-    ! Place 2 hydrogens for an internal carbon (CH2), approximate tetrahedral.
-    double precision, intent(in) :: r_prev(3), r_c(3), r_next(3)
-    double precision, intent(out) :: h_xyz2(2,3)
-
-    double precision :: u_prev(3), u_next(3), bis(3)
-    double precision :: e1(3), n(3), e2(3), e3(3)
-    double precision :: theta, dir1(3), dir2(3)
+    ! Author: itxasoma
+    double precision, intent(in):: r_prev(3), r_c(3), r_next(3)
+    double precision, intent(out):: h_xyz2(2,3)
+    double precision:: u_prev(3), u_next(3), bis(3)
+    double precision:: e1(3), n(3), e2(3), e3(3)
+    double precision:: theta, dir1(3), dir2(3)
 
     u_prev = unit_vec(r_prev - r_c)
     u_next = unit_vec(r_next - r_c)
@@ -230,8 +219,35 @@ contains
     h_xyz2(2,:) = r_c + bond_ch * unit_vec(dir2)
   end subroutine place_ch2_internal
 
+! 6.
+! Finally, we put everything together in the main subroutine that generates the initial configuration.
+  subroutine generate_initial_configuration(n_carbons, explicit_h, conf_type, rng_seed, symbols, coords_all)
+    ! Author: itxasoma
+    integer, intent(in):: n_carbons, conf_type, rng_seed
+    logical, intent(in):: explicit_h
+    character(len=2), allocatable, intent(out):: symbols(:)
+    double precision, allocatable, intent(out):: coords_all(:, :)
+    double precision, allocatable:: coords_c(:, :)
+
+    allocate(coords_c(n_carbons, 3))
+    call build_chain_c_only(n_carbons, conf_type, rng_seed, coords_c)
+
+    if (.not. explicit_h) then
+      allocate(symbols(n_carbons))
+      allocate(coords_all(n_carbons, 3))
+      symbols = "C"
+      coords_all = coords_c
+    else
+      call add_explicit_h(n_carbons, coords_c, symbols, coords_all) ! adds H's if requested
+    endif
+
+    deallocate(coords_c)
+  end subroutine generate_initial_configuration
+
+! 7.
+! And to add explicit H, we loop over the carbons and place H's according to the rules above.
   subroutine add_explicit_h(n_carbons, coords_c, symbols, coords_all)
-    ! Author: YOUR_NAME
+    ! Author: itxasoma
     integer, intent(in) :: n_carbons
     double precision, intent(in) :: coords_c(n_carbons, 3)
     character(len=2), allocatable, intent(out) :: symbols(:)
@@ -282,32 +298,24 @@ contains
     endif
   end subroutine add_explicit_h
 
-  subroutine generate_initial_configuration(n_carbons, explicit_h, conf_type, rng_seed, symbols, coords_all)
-    ! Author: YOUR_NAME
-    integer, intent(in) :: n_carbons, conf_type, rng_seed
-    logical, intent(in) :: explicit_h
-    character(len=2), allocatable, intent(out) :: symbols(:)
-    double precision, allocatable, intent(out) :: coords_all(:, :)
-
-    double precision, allocatable :: coords_c(:, :)
-
-    allocate(coords_c(n_carbons, 3))
-    call build_chain_c_only(n_carbons, conf_type, rng_seed, coords_c)
-
-    if (.not. explicit_h) then
-      allocate(symbols(n_carbons))
-      allocate(coords_all(n_carbons, 3))
-      symbols = "C"
-      coords_all = coords_c
-    else
-      call add_explicit_h(n_carbons, coords_c, symbols, coords_all)
-    endif
-
-    deallocate(coords_c)
-  end subroutine generate_initial_configuration
 
 
 ! FOR EASIER CALCULATIONS:
+! Random seed
+  subroutine seed_rng(rng_seed)
+    integer, intent(in):: rng_seed
+    integer:: n, k
+    integer, allocatable:: seed(:)
+
+    call random_seed(size=n)
+    allocate(seed(n))
+    do k = 1, n
+      seed(k) = rng_seed + 37*(k-1)
+    enddo
+    call random_seed(put=seed)
+    deallocate(seed)
+  end subroutine seed_rng
+
 ! Functions for mathematical operations on vectors.
   pure double precision function vnorm2(v)
     double precision, intent(in) :: v(3)
@@ -338,7 +346,6 @@ contains
     c(2) = a(3)*b(1) - a(1)*b(3)
     c(3) = a(1)*b(2) - a(2)*b(1)
   end function cross
-
 
 
 

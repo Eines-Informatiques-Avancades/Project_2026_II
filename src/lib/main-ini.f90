@@ -11,7 +11,7 @@ program main_ini
   double precision, allocatable :: coords(:, :)
   character(len=256) :: comment
 
-  call read_input_nml("../confs/input.nml", n_carbons, explicit_h, conf_type, rng_seed, xyz_file)
+  call read_input_dat(n_carbons, explicit_h, conf_type, rng_seed, xyz_file)
 
   call generate_initial_configuration(n_carbons, explicit_h, conf_type, rng_seed, symbols, coords)
 
