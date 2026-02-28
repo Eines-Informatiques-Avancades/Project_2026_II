@@ -1,0 +1,7 @@
+&sim
+  n_carbons  = 10
+  explicit_h = .false.
+  conf_type  = 3
+  rng_seed   = 1234
+  xyz_file   = "init.xyz"
+/
