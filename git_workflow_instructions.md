@@ -52,3 +52,25 @@ Once teammates submit that Pull Request, it will show up in the **Pull Requests*
 * **Commenting:** The Project Leader can leave comments on specific lines of code if something looks off.
 * **Approving:** Once it looks good, the Project Leader clicks **Review changes** -> **Approve**, and then the Project Leader (or the teacher) can hit **Merge pull request** to fold their code into the main project.
 
+---
+
+## Resyncing a Fork & Local Clone
+
+If the main repository gets updated with new code, a teammate's fork will fall behind. You can sync from github.com on your branch by clicking `sync fork` (under the green "code" dropdown button). To then update their local repository clone:
+
+1. **Check which remotes are configured:**
+   
+   `git remote -v`
+
+2. **If there isn't an entry referencing the main _group_ repo, add it:**
+
+   `git remote add main https://github.com/amu-upc/Project_2026_II.git`
+
+3. **Fetch Changes:**
+   
+   `git fetch main`
+
+4. **Pull down changes**
+   
+   `git pull main/master`
+
