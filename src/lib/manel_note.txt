@@ -1,0 +1,18 @@
+-------------------------------------------------------------------------
+MC MODULE UPDATE - [Manel]
+-------------------------------------------------------------------------
+Hi guys! I have implemented the Monte Carlo module with the following capabilities:
+
+1. COMPATIBILITY: Both 'rotate_dihedral' and 'mc_step' support systems 
+   with explicit hydrogen atoms.
+
+2. UNITED ATOM MODE (Default): 
+   If hydrogens are not required:
+   - Set 'explicit_h = .FALSE.'
+   - Set 'n_atoms = n_carbons' 
+   This ensures the loops only iterate over the carbon backbone.
+
+3. EXPLICIT HYDROGEN MODE:
+   - Set 'explicit_h = .TRUE.'
+   - Ensure 'n_atoms' equals the total count (C + H).
+-------------------------------------------------------------------------
