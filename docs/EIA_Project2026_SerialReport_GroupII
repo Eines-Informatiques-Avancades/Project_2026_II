@@ -1,0 +1,42 @@
+# March 12 Deliverables: Sequential Code Project Status
+
+We successfully integrated all Fortran modules and completed the delivery requirements for the sequential simulation of the polyethylene chain.
+
+## Implementation Details
+
+[main_serial.f90](./src/main_serial.f90) was implemented to tie together all existing modules and to execute the main Monte Carlo loop directly. The integration:
+- Computes energetic contributions using the methods in [energy.f90](./src/lib/energy.f90)
+- Updates spatial configurations using the rotation algorithm in [monte_carlo.f90](./src/lib/monte_carlo.f90)
+- Exports simulation logs utilizing existing `xyz` manipulation in [io.f90](./src/lib/io.f90)
+
+**Observables Module**: A new module [observables.f90](./src/lib/observables.f90) computes the structural observables:
+- End-to-end distance ($R_{ee}$)
+- Radius of Gyration ($R_g$)
+- Currently realized dihedral angles
+
+**Build Pipeline**: A brand new Makefile in `src/` organizes the compilation process and places all `*.o`, `*.mod`, and `*.x` binaries under `bin/`. 
+
+## Verification Results
+
+We verified the code by running a 1,000,000 step simulation for a 500-carbon linear polymer molecule where the dihedral angle was randomly selected between -$\pi$ and $\pi$.
+
+![Initial Configuration](./img/Serial_500C_InitConf_Screenshot.png)
+
+### Trajectory and Observables
+
+The `results/` folder captures exactly what is required for the March 12th baseline.
+
+#### Energy Evolution
+The Lennard-Jones parameters alongside the TraPPE-UA structural torsional energy relax the structure down from the linear extreme correctly.
+![Energy Evolution](./img/energy_evolution.png)
+
+#### Torsional Distribution
+The code is properly converging on realistic polymer equilibrium limits around gauche/trans configurations across the structure geometry.
+![Torsional Distributions](./img/torsion_distribution.png)
+
+#### Radius of Gyration & End-To-End Sequence
+Initially set to an ultra-extended 500-Carbon length all-trans format, the polymer shrinks as random MC dihedral modifications introduce folds into a more natural spherical coil distribution over the timescale.
+![Evolution of Gyration](./img/observables_evolution.png)
+
+## What's Next?
+Let's run on each of our laptops and ensure the code compiles and runs correctly. Tell the group of any adjustments or updates needed, and we'll get the sequential version ready for Campus Virtual submission by March 12th. After that, parallelization techniques (OpenMP/MPI) will need to be systematically integrated for the April 12th deadline.
