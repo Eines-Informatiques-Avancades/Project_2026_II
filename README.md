@@ -64,3 +64,24 @@ List of participants:
    make clean
    ```
    This will remove all of the compiled files and the executable.
+
+
+## Dependencies / Requirements
+
+### Build & run (Fortran)
+- A Fortran compiler compatible with Fortran90 (tested with `gfortran`)
+- `make`
+
+### Post-processing (Python)
+- Python 3
+- Python packages:
+  - `numpy`
+  - `matplotlib`
+
+Install Python dependencies in a virtual environment (recommended):
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install -r src/lib/requirements.txt

@@ -3,8 +3,8 @@ module io
   use parameters
   implicit none
 
-  character(len=*), parameter:: input_path  = "../confs/input.dat"
-  character(len=*), parameter:: output_path = "../confs/initial.xyz"
+  character(len=*), parameter:: input_path  = "confs/input.dat"
+  character(len=*), parameter:: output_path = "confs/initial.xyz"
 
 contains
 
