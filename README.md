@@ -14,7 +14,7 @@ List of participants:
 - MonteCarlo: Manel Díaz Calvo
 - Initial Conditions: Itxaso Muñoz Aldalur
 - Post-Processing: Arthur Ian Murphy
-- Energy: Olivier Misztal
+- Energy: Oliwier Misztal
 
 ---
 
