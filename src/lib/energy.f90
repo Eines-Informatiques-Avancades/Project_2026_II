@@ -47,8 +47,10 @@ contains
     double precision, intent(in) :: r2
     double precision :: e, sr2, sr6, sr12
 
-    if (r2 > rc2 .or. r2 < 1.0d-12) then
+    if (r2 > rc2) then
       e = 0.0d0
+    elseif (r2 < 1.0d-12) then
+      e = 1.0d10  ! Massive penalty to ensure MC rejection
     else
       sr2  = sig2 / r2
       sr6  = sr2 * sr2 * sr2
@@ -91,7 +93,7 @@ contains
     double precision, intent(in) :: cos_phi
     double precision :: e, y, y2, y3
 
-    y = -cos_phi
+    y = cos_phi
     
     ! Pre-compute powers for efficiency
     y2 = y * y
@@ -173,14 +175,6 @@ contains
       cos_phi_old = compute_cos_dihedral(coords_old(k-1,:), coords_old(k,:), coords_old(k+1,:), coords_old(k+2,:))
       cos_phi_new = compute_cos_dihedral(coords_new(k-1,:), coords_new(k,:), coords_new(k+1,:), coords_new(k+2,:))
       de_tors = torsion_single(cos_phi_new) - torsion_single(cos_phi_old)
-    end if
-
-    ! Torsion 2: Atoms (k, k+1, k+2, k+3). 
-    ! The plane defined by k, k+1, k+2 changes relative to k+1, k+2, k+3.
-    if (k + 3 <= nc) then
-      cos_phi_old = compute_cos_dihedral(coords_old(k,:), coords_old(k+1,:), coords_old(k+2,:), coords_old(k+3,:))
-      cos_phi_new = compute_cos_dihedral(coords_new(k,:), coords_new(k+1,:), coords_new(k+2,:), coords_new(k+3,:))
-      de_tors = de_tors + torsion_single(cos_phi_new) - torsion_single(cos_phi_old)
     end if
 
     ! --- 2. Delta Lennard-Jones Energy ---
