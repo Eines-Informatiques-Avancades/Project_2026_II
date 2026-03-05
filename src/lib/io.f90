@@ -145,4 +145,15 @@ contains
     close(u)
   end subroutine write_xyz
 
+
+  subroutine append_xyz(u, comment, symbols, coords)
+    integer, intent(in) :: u
+    character(len=*), intent(in) :: comment
+    character(len=*), intent(in) :: symbols(:)
+    double precision, intent(in) :: coords(:, :)
+
+    ! Just write one more XYZ frame to an already-open unit.
+    call write_xyz_unit(u, comment, symbols, coords)
+  end subroutine append_xyz
+
 end module io

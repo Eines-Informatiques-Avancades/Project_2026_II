@@ -110,21 +110,5 @@ program main_serial
   close(u_traj)
   deallocate(symbols, coords, phis)
 
-contains
-
-  subroutine append_xyz(u, comment, symbols, coords)
-    integer, intent(in) :: u
-    character(len=*), intent(in) :: comment
-    character(len=*), intent(in) :: symbols(:)
-    double precision, intent(in) :: coords(:, :)
-    integer :: i, n
-
-    n = size(symbols)
-    write(u,'(I0)') n
-    write(u,'(A)') trim(comment)
-    do i = 1, n
-      write(u,'(A2,1X,F15.8,1X,F15.8,1X,F15.8)') trim(symbols(i)), coords(i,1), coords(i,2), coords(i,3)
-    end do
-  end subroutine append_xyz
 
 end program main_serial
