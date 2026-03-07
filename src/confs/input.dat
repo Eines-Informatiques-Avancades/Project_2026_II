@@ -1,5 +1,5 @@
 ! number of carbons, show H, choose in conf the dihedral angle type, seed to randomly choose angles, name of the initial configuration xyz file
-  n_carbons  = 10
+  n_carbons  = 500
   explicit_h = .false.
   conf_type  = 1
   rng_seed   = 1234
