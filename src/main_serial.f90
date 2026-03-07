@@ -19,13 +19,13 @@ program main_serial
 
   ! MC parameters
   integer, parameter :: n_steps = 1000000
-  integer, parameter :: print_interval = 100
+  integer, parameter :: print_interval = 10000
   !double precision, parameter :: T = 300.0d0
   double precision :: beta
   double precision :: max_delta
   ! Annealing:
-  double precision, parameter :: T_ini = 3.0d0   ! starting temperature (K)
-  double precision, parameter :: T_fin = 0.001d0      ! final temperature (K)
+  double precision, parameter :: T_ini = 500.0d0   ! starting temperature (K)
+  double precision, parameter :: T_fin = 300.0d0      ! final temperature (K)
   double precision:: T, dT ! instantaneous temperature, temperature decrement per step (K)
 
   ! System state
@@ -80,7 +80,8 @@ program main_serial
   do istep = 1, n_steps
 
     ! Annealing:
-    T = T * dT
+    T = T_ini - dT * dble(istep - 1)
+    if (T < T_fin) T = T_fin
     beta = 1.0d0 / (kb * T)
 
     call mc_step(n_carbons, size(symbols), coords, symbols, explicit_h, &
