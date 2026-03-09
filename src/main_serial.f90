@@ -1,5 +1,6 @@
 ! main_serial.f90
 ! Main (driver) program to run the Monte Carlo simulation
+! authors: ai-murphy, itxasoma
 
 program main_serial
   use parameters
@@ -24,9 +25,9 @@ program main_serial
   double precision :: beta
   double precision :: max_delta
   ! Annealing:
-  double precision, parameter :: T_ini = 500.0d0   ! starting temperature (K)
+  double precision, parameter :: T_ini = 300.0d0   ! starting temperature (K)
   double precision, parameter :: T_fin = 300.0d0      ! final temperature (K)
-  double precision:: T, dT ! instantaneous temperature, temperature decrement per step (K)
+  double precision :: T, dT ! instantaneous temperature, temperature decrement per step (K)
 
   ! System state
   double precision :: E_total, E_lj, E_tors
@@ -34,8 +35,13 @@ program main_serial
   double precision, allocatable :: phis(:)
   logical :: accepted_step
   integer :: total_accepted, istep
-  integer :: u_ener, u_obs, u_traj, u_tors
+  integer :: u_ener, u_obs, u_traj, u_tors, u_cpu
   character(len=256) :: comment
+  character(len=256) :: run_tag, temp_tag
+  character(len=256) :: energy_file, obs_file, tors_file, cpu_file
+  character(len=32)  :: s_ncarb, s_conf, s_nsteps, s_tini, s_tfin
+  double precision :: cpu_start, cpu_now, cpu_elapsed
+
 
   ! 1. Initialize
   call read_input_dat(n_carbons, explicit_h, conf_type, rng_seed, xyz_file)
@@ -47,7 +53,29 @@ program main_serial
   max_delta = 0.2d0 ! radians (approx 11 degrees)
   total_accepted = 0
 
-  allocate(phis(size(symbols) - 3))
+  ! Make the outputs have the name of the parameters used in the simulation:
+  write(s_ncarb,  '(I0)') n_carbons
+  write(s_conf,   '(I0)') conf_type
+  write(s_nsteps, '(I0)') n_steps
+  write(s_tini,   '(F8.2)') T_ini
+  write(s_tfin,   '(F8.2)') T_fin
+
+  if (abs(T_ini - T_fin) < 1.0d-12) then
+    temp_tag = trim(adjustl(s_tini))    ! If constant T, just use T_ini
+  else
+    temp_tag = trim(adjustl(s_tini)) // '_' // trim(adjustl(s_tfin))
+  end if
+
+  run_tag = trim(s_ncarb) // '_' // trim(s_conf) // '_' // trim(s_nsteps) // '_' // trim(temp_tag)
+  energy_file = '../results/energy_'      // trim(run_tag) // '.dat'
+  obs_file    = '../results/observables_' // trim(run_tag) // '.dat'
+  tors_file   = '../results/torsions_'    // trim(run_tag) // '.dat'
+  cpu_file    = '../results/cpu_'         // trim(run_tag) // '.dat'
+
+
+  !allocate(phis(size(symbols) - 3))
+  allocate(phis(n_carbons - 3))
+
 
   ! Calculate initial energy
   call compute_total_energy(coords, n_carbons, E_total, E_lj, E_tors)
@@ -57,16 +85,18 @@ program main_serial
   call write_xyz('../src/confs/initial.xyz', trim(comment), symbols, coords)
 
   ! Open output files in ../results/
-  open(newunit=u_ener, file='../results/energy.dat', status='replace')
+  open(newunit=u_ener, file=trim(energy_file), status='replace')
   write(u_ener, '(A)') '# Step E_total E_lj E_tors'
 
-  open(newunit=u_obs, file='../results/observables.dat', status='replace')
+  open(newunit=u_obs, file=trim(obs_file), status='replace')
   write(u_obs, '(A)') '# Step Rg End_to_End'
 
-  open(newunit=u_tors, file='../results/torsions.dat', status='replace')
+  open(newunit=u_tors, file=trim(tors_file), status='replace')
   write(u_tors, '(A)') '# Step Torsion_Angles(rad)...'
 
-  open(newunit=u_traj, file='../results/trajectory.xyz', status='replace')
+  open(newunit=u_cpu, file=trim(cpu_file), status='replace')
+  write(u_cpu, '(A)') '# Step CPU_Time_s'
+
 
   write(*,'(A)') " [MC Simulation] Initialization Complete"
   write(*,'(A,I0)') " [MC Simulation] Carbons: ", n_carbons
@@ -77,6 +107,7 @@ program main_serial
   write(*,'(A)') " ------------------------------------------------------------"
 
   ! 2. Main Monte Carlo Loop
+  call cpu_time(cpu_start)
   do istep = 1, n_steps
 
     ! Annealing:
@@ -108,6 +139,11 @@ program main_serial
       write(comment, '(A,I0,A,F15.4)') "Step ", istep, " E=", E_total
       call append_xyz(u_traj, comment, symbols, coords)
 
+      ! CPU time
+      call cpu_time(cpu_now)
+      cpu_elapsed = cpu_now - cpu_start
+      write(u_cpu, '(I10, F15.6)') istep, cpu_elapsed
+
       ! Terminal progress
       write(*,'(A,I10,A,F12.4,A,F6.2,A)') &
           " Step:", istep, " | Energy:", E_total, &
@@ -122,6 +158,8 @@ program main_serial
   close(u_obs)
   close(u_tors)
   close(u_traj)
+  close(u_cpu)
+
   deallocate(symbols, coords, phis)
 
 
