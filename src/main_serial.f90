@@ -6,7 +6,8 @@ program main_serial
   use parameters
   use io
   use initial_conf
-  use energy
+  ! use energy_all_atoms ! for MC with hydrogen atoms
+  use energy ! for MC without hydrogen atoms
   use monte_carlo
   use observables
   implicit none
@@ -77,6 +78,13 @@ program main_serial
   allocate(phis(n_carbons - 3))
 
 
+  ! ! PREPARATION FOR MC WITH HYDROGEN ATOMS
+  ! ! Initialize Topology and Establish Baseline Energy
+  ! ! First, map explicit hydrogens to the backbone and build the non-bonded exclusion matrix.
+  ! ! Then, calculate the total energy of the starting configuration before starting MC moves.
+  ! call init_energy_topology(n_atoms, n_carbons, coords, symbols)
+  ! call compute_total_energy(coords, n_atoms, n_carbons, E_total, E_lj, E_tors)
+  
   ! Calculate initial energy
   call compute_total_energy(coords, n_carbons, E_total, E_lj, E_tors)
 

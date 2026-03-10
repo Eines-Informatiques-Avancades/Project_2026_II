@@ -25,6 +25,10 @@ initial-conf.o: initial-conf.f90 parameters.o
 energy.o: energy.f90 parameters.o
 	$(FC) $(FFLAGS) -c $<
 
+# For MC with hydrogen atoms
+# energy_all_atoms.o: energy_all_atoms.f90 parameters.o
+# 	$(FC) $(FFLAGS) -c $<
+
 main-ini.o: main-ini.f90 parameters.o io.o initial-conf.o
 	$(FC) $(FFLAGS) -c $<
 

@@ -6,6 +6,8 @@ EXE = $(OBJ_DIR)/main_serial.x
 
 # List object files taking into account dependencies
 LIB_OBJ = $(OBJ_DIR)/parameters.o $(OBJ_DIR)/io.o $(OBJ_DIR)/initial-conf.o $(OBJ_DIR)/energy.o $(OBJ_DIR)/monte_carlo.o $(OBJ_DIR)/observables.o
+# For MC with hydrogen atoms
+# LIB_OBJ = $(OBJ_DIR)/parameters.o $(OBJ_DIR)/io.o $(OBJ_DIR)/initial-conf.o $(OBJ_DIR)/energy_all_atoms.o $(OBJ_DIR)/monte_carlo.o $(OBJ_DIR)/observables.o
 MAIN_OBJ = $(OBJ_DIR)/main_serial.o
 
 all: $(EXE)
@@ -21,11 +23,17 @@ $(OBJ_DIR)/%.o: lib/%.f90
 
 # Explicit dependencies 
 $(OBJ_DIR)/energy.o: lib/energy.f90 $(OBJ_DIR)/parameters.o
+# For MC with hydrogen atoms
+# $(OBJ_DIR)/energy_all_atoms.o: lib/energy_all_atoms.f90 $(OBJ_DIR)/parameters.o
 $(OBJ_DIR)/io.o: lib/io.f90 $(OBJ_DIR)/parameters.o
 $(OBJ_DIR)/initial-conf.o: lib/initial-conf.f90 $(OBJ_DIR)/parameters.o
 $(OBJ_DIR)/monte_carlo.o: lib/monte_carlo.f90 $(OBJ_DIR)/parameters.o $(OBJ_DIR)/initial-conf.o $(OBJ_DIR)/energy.o
+# For MC with hydrogen atoms
+# $(OBJ_DIR)/monte_carlo.o: lib/monte_carlo.f90 $(OBJ_DIR)/parameters.o $(OBJ_DIR)/initial-conf.o $(OBJ_DIR)/energy_all_atoms.o
 # Observables depends on energy
 $(OBJ_DIR)/observables.o: lib/observables.f90 $(OBJ_DIR)/energy.o
+# For MC with hydrogen atoms
+# $(OBJ_DIR)/observables.o: lib/observables.f90 $(OBJ_DIR)/energy_all_atoms.o
 
 # Main program depends on everything
 $(OBJ_DIR)/main_serial.o: main_serial.f90 $(LIB_OBJ)

@@ -6,6 +6,7 @@ module monte_carlo
   use parameters    ! To get phi
   use initial_conf ! To use function unit_vec & cross
   use energy    !To use energy functions for the mc step
+  ! use energy_all_atoms ! for MC with hydrogen atoms
   implicit none
 
 contains
@@ -130,6 +131,11 @@ subroutine rotate_dihedral(n_carbons, n_atoms, coords, k, delta_phi, explicit_h,
       ! Signature: (coords_old, coords_new, nc, k, dE, dE_lj, dE_tors)
       call delta_energy(coords, coords_new, n_carbons, k_bond, dE, dE_lj, dE_tors)
 
+      ! ! PREPARATION FOR MC WITH HYDROGEN ATOMS
+      ! c. Compute delta energy (Optimized version from colleague)
+      ! Signature: (coords_old, coords_new, na, nc, k, dE, dE_lj, dE_tors)
+      ! call delta_energy(coords, coords_new, n_atoms, n_carbons, k_bond, dE, dE_lj, dE_tors)
+
       ! d. Metropolis acceptance criterion
       call random_number(random_value)
       if (dE < 0.0d0 .or. random_value < exp(-beta * dE)) then
@@ -178,6 +184,13 @@ subroutine rotate_dihedral(n_carbons, n_atoms, coords, k, delta_phi, explicit_h,
         total_accepted = 0
         ! Calculate update frequency (every 10% of the total simulation)
         print_interval = max(1, n_steps / 10)
+
+        ! ! PREPARATION FOR MC WITH HYDROGEN ATOMS
+        ! ! 1. Initialize Topology and Establish Baseline Energy
+        ! ! First, map explicit hydrogens to the backbone and build the non-bonded exclusion matrix.
+        ! ! Then, calculate the total energy of the starting configuration before starting MC moves.
+        ! call init_energy_topology(n_atoms, n_carbons, coords, symbols)
+        ! call compute_total_energy(coords, n_atoms, n_carbons, E_total, E_lj, E_tors)
 
         ! 1. Establish the Baseline Energy
         ! Before starting moves, we must know the energy of the starting configuration
