@@ -14,6 +14,31 @@ if not os.path.exists(OUTPUT_DIR):
 ENERGY_FILES = sorted(glob.glob(os.path.join(OUTPUT_DIR, 'energy_*.dat')))
 
 
+# ── Data Parsing Functions ────────────────────────────────────────────────────
+def get_explicit_h_setting():
+    # The plot_results.py sits in src/lib, so input.dat is in src/confs/
+    input_path = os.path.join(os.path.dirname(__file__), '../confs/input.dat')
+    try:
+        with open(input_path, 'r') as f:
+            for line in f:
+                # ignore comments
+                if line.strip().startswith('!'):
+                    continue
+                
+                # Look for explicit_h assignment
+                if 'explicit_h' in line and '=' in line:
+                    val_str = line.split('=')[1].strip().lower()
+                    if val_str == '.true.':
+                        return True
+                    elif val_str == '.false.':
+                        return False
+    except FileNotFoundError:
+        print("Could not find input.dat, defaulting explicit_h=True")
+        pass
+        
+    return True  # Default fallback if not found
+
+
 # ── Autocorrelation functions ──────────────────────────────────────────────────
 
 def integrated_autocorr_time(x):
@@ -119,9 +144,12 @@ def plot_observables(obs_file):
         print(f"Error plotting observables: {e}")
 
 
-def plot_torsions(tors_file, energy_file):
+def plot_torsions(tors_file, energy_file, explicit_h=True):
     try:
-        c1, c2, c3 = 0.705, -0.135, 1.572
+        if not explicit_h:
+            c1, c2, c3 = 0.705, -0.135, 1.572
+        else:
+            c1, c2, c3 = 0.8700, -0.0785, 1.5075
 
         def torsion_potential(phi):
             return (c1 * (1.0 + np.cos(phi))
@@ -179,7 +207,10 @@ def plot_torsions(tors_file, energy_file):
         ax1.grid(True, alpha=0.3)
 
         ax2 = ax1.twinx()
-        ax2.plot(phi_grid, Uphi, label='TraPPE-UA potential')
+        if not explicit_h:
+            ax2.plot(phi_grid, Uphi, label='TraPPE-UA potential')
+        else:
+            ax2.plot(phi_grid, Uphi, label='TraPPE-AA potential')
         ax2.set_ylabel('Torsion Potential (kcal/mol)')
 
         lines1, labels1 = ax1.get_legend_handles_labels()
@@ -217,7 +248,7 @@ if __name__ == '__main__':
         else:
             print(f'Missing {os.path.basename(obs_file)}')
         if os.path.exists(tors_file):
-            plot_torsions(tors_file, energy_file)
+            plot_torsions(tors_file, energy_file, explicit_h=get_explicit_h_setting())
         else:
             print(f'Missing {os.path.basename(tors_file)}')
     print("Done!")
