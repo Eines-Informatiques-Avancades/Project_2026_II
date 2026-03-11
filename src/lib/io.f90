@@ -29,7 +29,7 @@ contains
     rng_seed   = 12345
     xyz_file   = output_path   
 
-    open(newunit=u, file=input_path, status="old", action="read", iostat=ios)
+    open(unit=u, file=input_path, status="old", action="read", iostat=ios)
     if (ios /= 0) then
       write(*,*) "ERROR: cannot open input file: ", trim(input_path)
       stop 1
@@ -136,7 +136,7 @@ contains
       stop 1
     endif
 
-    open(newunit=u, file=filename, status="replace", action="write", iostat=ios)
+    open(unit=u, file=filename, status="replace", action="write", iostat=ios)
     if (ios /= 0) then
       write(*,*) "ERROR: cannot create xyz file: ", trim(filename)
       stop 1

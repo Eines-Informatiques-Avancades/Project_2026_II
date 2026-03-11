@@ -105,19 +105,19 @@ program main_serial
   call write_xyz('../src/confs/initial.xyz', trim(comment), symbols, coords)
 
   ! Open output files in ../results/
-  open(newunit=u_ener, file=trim(energy_file), status='replace')
+  open(unit=u_ener, file=trim(energy_file), status='replace')
   write(u_ener, '(A)') '# Step E_total E_lj E_tors'
 
-  open(newunit=u_obs, file=trim(obs_file), status='replace')
+  open(unit=u_obs, file=trim(obs_file), status='replace')
   write(u_obs, '(A)') '# Step Rg End_to_End'
 
-  open(newunit=u_tors, file=trim(tors_file), status='replace')
+  open(unit=u_tors, file=trim(tors_file), status='replace')
   write(u_tors, '(A)') '# Step Torsion_Angles(rad)...'
 
-  open(newunit=u_cpu, file=trim(cpu_file), status='replace')
+  open(unit=u_cpu, file=trim(cpu_file), status='replace')
   write(u_cpu, '(A)') '# Step CPU_Time_s'
 
-  open(newunit=u_traj, file=trim(traj_file), status='replace')
+  open(unit=u_traj, file=trim(traj_file), status='replace')
   !write(u_traj, '(A)') '# XYZ trajectory of the MC simulation' !This line breaks VMD load
 
   write(*,'(A)') " [MC Simulation] Initialization Complete"
