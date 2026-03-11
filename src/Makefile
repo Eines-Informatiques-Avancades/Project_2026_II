@@ -54,7 +54,7 @@ $(OBJ_DIR)/main_serial.o: main_serial.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J $(OBJ_DIR) -I $(OBJ_DIR) -c $< -o $@
 
-.PHONY: all clean run figures
+.PHONY: all clean run figures pipeline
 
 run: all
 	@mkdir -p ../results
@@ -65,3 +65,7 @@ figures:
 
 clean:
 	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE)
+
+pipeline:
+	$(MAKE) run
+	$(MAKE) figures
