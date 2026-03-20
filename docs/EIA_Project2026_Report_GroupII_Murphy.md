@@ -129,4 +129,59 @@ pipeline:
 
 ## Visualization
 
+The visualization of our results is handled by ```plot_results.py```. It starts by reading the ```input.dat``` file to determine whether the simulation was run using explicit hydrogens so it knows which theoretical potential to compare against.
+
+<br>
+
+# --------- Itxaso Review Needed -------------
+
+Before plotting the torsion angles, the script conducts a statistical analysis to detect when the Monte Carlo simulation reaches thermodynamic equilibrium, so it can discard the burn-in period.
+
+```python
+def detect_equilibration(x):
+    # Chodera (2016) method to find optimal equilibration index (t0)
+    n = len(x)
+    best_neff = 0.0
+    best_t0 = 0
+    
+    candidates = np.unique(np.linspace(0, int(n * 0.9), min(200, n)).astype(int))
+    for t0 in candidates:
+        sub = x[t0:]
+        _, g = integrated_autocorr_time(sub)
+        neff = (n - t0) / g
+        if neff > best_neff:
+            best_neff, best_t0 = neff, t0
+            
+    return best_t0
+```
+
+- ```integrated_autocorr_time(sub)```: Calculates the statistical inefficiency ($g$) and the integrated autocorrelation time ($\tau_{int}$) of the dataset using Fast Fourier Transforms (FFT).
+- ```neff = (n - t0) / g```: Estimates the number of effectively uncorrelated samples.
+- ```best_t0```: The algorithm sweeps through candidate discard points and selects the index t0 that maximizes the effective sample size, marking the end of the equilibration phase.
+
+# ------------------------------------------------
+
+Then, there are 3 defined functions for each of the plots using matplotlib:
+* ```plot_energies```: Plots the total energy, LJ energy, and torsion energy against the MC steps.
+* ```plot_observables```: Plots the radius of gyration and end-to-end distance against the MC steps.
+* ```plot_torsions```: Plots the torsion angles against the MC steps and compares them to the theoretical potential.
+
+Finally, the script moves on to generating the actual .pdf plots using matplotlib. The most complex of these is the torsion distribution plot, which overlays our histogram data against the theoretical TraPPE potentials.
+
+```python
+def plot_torsions(tors_file, energy_file, explicit_h=True):
+    if not explicit_h:
+        c1, c2, c3 = 0.705, -0.135, 1.572
+    else:
+        c1, c2, c3 = 0.8700, -0.0785, 1.5075
+    def torsion_potential(phi):
+        return (c1 * (1.0 + np.cos(phi))
+              + c2 * (1.0 - np.cos(2.0 * phi))
+              + c3 * (1.0 + np.cos(3.0 * phi)))
+```
+
+- ```explicit_h```: The boolean passed from our parser function.
+- ```c1, c2, c3```: The TraPPE-UA United Atom coefficients, or the OPLS-AA Effective Backbone coefficients, loaded depending on the simulation type.
+- ```torsion_potential(phi)```: Returns the theoretical energy (in kcal/mol) for any given dihedral angle ($\phi$) using trigonometric identities, which is then overlaid on the secondary Y-axis spanning across the histograms.
+
 ## Parallelization
