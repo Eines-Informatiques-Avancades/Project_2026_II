@@ -214,3 +214,8 @@ call MPI_File_write_at(fh, disp, local_string_buffer, string_length, &
 
 call MPI_File_close(fh, ierr)
 ```
+
+## 13. Synchronized Exploration
+**Concept**: To accelerate convergence towards thermodynamic equilibrium, multiple workers explore different regions of the phase space starting from the same initial configuration. Periodically, the "Master" evaluates all trajectories, selects the one with the lowest energy (the most stable state found so far), and redistributes it as the new universal starting point for all workers.
+
+
