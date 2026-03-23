@@ -219,3 +219,5 @@ call MPI_File_close(fh, ierr)
 **Concept**: To accelerate convergence towards thermodynamic equilibrium, multiple workers explore different regions of the phase space starting from the same initial configuration. Periodically, the "Master" evaluates all trajectories, selects the one with the lowest energy (the most stable state found so far), and redistributes it as the new universal starting point for all workers.
 
 
+## 14. Parallel Initial Configuration Sampling (MPI_Comm_rank)
+**Concept**: To test whether the simulation results are independent of the starting geometry, each processor generates a different initial configuration (different conf_type or rng_seed) and runs the full MC loop (same T, same MCSTEPS, same everything else) completely in parallel. Zero communication is needed during the MC loop itself, since each rank is a fully self-contained replica. The only coordination needed is at startup (to assign identities) and at shutdown (to finalize MPI).
