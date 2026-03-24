@@ -216,8 +216,8 @@ contains
 
     theta = 0.5d0 * angle_tetra_deg * deg2rad
 
-    dir1 = cos(theta)*e1 + sin(theta)*e3
-    dir2 = cos(theta)*e1 - sin(theta)*e3
+    dir1 = cos(theta)*e1 + sin(theta)*e2
+    dir2 = cos(theta)*e1 - sin(theta)*e2
 
     h_xyz2(1,:) = r_c + bond_ch * unit_vec(dir1)
     h_xyz2(2,:) = r_c + bond_ch * unit_vec(dir2)
