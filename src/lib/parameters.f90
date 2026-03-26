@@ -8,6 +8,11 @@ module parameters
   double precision, parameter:: bond_len  = 1.54d0   ! Angstrom, C-C
   double precision, parameter:: bond_ang  = 114.0d0  ! degrees, C-C-C
 
+  ! OpenMP Parallelization Switches
+  ! Set to .true. to enable parallelization of the energy calculations
+  logical :: omp_total_energy = .false.
+  logical :: omp_delta_energy = .false.
+
   ! Lennard-Jones Parameters for UA calculations
   ! double precision, parameter:: sigma_cc  = 3.73d0   ! Angstrom
   ! double precision, parameter:: eps_cc    = 0.091d0  ! kcal/mol
