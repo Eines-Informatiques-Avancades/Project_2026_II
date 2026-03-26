@@ -131,6 +131,8 @@ contains
 
     ! Total Lennard-Jones Energy
     e_lj = 0.0d0
+    
+    !$omp parallel do if(omp_total_energy) private(j, r2) reduction(+:e_lj) schedule(dynamic, 10)
     do i = 1, n_atoms - 1
       do j = i + 1, n_atoms
         if (is_excluded(i,j)) cycle
@@ -138,13 +140,17 @@ contains
         e_lj = e_lj + lj_pair_energy(r2, atom_itype(i), atom_itype(j))
       end do
     end do
+    !$omp end parallel do
 
     ! Total Torsional Energy (Calculated only for the Carbon Backbone using the Effective Potential)
     e_tors = 0.0d0
+    
+    !$omp parallel do if(omp_total_energy) private(cos_phi) reduction(+:e_tors)
     do i = 1, n_carbons - 3
       cos_phi = compute_cos_dihedral(coords(i,:), coords(i+1,:), coords(i+2,:), coords(i+3,:))
       e_tors = e_tors + torsion_single(cos_phi)
     end do
+    !$omp end parallel do
     
     e_total = e_lj + e_tors
   end subroutine compute_total_energy
@@ -187,9 +193,11 @@ contains
     ! --- 3. Delta Lennard-Jones Energy ---
     de_lj = 0.0d0
     
+    !$omp parallel do if(omp_delta_energy .and. (n_fixed * n_moved > 1000)) &
+    !$omp private(f, i, m, j, r2_old, r2_new) reduction(+:de_lj) collapse(2)
     do f = 1, n_fixed
-      i = fixed_list(f)
       do m = 1, n_moved
+        i = fixed_list(f)
         j = moved_list(m)
         
         ! Excluded pairs check (1-2, 1-3, 1-4)
@@ -202,6 +210,7 @@ contains
                       - lj_pair_energy(r2_old, atom_itype(i), atom_itype(j))
       end do
     end do
+    !$omp end parallel do
 
     de_total = de_lj + de_tors
   end subroutine delta_energy
