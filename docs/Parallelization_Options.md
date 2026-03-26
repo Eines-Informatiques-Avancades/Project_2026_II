@@ -33,7 +33,7 @@ call MPI_Barrier(MPI_COMM_WORLD, ierr)
 if (rank == 0) call cpu_time(cpu_start)
 ```
 
-## 3. Ensemble Averaging (```MPI_Reduce```)
+## 3. Ensemble Averaging (```MPI_Reduce```)  -- In Process (Arthur - main_parallel_star.f90)
 **Concept**: Instead of running 1 long simulation of 10,000,000 steps, have 10 processors run 1,000,000 steps each with different random seeds. At the end, you can sum up the total accepted moves or average the energies across all instances.
 
 ```fortran
