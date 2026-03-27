@@ -46,7 +46,8 @@ program main_parallel_star
   double precision :: cpu_start, cpu_now, cpu_elapsed
 
   ! Equilibrium variables
-  integer, parameter :: block_size = 10000
+  integer, parameter :: block_size = 100
+  integer, parameter :: sample_interval = 1000
   integer :: e_count1 = 0, e_count2 = 0
   double precision :: sum_e1 = 0.0d0, sum_sq_e1 = 0.0d0, mu1, var1
   double precision :: sum_e2 = 0.0d0, sum_sq_e2 = 0.0d0, mu2, var2
@@ -260,7 +261,7 @@ program main_parallel_star
            sum_e2 = 0.0d0; sum_sq_e2 = 0.0d0; e_count2 = 0
            record_block2 = .false.
 
-           call cpu_time(cpu_start)
+           cpu_start = omp_get_wtime()
            ! 3. Main Monte Carlo Loop
            ! Unlimited loop until equilibrium is achieved
            do istep = 1, 99999999
@@ -270,43 +271,44 @@ program main_parallel_star
                  T = T_fin
               end if
               beta = 1.0d0 / (kb * T)
-
+              
               call mc_step(n_carbons, n_atoms, coords, symbols, explicit_h, &
                            beta, max_delta, E_total, E_lj, E_tors, accepted_step)
               if (accepted_step) total_accepted = total_accepted + 1
-
+              
               if (mod(istep, print_interval) == 0 .or. istep == 1) then
                  ! Energies
                  write(u_ener, '(I10, 3F15.4)') istep, E_total, E_lj, E_tors
-
+                 
                  ! Observables
                  rg2 = compute_rg(n_carbons, coords)
                  ree2 = compute_end_to_end(n_carbons, coords)
                  write(u_obs, '(I10, 2F15.4)') istep, sqrt(rg2), sqrt(ree2)
-
+                 
                  ! Torsions
                  call compute_torsion_angles(n_carbons, coords, phis)
                  write(u_tors, '(I10)', advance='no') istep
                  write(u_tors, '(*(F10.4))') phis
-
+                 
                  ! Trajectory
                  write(comment, '(A,I0,A,F15.4)') "Step ", istep, " E=", E_total
                  call append_xyz(u_traj, comment, symbols, coords)
-
+                 
                  ! CPU time
-                 call cpu_time(cpu_now)
+                 cpu_now = omp_get_wtime()
                  cpu_elapsed = cpu_now - cpu_start
                  write(u_cpu, '(I10, F15.6)') istep, cpu_elapsed
               end if
 
               ! Check for equilibrium using Welch's t-test (Welch, B.L., Biometrika, 34(1/2), 1947)
               if (abs(T - T_fin) < 1.0d-8) then
-                 if (.not. record_block2) then
+                if (mod(istep, sample_interval) == 0) then
+                  if (.not. record_block2) then
                     sum_e1    = sum_e1 + E_total
                     sum_sq_e1 = sum_sq_e1 + (E_total * E_total)
                     e_count1  = e_count1 + 1
                     if (e_count1 == block_size) record_block2 = .true.
-                 else
+                  else
                     sum_e2    = sum_e2 + E_total
                     sum_sq_e2 = sum_sq_e2 + (E_total * E_total)
                     e_count2  = e_count2 + 1
@@ -328,7 +330,8 @@ program main_parallel_star
                        sum_e1 = sum_e2; sum_sq_e1 = sum_sq_e2; e_count1 = block_size
                        sum_e2 = 0.0d0; sum_sq_e2 = 0.0d0; e_count2 = 0
                     end if
-                 end if
+                  end if
+                end if 
               end if
            end do
            close(u_ener); close(u_obs); close(u_tors); close(u_traj); close(u_cpu)
@@ -376,7 +379,7 @@ program main_parallel_star
            ! reset acceptance rate
            total_accepted = 0
 
-           call cpu_time(cpu_start)
+           cpu_start = omp_get_wtime()
            ! 3. Main Monte Carlo Loop
            ! Production loop: EXACTLY 1,000,000 steps without checking equilibrium
            do istep = 1, 1000000
@@ -394,7 +397,7 @@ program main_parallel_star
                  write(u_tors, '(*(F10.4))') phis
                  write(comment, '(A,I0,A,F15.4)') "Step ", istep, " E=", E_total
                  call append_xyz(u_traj, comment, symbols, coords)
-                 call cpu_time(cpu_now)
+                 cpu_now = omp_get_wtime()
                  cpu_elapsed = cpu_now - cpu_start
                  write(u_cpu, '(I10, F15.6)') istep, cpu_elapsed
               end if
