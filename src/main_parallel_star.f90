@@ -44,7 +44,7 @@ program main_parallel_star
   character(len=256) :: energy_file, obs_file, tors_file, cpu_file, traj_file
   character(len=32)  :: s_ncarb, s_conf, s_nsteps, s_tini, s_tfin, s_seed
   double precision :: cpu_start, cpu_now, cpu_elapsed
-  double precision :: omp_get_wtime
+  !double precision :: omp_get_wtime
 
   ! Equilibrium variables
   integer, parameter :: block_size = 100
@@ -102,6 +102,7 @@ program main_parallel_star
   call MPI_Bcast(n_steps,   1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(explicit_h,1, MPI_LOGICAL, 0, MPI_COMM_WORLD, ierr)
   call MPI_Bcast(rng_seed,  1, MPI_INTEGER, 0, MPI_COMM_WORLD, ierr)
+  call MPI_Bcast(xyz_file, 256, MPI_CHARACTER, 0, MPI_COMM_WORLD, ierr)
 
   ! Have every rank secretly generate a dummy initial state simply to get n_atoms and correctly allocate arrays
   call generate_initial_configuration(n_carbons, explicit_h, equil_confs(1), rng_seed, symbols, coords)
@@ -256,13 +257,13 @@ program main_parallel_star
            end if
 
            dT = (T_ini - T_fin) / dble(n_steps)
-           max_delta = 0.2d0
+           max_delta = 1.1d0  ! radians (approx 60 degrees)
            total_accepted = 0
            sum_e1 = 0.0d0; sum_sq_e1 = 0.0d0; e_count1 = 0
            sum_e2 = 0.0d0; sum_sq_e2 = 0.0d0; e_count2 = 0
            record_block2 = .false.
 
-           cpu_start = omp_get_wtime()
+           cpu_start = MPI_Wtime()
            ! 3. Main Monte Carlo Loop
            ! Unlimited loop until equilibrium is achieved
            do istep = 1, 99999999
@@ -296,7 +297,7 @@ program main_parallel_star
                  call append_xyz(u_traj, comment, symbols, coords)
                  
                  ! CPU time
-                 cpu_now = omp_get_wtime()
+                 cpu_now = MPI_Wtime()
                  cpu_elapsed = cpu_now - cpu_start
                  write(u_cpu, '(I10, F15.6)') istep, cpu_elapsed
               end if
@@ -336,6 +337,9 @@ program main_parallel_star
               end if
            end do
            close(u_ener); close(u_obs); close(u_tors); close(u_traj); close(u_cpu)
+
+           cpu_now = MPI_Wtime()
+           write(*,'(A,I0,A,I0,A,F10.2,A)') "[Worker ", rank, "] Finished EQUILIBRATION for conf ", c_type, " in ", (cpu_now - cpu_start), " seconds."
 
            ! Send back equilibrated coords!
            call MPI_Send(idx, 1, MPI_INTEGER, 0, TAG_EQUIL_DONE, MPI_COMM_WORLD, ierr)
@@ -380,7 +384,7 @@ program main_parallel_star
            ! reset acceptance rate
            total_accepted = 0
 
-           cpu_start = omp_get_wtime()
+           cpu_start = MPI_Wtime()
            ! 3. Main Monte Carlo Loop
            ! Production loop: EXACTLY 1,000,000 steps without checking equilibrium
            do istep = 1, 1000000
@@ -398,13 +402,16 @@ program main_parallel_star
                  write(u_tors, '(*(F10.4))') phis
                  write(comment, '(A,I0,A,F15.4)') "Step ", istep, " E=", E_total
                  call append_xyz(u_traj, comment, symbols, coords)
-                 cpu_now = omp_get_wtime()
+                 cpu_now = MPI_Wtime()
                  cpu_elapsed = cpu_now - cpu_start
                  write(u_cpu, '(I10, F15.6)') istep, cpu_elapsed
               end if
            end do
            close(u_ener); close(u_obs); close(u_tors); close(u_traj); close(u_cpu)
            
+           cpu_now = MPI_Wtime()
+           write(*,'(A,I0,A,I0,A,F10.2,A)') "[Worker ", rank, "] Finished PRODUCTION for conf ", c_type, " in ", (cpu_now - cpu_start), " seconds."
+
            ! Tell Master we're done
            call MPI_Send(0, 1, MPI_INTEGER, 0, TAG_PROD_DONE, MPI_COMM_WORLD, ierr)
         end if
