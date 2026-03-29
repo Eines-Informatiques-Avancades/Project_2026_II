@@ -339,7 +339,9 @@ program main_parallel_star
            close(u_ener); close(u_obs); close(u_tors); close(u_traj); close(u_cpu)
 
            cpu_now = MPI_Wtime()
-           write(*,'(A,I0,A,I0,A,F10.2,A)') "[Worker ", rank, "] Finished EQUILIBRATION for conf ", c_type, " in ", (cpu_now - cpu_start), " seconds."
+           write(*,'(A,I0,A,I0,A,F10.2,A)') "[Worker ", rank, &
+                "] Finished EQUILIBRATION for conf ", c_type, &
+                " in ", (cpu_now - cpu_start), " seconds."
 
            ! Send back equilibrated coords!
            call MPI_Send(idx, 1, MPI_INTEGER, 0, TAG_EQUIL_DONE, MPI_COMM_WORLD, ierr)
@@ -410,7 +412,9 @@ program main_parallel_star
            close(u_ener); close(u_obs); close(u_tors); close(u_traj); close(u_cpu)
            
            cpu_now = MPI_Wtime()
-           write(*,'(A,I0,A,I0,A,F10.2,A)') "[Worker ", rank, "] Finished PRODUCTION for conf ", c_type, " in ", (cpu_now - cpu_start), " seconds."
+           write(*,'(A,I0,A,I0,A,F10.2,A)') "[Worker ", rank, &
+                "] Finished PRODUCTION for conf ", c_type, &
+                " in ", (cpu_now - cpu_start), " seconds."
 
            ! Tell Master we're done
            call MPI_Send(0, 1, MPI_INTEGER, 0, TAG_PROD_DONE, MPI_COMM_WORLD, ierr)
