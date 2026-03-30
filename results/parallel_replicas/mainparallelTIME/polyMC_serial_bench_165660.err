@@ -1,0 +1,41 @@
+lib/parameters.f90:14:2:
+
+ #ifdef _USE_OPENMP
+  1
+Warning: Illegal preprocessor directive
+lib/parameters.f90:17:2:
+
+ #else
+  1
+Warning: Illegal preprocessor directive
+lib/parameters.f90:20:2:
+
+ #endif
+  1
+Warning: Illegal preprocessor directive
+lib/parameters.f90:18:29:
+
+   logical :: omp_total_energy = .false.
+                             1
+Error: Symbol 'omp_total_energy' at (1) already has basic type of LOGICAL
+lib/parameters.f90:19:29:
+
+   logical :: omp_delta_energy = .false.
+                             1
+Error: Symbol 'omp_delta_energy' at (1) already has basic type of LOGICAL
+make: *** [../bin/parameters.o] Error 1
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 31: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 46: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 46: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 46: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 46: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 46: ../bin/main_serial.x: No such file or directory
+/sge/default/spool/nami02/job_scripts/165660: line 46: ../bin/main_serial.x: No such file or directory

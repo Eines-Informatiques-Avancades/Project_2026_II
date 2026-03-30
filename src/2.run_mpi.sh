@@ -4,8 +4,9 @@
 #$ -q cerqt01.q
 #$ -S /bin/bash
 #$ -cwd
-#$ -o polyMC_parallel_$JOB_ID.out
-#$ -e polyMC_parallel_$JOB_ID.err
+#$ -o polyMC_parallel_100_1_107.out
+#$ -e polyMC_parallel_100_1_107.err
+#$ -l h_rt=4:00:00
 
 source /etc/profile.d/modules.sh
 

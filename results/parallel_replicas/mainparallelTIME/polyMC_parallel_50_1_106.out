@@ -1,0 +1,343 @@
+rm -f ../bin/*.o ../bin/*.mod ../bin/main_serial.x ../bin/main_parallel.x
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -J../bin -I../bin -c lib/parameters.f90 -o ../bin/parameters.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -J../bin -I../bin -c lib/io.f90 -o ../bin/io.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -J../bin -I../bin -c lib/initial-conf.f90 -o ../bin/initial-conf.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -J../bin -I../bin -c lib/energy.f90 -o ../bin/energy.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -J../bin -I../bin -c lib/energy_all_atoms.f90 -o ../bin/energy_all_atoms.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -J../bin -I../bin -c lib/monte_carlo.f90 -o ../bin/monte_carlo.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -J../bin -I../bin -c lib/observables.f90 -o ../bin/observables.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -J../bin -I../bin -c main_parallel.f90 -o ../bin/main_parallel.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -o ../bin/main_parallel.x ../bin/parameters.o ../bin/io.o ../bin/initial-conf.o ../bin/energy.o ../bin/energy_all_atoms.o ../bin/monte_carlo.o ../bin/observables.o ../bin/main_parallel.o
+Starting MPI simulation with 3 processes and 1 OpenMP threads each...
+OMP_NUM_THREADS=1 mpirun -np 3 ../bin/main_parallel.x
+ [Rank 1] Initialization Complete | conf_type = 4
+ [MC Simulation] Carbons: 50
+ [MC Simulation] Total Steps: 1000000
+ [MC Simulation] T_ini (K):   300.0000  T_fin (K):   300.0000
+ [MC Simulation] Cooling factor per step:   0.0000E+00
+ ------------------------------------------------------------
+ [Rank 0] Initialization Complete | conf_type = 1
+ [MC Simulation] Carbons: 50
+ [MC Simulation] Total Steps: 1000000
+ [MC Simulation] T_ini (K):   300.0000  T_fin (K):   300.0000
+ [MC Simulation] Cooling factor per step:   0.0000E+00
+ ------------------------------------------------------------
+ [Rank 2] Initialization Complete | conf_type = 5
+ [MC Simulation] Carbons: 50
+ [MC Simulation] Total Steps: 1000000
+ [MC Simulation] T_ini (K):   300.0000  T_fin (K):   300.0000
+ [MC Simulation] Cooling factor per step:   0.0000E+00
+ ------------------------------------------------------------
+ [Rank 1] Step:         1 | Energy:     19.8571 | Acc:100.00%
+ [Rank 0] Step:         1 | Energy:     -2.4184 | Acc:100.00%
+ [Rank 2] Step:         1 | Energy:     -0.4899 | Acc:  0.00%
+ [Rank 2] Step:     10000 | Energy:     29.7439 | Acc: 33.28%
+ [Rank 0] Step:     10000 | Energy:     32.2090 | Acc: 34.07%
+ [Rank 1] Step:     10000 | Energy:     18.2863 | Acc: 22.20%
+ [Rank 0] Step:     20000 | Energy:     12.7568 | Acc: 29.25%
+ [Rank 2] Step:     20000 | Energy:     15.6625 | Acc: 26.56%
+ [Rank 1] Step:     20000 | Energy:     12.5836 | Acc: 16.80%
+ [Rank 0] Step:     30000 | Energy:     14.9204 | Acc: 27.00%
+ [Rank 2] Step:     30000 | Energy:      9.8662 | Acc: 22.70%
+ [Rank 1] Step:     30000 | Energy:     11.9973 | Acc: 14.92%
+ [Rank 0] Step:     40000 | Energy:     13.5187 | Acc: 24.50%
+ [Rank 2] Step:     40000 | Energy:      3.8123 | Acc: 20.74%
+ [Rank 1] Step:     40000 | Energy:      8.1591 | Acc: 14.34%
+ [Rank 0] Step:     50000 | Energy:     11.0312 | Acc: 22.58%
+ [Rank 2] Step:     50000 | Energy:      3.1442 | Acc: 19.16%
+ [Rank 1] Step:     50000 | Energy:     15.0760 | Acc: 13.90%
+ [Rank 0] Step:     60000 | Energy:     11.7936 | Acc: 21.41%
+ [Rank 2] Step:     60000 | Energy:      6.6731 | Acc: 18.01%
+ [Rank 1] Step:     60000 | Energy:      6.6252 | Acc: 13.51%
+ [Rank 0] Step:     70000 | Energy:      9.0529 | Acc: 20.67%
+ [Rank 2] Step:     70000 | Energy:     11.6331 | Acc: 17.36%
+ [Rank 1] Step:     70000 | Energy:     13.2768 | Acc: 13.15%
+ [Rank 0] Step:     80000 | Energy:      7.5156 | Acc: 19.56%
+ [Rank 2] Step:     80000 | Energy:      9.3013 | Acc: 16.81%
+ [Rank 1] Step:     80000 | Energy:     12.1941 | Acc: 12.88%
+ [Rank 0] Step:     90000 | Energy:      4.9184 | Acc: 18.70%
+ [Rank 2] Step:     90000 | Energy:     11.4225 | Acc: 16.65%
+ [Rank 1] Step:     90000 | Energy:     19.6498 | Acc: 12.74%
+ [Rank 2] Step:    100000 | Energy:     13.7903 | Acc: 16.57%
+ [Rank 0] Step:    100000 | Energy:      6.6300 | Acc: 17.88%
+ [Rank 1] Step:    100000 | Energy:     14.2763 | Acc: 12.77%
+ [Rank 2] Step:    110000 | Energy:      9.0013 | Acc: 16.27%
+ [Rank 0] Step:    110000 | Energy:      5.9352 | Acc: 17.10%
+ [Rank 1] Step:    110000 | Energy:     13.7049 | Acc: 12.59%
+ [Rank 2] Step:    120000 | Energy:      7.4138 | Acc: 16.03%
+ [Rank 0] Step:    120000 | Energy:      1.4655 | Acc: 16.53%
+ [Rank 1] Step:    120000 | Energy:     15.3153 | Acc: 12.43%
+ [Rank 2] Step:    130000 | Energy:     12.4874 | Acc: 15.69%
+ [Rank 0] Step:    130000 | Energy:      2.0654 | Acc: 16.07%
+ [Rank 1] Step:    130000 | Energy:     13.7868 | Acc: 12.30%
+ [Rank 2] Step:    140000 | Energy:      6.7653 | Acc: 15.55%
+ [Rank 0] Step:    140000 | Energy:     11.8220 | Acc: 15.83%
+ [Rank 1] Step:    140000 | Energy:     11.7122 | Acc: 12.12%
+ [Rank 2] Step:    150000 | Energy:      8.6450 | Acc: 15.38%
+ [Rank 0] Step:    150000 | Energy:      6.9857 | Acc: 15.73%
+ [Rank 1] Step:    150000 | Energy:     15.1580 | Acc: 11.89%
+ [Rank 2] Step:    160000 | Energy:      9.7435 | Acc: 15.28%
+ [Rank 0] Step:    160000 | Energy:      7.9456 | Acc: 15.60%
+ [Rank 1] Step:    160000 | Energy:     14.9165 | Acc: 11.88%
+ [Rank 2] Step:    170000 | Energy:      4.7453 | Acc: 15.25%
+ [Rank 0] Step:    170000 | Energy:      6.7161 | Acc: 15.45%
+ [Rank 1] Step:    170000 | Energy:      9.8788 | Acc: 11.91%
+ [Rank 2] Step:    180000 | Energy:      3.8124 | Acc: 15.21%
+ [Rank 0] Step:    180000 | Energy:      9.0662 | Acc: 15.29%
+ [Rank 1] Step:    180000 | Energy:     11.7791 | Acc: 11.85%
+ [Rank 2] Step:    190000 | Energy:      8.2294 | Acc: 15.12%
+ [Rank 0] Step:    190000 | Energy:     10.4573 | Acc: 15.10%
+ [Rank 1] Step:    190000 | Energy:     10.1554 | Acc: 11.87%
+ [Rank 2] Step:    200000 | Energy:      9.6252 | Acc: 14.93%
+ [Rank 0] Step:    200000 | Energy:     13.5889 | Acc: 15.00%
+ [Rank 1] Step:    200000 | Energy:     11.0298 | Acc: 11.91%
+ [Rank 2] Step:    210000 | Energy:      9.0240 | Acc: 14.80%
+ [Rank 0] Step:    210000 | Energy:      8.6635 | Acc: 14.88%
+ [Rank 1] Step:    210000 | Energy:     14.8977 | Acc: 11.92%
+ [Rank 2] Step:    220000 | Energy:      4.8623 | Acc: 14.71%
+ [Rank 0] Step:    220000 | Energy:      7.1422 | Acc: 14.81%
+ [Rank 1] Step:    220000 | Energy:      9.3375 | Acc: 11.98%
+ [Rank 2] Step:    230000 | Energy:     11.9287 | Acc: 14.61%
+ [Rank 0] Step:    230000 | Energy:      3.6084 | Acc: 14.76%
+ [Rank 1] Step:    230000 | Energy:      8.2361 | Acc: 11.97%
+ [Rank 2] Step:    240000 | Energy:     13.8889 | Acc: 14.45%
+ [Rank 0] Step:    240000 | Energy:     10.5056 | Acc: 14.77%
+ [Rank 1] Step:    240000 | Energy:     10.1354 | Acc: 11.96%
+ [Rank 2] Step:    250000 | Energy:     13.9000 | Acc: 14.34%
+ [Rank 0] Step:    250000 | Energy:      7.8728 | Acc: 14.66%
+ [Rank 1] Step:    250000 | Energy:     10.3299 | Acc: 11.99%
+ [Rank 2] Step:    260000 | Energy:      9.9616 | Acc: 14.24%
+ [Rank 0] Step:    260000 | Energy:      6.7287 | Acc: 14.60%
+ [Rank 1] Step:    260000 | Energy:     21.1270 | Acc: 12.06%
+ [Rank 2] Step:    270000 | Energy:      9.5472 | Acc: 14.18%
+ [Rank 0] Step:    270000 | Energy:      9.7900 | Acc: 14.48%
+ [Rank 1] Step:    270000 | Energy:     18.3075 | Acc: 12.19%
+ [Rank 2] Step:    280000 | Energy:      7.0144 | Acc: 14.17%
+ [Rank 0] Step:    280000 | Energy:      9.9576 | Acc: 14.43%
+ [Rank 1] Step:    280000 | Energy:     19.2829 | Acc: 12.35%
+ [Rank 2] Step:    290000 | Energy:     10.6564 | Acc: 14.10%
+ [Rank 0] Step:    290000 | Energy:      9.6468 | Acc: 14.35%
+ [Rank 1] Step:    290000 | Energy:     28.3294 | Acc: 12.69%
+ [Rank 2] Step:    300000 | Energy:      6.6132 | Acc: 14.08%
+ [Rank 0] Step:    300000 | Energy:      3.5979 | Acc: 14.36%
+ [Rank 1] Step:    300000 | Energy:     26.9962 | Acc: 12.83%
+ [Rank 2] Step:    310000 | Energy:      7.5262 | Acc: 14.01%
+ [Rank 1] Step:    310000 | Energy:     22.2482 | Acc: 12.96%
+ [Rank 0] Step:    310000 | Energy:      5.8402 | Acc: 14.22%
+ [Rank 2] Step:    320000 | Energy:      6.9240 | Acc: 13.92%
+ [Rank 1] Step:    320000 | Energy:     11.8455 | Acc: 12.97%
+ [Rank 0] Step:    320000 | Energy:      1.3706 | Acc: 14.08%
+ [Rank 2] Step:    330000 | Energy:      8.9524 | Acc: 13.90%
+ [Rank 1] Step:    330000 | Energy:     12.9743 | Acc: 12.97%
+ [Rank 0] Step:    330000 | Energy:      6.2446 | Acc: 13.97%
+ [Rank 2] Step:    340000 | Energy:      2.6826 | Acc: 13.85%
+ [Rank 1] Step:    340000 | Energy:     10.5731 | Acc: 13.00%
+ [Rank 0] Step:    340000 | Energy:      8.8118 | Acc: 13.86%
+ [Rank 1] Step:    350000 | Energy:     14.0663 | Acc: 13.01%
+ [Rank 2] Step:    350000 | Energy:      4.6971 | Acc: 13.78%
+ [Rank 0] Step:    350000 | Energy:      9.3311 | Acc: 13.77%
+ [Rank 1] Step:    360000 | Energy:     16.1555 | Acc: 13.01%
+ [Rank 2] Step:    360000 | Energy:      9.0789 | Acc: 13.74%
+ [Rank 0] Step:    360000 | Energy:      4.9018 | Acc: 13.68%
+ [Rank 1] Step:    370000 | Energy:     24.5928 | Acc: 13.05%
+ [Rank 2] Step:    370000 | Energy:      2.9400 | Acc: 13.76%
+ [Rank 0] Step:    370000 | Energy:      7.2787 | Acc: 13.59%
+ [Rank 1] Step:    380000 | Energy:     19.7773 | Acc: 13.12%
+ [Rank 2] Step:    380000 | Energy:      1.7065 | Acc: 13.74%
+ [Rank 0] Step:    380000 | Energy:      7.9695 | Acc: 13.50%
+ [Rank 1] Step:    390000 | Energy:     21.3891 | Acc: 13.17%
+ [Rank 2] Step:    390000 | Energy:      1.1831 | Acc: 13.72%
+ [Rank 0] Step:    390000 | Energy:     12.0014 | Acc: 13.46%
+ [Rank 1] Step:    400000 | Energy:     12.2137 | Acc: 13.08%
+ [Rank 2] Step:    400000 | Energy:      4.8820 | Acc: 13.65%
+ [Rank 0] Step:    400000 | Energy:     12.1249 | Acc: 13.42%
+ [Rank 1] Step:    410000 | Energy:     12.4505 | Acc: 12.99%
+ [Rank 2] Step:    410000 | Energy:      2.7988 | Acc: 13.59%
+ [Rank 0] Step:    410000 | Energy:     17.7895 | Acc: 13.37%
+ [Rank 1] Step:    420000 | Energy:     10.8908 | Acc: 12.90%
+ [Rank 2] Step:    420000 | Energy:      9.5373 | Acc: 13.56%
+ [Rank 0] Step:    420000 | Energy:     13.0903 | Acc: 13.35%
+ [Rank 1] Step:    430000 | Energy:     11.2748 | Acc: 12.82%
+ [Rank 2] Step:    430000 | Energy:      7.8216 | Acc: 13.52%
+ [Rank 0] Step:    430000 | Energy:     12.6031 | Acc: 13.31%
+ [Rank 1] Step:    440000 | Energy:     14.8700 | Acc: 12.75%
+ [Rank 2] Step:    440000 | Energy:      3.9915 | Acc: 13.47%
+ [Rank 0] Step:    440000 | Energy:      5.8438 | Acc: 13.27%
+ [Rank 1] Step:    450000 | Energy:     11.7500 | Acc: 12.67%
+ [Rank 2] Step:    450000 | Energy:      4.9413 | Acc: 13.46%
+ [Rank 0] Step:    450000 | Energy:      1.8476 | Acc: 13.20%
+ [Rank 1] Step:    460000 | Energy:     14.7766 | Acc: 12.58%
+ [Rank 2] Step:    460000 | Energy:      5.0516 | Acc: 13.45%
+ [Rank 0] Step:    460000 | Energy:      6.2999 | Acc: 13.14%
+ [Rank 1] Step:    470000 | Energy:     12.2520 | Acc: 12.52%
+ [Rank 2] Step:    470000 | Energy:      4.4456 | Acc: 13.43%
+ [Rank 0] Step:    470000 | Energy:     12.5392 | Acc: 13.12%
+ [Rank 1] Step:    480000 | Energy:      9.6596 | Acc: 12.45%
+ [Rank 2] Step:    480000 | Energy:      4.9563 | Acc: 13.39%
+ [Rank 0] Step:    480000 | Energy:      5.6897 | Acc: 13.08%
+ [Rank 1] Step:    490000 | Energy:     15.8205 | Acc: 12.40%
+ [Rank 0] Step:    490000 | Energy:     12.5454 | Acc: 13.05%
+ [Rank 2] Step:    490000 | Energy:      4.5382 | Acc: 13.37%
+ [Rank 1] Step:    500000 | Energy:     14.1170 | Acc: 12.37%
+ [Rank 0] Step:    500000 | Energy:     17.3688 | Acc: 13.02%
+ [Rank 2] Step:    500000 | Energy:      1.8613 | Acc: 13.33%
+ [Rank 1] Step:    510000 | Energy:     10.2568 | Acc: 12.34%
+ [Rank 0] Step:    510000 | Energy:     18.3669 | Acc: 13.03%
+ [Rank 2] Step:    510000 | Energy:      9.4970 | Acc: 13.34%
+ [Rank 1] Step:    520000 | Energy:     13.6921 | Acc: 12.30%
+ [Rank 0] Step:    520000 | Energy:     19.1392 | Acc: 13.04%
+ [Rank 2] Step:    520000 | Energy:     10.3387 | Acc: 13.34%
+ [Rank 1] Step:    530000 | Energy:     10.4979 | Acc: 12.25%
+ [Rank 0] Step:    530000 | Energy:     10.6247 | Acc: 13.05%
+ [Rank 2] Step:    530000 | Energy:      6.6758 | Acc: 13.31%
+ [Rank 1] Step:    540000 | Energy:     10.4836 | Acc: 12.19%
+ [Rank 0] Step:    540000 | Energy:      7.5263 | Acc: 13.04%
+ [Rank 2] Step:    540000 | Energy:     10.5635 | Acc: 13.29%
+ [Rank 1] Step:    550000 | Energy:     13.3826 | Acc: 12.14%
+ [Rank 0] Step:    550000 | Energy:     18.3956 | Acc: 13.03%
+ [Rank 2] Step:    550000 | Energy:      5.7448 | Acc: 13.30%
+ [Rank 1] Step:    560000 | Energy:     14.2286 | Acc: 12.07%
+ [Rank 0] Step:    560000 | Energy:     13.1576 | Acc: 13.03%
+ [Rank 2] Step:    560000 | Energy:      4.5141 | Acc: 13.30%
+ [Rank 1] Step:    570000 | Energy:     10.2518 | Acc: 12.01%
+ [Rank 0] Step:    570000 | Energy:     16.1744 | Acc: 13.01%
+ [Rank 2] Step:    570000 | Energy:      5.8852 | Acc: 13.31%
+ [Rank 1] Step:    580000 | Energy:     16.1802 | Acc: 11.98%
+ [Rank 0] Step:    580000 | Energy:     10.5032 | Acc: 12.96%
+ [Rank 2] Step:    580000 | Energy:      6.1915 | Acc: 13.29%
+ [Rank 1] Step:    590000 | Energy:     11.6016 | Acc: 11.95%
+ [Rank 0] Step:    590000 | Energy:      9.7359 | Acc: 12.93%
+ [Rank 2] Step:    590000 | Energy:      1.6749 | Acc: 13.26%
+ [Rank 1] Step:    600000 | Energy:     15.3784 | Acc: 11.95%
+ [Rank 0] Step:    600000 | Energy:      6.7541 | Acc: 12.92%
+ [Rank 2] Step:    600000 | Energy:      2.8149 | Acc: 13.26%
+ [Rank 1] Step:    610000 | Energy:     12.7916 | Acc: 11.91%
+ [Rank 0] Step:    610000 | Energy:      7.5732 | Acc: 12.91%
+ [Rank 2] Step:    610000 | Energy:     -3.1488 | Acc: 13.26%
+ [Rank 1] Step:    620000 | Energy:     12.7989 | Acc: 11.88%
+ [Rank 0] Step:    620000 | Energy:     12.5482 | Acc: 12.90%
+ [Rank 2] Step:    620000 | Energy:      3.5003 | Acc: 13.23%
+ [Rank 1] Step:    630000 | Energy:     12.3647 | Acc: 11.85%
+ [Rank 0] Step:    630000 | Energy:      8.1912 | Acc: 12.88%
+ [Rank 2] Step:    630000 | Energy:     -2.5793 | Acc: 13.21%
+ [Rank 1] Step:    640000 | Energy:     15.1718 | Acc: 11.81%
+ [Rank 0] Step:    640000 | Energy:      7.8691 | Acc: 12.86%
+ [Rank 2] Step:    640000 | Energy:      0.2385 | Acc: 13.19%
+ [Rank 1] Step:    650000 | Energy:      9.3174 | Acc: 11.78%
+ [Rank 0] Step:    650000 | Energy:      6.3693 | Acc: 12.85%
+ [Rank 2] Step:    650000 | Energy:      3.6256 | Acc: 13.19%
+ [Rank 1] Step:    660000 | Energy:      6.5756 | Acc: 11.75%
+ [Rank 0] Step:    660000 | Energy:      4.4020 | Acc: 12.80%
+ [Rank 2] Step:    660000 | Energy:      2.8053 | Acc: 13.18%
+ [Rank 1] Step:    670000 | Energy:      9.0272 | Acc: 11.72%
+ [Rank 0] Step:    670000 | Energy:      7.1271 | Acc: 12.77%
+ [Rank 2] Step:    670000 | Energy:      2.1662 | Acc: 13.18%
+ [Rank 1] Step:    680000 | Energy:      9.5241 | Acc: 11.68%
+ [Rank 0] Step:    680000 | Energy:      5.8487 | Acc: 12.74%
+ [Rank 2] Step:    680000 | Energy:      4.1610 | Acc: 13.17%
+ [Rank 1] Step:    690000 | Energy:     12.3574 | Acc: 11.64%
+ [Rank 0] Step:    690000 | Energy:      2.4637 | Acc: 12.70%
+ [Rank 2] Step:    690000 | Energy:      6.6616 | Acc: 13.13%
+ [Rank 1] Step:    700000 | Energy:     10.0848 | Acc: 11.62%
+ [Rank 0] Step:    700000 | Energy:      6.3491 | Acc: 12.66%
+ [Rank 2] Step:    700000 | Energy:     12.0808 | Acc: 13.11%
+ [Rank 1] Step:    710000 | Energy:      7.0601 | Acc: 11.58%
+ [Rank 0] Step:    710000 | Energy:      3.8874 | Acc: 12.65%
+ [Rank 2] Step:    710000 | Energy:      5.4727 | Acc: 13.12%
+ [Rank 1] Step:    720000 | Energy:     10.2154 | Acc: 11.55%
+ [Rank 0] Step:    720000 | Energy:      3.2818 | Acc: 12.63%
+ [Rank 2] Step:    720000 | Energy:      7.5040 | Acc: 13.12%
+ [Rank 1] Step:    730000 | Energy:      9.1004 | Acc: 11.52%
+ [Rank 0] Step:    730000 | Energy:      4.8259 | Acc: 12.59%
+ [Rank 2] Step:    730000 | Energy:     13.5467 | Acc: 13.12%
+ [Rank 1] Step:    740000 | Energy:      9.4345 | Acc: 11.49%
+ [Rank 0] Step:    740000 | Energy:      6.2835 | Acc: 12.56%
+ [Rank 2] Step:    740000 | Energy:      6.0489 | Acc: 13.13%
+ [Rank 1] Step:    750000 | Energy:      5.7542 | Acc: 11.45%
+ [Rank 0] Step:    750000 | Energy:      4.5484 | Acc: 12.53%
+ [Rank 2] Step:    750000 | Energy:      8.4739 | Acc: 13.15%
+ [Rank 1] Step:    760000 | Energy:      9.8633 | Acc: 11.41%
+ [Rank 0] Step:    760000 | Energy:      5.1229 | Acc: 12.53%
+ [Rank 2] Step:    760000 | Energy:      2.8730 | Acc: 13.14%
+ [Rank 1] Step:    770000 | Energy:     10.0201 | Acc: 11.38%
+ [Rank 0] Step:    770000 | Energy:      9.0289 | Acc: 12.51%
+ [Rank 2] Step:    770000 | Energy:     -2.1415 | Acc: 13.11%
+ [Rank 1] Step:    780000 | Energy:      7.8559 | Acc: 11.35%
+ [Rank 0] Step:    780000 | Energy:      8.5547 | Acc: 12.49%
+ [Rank 2] Step:    780000 | Energy:     -1.5248 | Acc: 13.09%
+ [Rank 1] Step:    790000 | Energy:     11.0495 | Acc: 11.32%
+ [Rank 0] Step:    790000 | Energy:      4.3758 | Acc: 12.46%
+ [Rank 2] Step:    790000 | Energy:      0.4130 | Acc: 13.09%
+ [Rank 1] Step:    800000 | Energy:      9.4257 | Acc: 11.29%
+ [Rank 0] Step:    800000 | Energy:      9.9387 | Acc: 12.44%
+ [Rank 2] Step:    800000 | Energy:      2.4981 | Acc: 13.07%
+ [Rank 1] Step:    810000 | Energy:      8.6081 | Acc: 11.27%
+ [Rank 0] Step:    810000 | Energy:      4.7746 | Acc: 12.42%
+ [Rank 2] Step:    810000 | Energy:      1.6765 | Acc: 13.04%
+ [Rank 1] Step:    820000 | Energy:      6.0147 | Acc: 11.26%
+ [Rank 0] Step:    820000 | Energy:      7.5137 | Acc: 12.40%
+ [Rank 2] Step:    820000 | Energy:     -2.9963 | Acc: 13.01%
+ [Rank 1] Step:    830000 | Energy:      5.0715 | Acc: 11.27%
+ [Rank 0] Step:    830000 | Energy:      4.9682 | Acc: 12.39%
+ [Rank 2] Step:    830000 | Energy:      8.1202 | Acc: 12.99%
+ [Rank 1] Step:    840000 | Energy:      4.4565 | Acc: 11.27%
+ [Rank 0] Step:    840000 | Energy:     14.7799 | Acc: 12.38%
+ [Rank 2] Step:    840000 | Energy:      6.7923 | Acc: 12.96%
+ [Rank 1] Step:    850000 | Energy:      2.6421 | Acc: 11.25%
+ [Rank 0] Step:    850000 | Energy:     14.3868 | Acc: 12.36%
+ [Rank 2] Step:    850000 | Energy:      5.7278 | Acc: 12.96%
+ [Rank 1] Step:    860000 | Energy:      0.7324 | Acc: 11.23%
+ [Rank 0] Step:    860000 | Energy:      4.6233 | Acc: 12.35%
+ [Rank 2] Step:    860000 | Energy:      0.7313 | Acc: 12.94%
+ [Rank 1] Step:    870000 | Energy:      6.9935 | Acc: 11.23%
+ [Rank 0] Step:    870000 | Energy:     10.3932 | Acc: 12.33%
+ [Rank 2] Step:    870000 | Energy:     -0.3921 | Acc: 12.91%
+ [Rank 1] Step:    880000 | Energy:      6.6662 | Acc: 11.23%
+ [Rank 0] Step:    880000 | Energy:      9.3324 | Acc: 12.32%
+ [Rank 2] Step:    880000 | Energy:      2.8227 | Acc: 12.88%
+ [Rank 1] Step:    890000 | Energy:      6.5791 | Acc: 11.21%
+ [Rank 0] Step:    890000 | Energy:     13.9593 | Acc: 12.32%
+ [Rank 2] Step:    890000 | Energy:      4.8773 | Acc: 12.86%
+ [Rank 1] Step:    900000 | Energy:      6.1370 | Acc: 11.19%
+ [Rank 0] Step:    900000 | Energy:      5.2181 | Acc: 12.29%
+ [Rank 2] Step:    900000 | Energy:      6.7884 | Acc: 12.84%
+ [Rank 0] Step:    910000 | Energy:     16.8896 | Acc: 12.29%
+ [Rank 1] Step:    910000 | Energy:      9.1809 | Acc: 11.16%
+ [Rank 2] Step:    910000 | Energy:      1.5752 | Acc: 12.85%
+ [Rank 0] Step:    920000 | Energy:     14.6534 | Acc: 12.27%
+ [Rank 1] Step:    920000 | Energy:      5.1038 | Acc: 11.15%
+ [Rank 2] Step:    920000 | Energy:      3.2718 | Acc: 12.83%
+ [Rank 0] Step:    930000 | Energy:     16.2708 | Acc: 12.27%
+ [Rank 1] Step:    930000 | Energy:      5.3060 | Acc: 11.13%
+ [Rank 2] Step:    930000 | Energy:      6.4099 | Acc: 12.82%
+ [Rank 0] Step:    940000 | Energy:      9.7879 | Acc: 12.28%
+ [Rank 1] Step:    940000 | Energy:      5.6354 | Acc: 11.11%
+ [Rank 2] Step:    940000 | Energy:      9.0683 | Acc: 12.82%
+ [Rank 0] Step:    950000 | Energy:      8.5769 | Acc: 12.26%
+ [Rank 1] Step:    950000 | Energy:      2.0148 | Acc: 11.09%
+ [Rank 2] Step:    950000 | Energy:      0.3161 | Acc: 12.82%
+ [Rank 0] Step:    960000 | Energy:      7.8807 | Acc: 12.26%
+ [Rank 1] Step:    960000 | Energy:      3.2680 | Acc: 11.07%
+ [Rank 2] Step:    960000 | Energy:      9.7551 | Acc: 12.82%
+ [Rank 0] Step:    970000 | Energy:     11.3359 | Acc: 12.25%
+ [Rank 1] Step:    970000 | Energy:      8.3267 | Acc: 11.05%
+ [Rank 2] Step:    970000 | Energy:      3.5905 | Acc: 12.83%
+ [Rank 0] Step:    980000 | Energy:     10.8903 | Acc: 12.25%
+ [Rank 1] Step:    980000 | Energy:      8.9696 | Acc: 11.04%
+ [Rank 2] Step:    980000 | Energy:     11.5338 | Acc: 12.84%
+ [Rank 0] Step:    990000 | Energy:      7.0534 | Acc: 12.23%
+ [Rank 1] Step:    990000 | Energy:      8.4510 | Acc: 11.03%
+ [Rank 2] Step:    990000 | Energy:     10.5494 | Acc: 12.85%
+ [Rank 0] Step:   1000000 | Energy:      6.0402 | Acc: 12.23%
+ [Rank 0] WALL TIME:      93.2342 s
+ [Rank 0] Finished Successfully
+ ------------------------------------------------------------
+ [Rank 1] Step:   1000000 | Energy:      8.6889 | Acc: 11.04%
+ [Rank 1] WALL TIME:      93.5323 s
+ [Rank 1] Finished Successfully
+ ------------------------------------------------------------
+ [Rank 2] Step:   1000000 | Energy:     12.0425 | Acc: 12.85%
+ [Rank 2] WALL TIME:      93.8510 s
+ [Rank 2] Finished Successfully
+ ------------------------------------------------------------
+rm -f ../bin/*.o ../bin/*.mod ../bin/main_serial.x ../bin/main_parallel.x

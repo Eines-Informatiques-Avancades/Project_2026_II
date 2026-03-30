@@ -1,18 +1,20 @@
 #!/bin/bash
-#$ -N polyMC
-#$ -pe smp 4
+#$ -N polyMC_serial_bench
+#$ -pe smp 1
 #$ -q cerqt01.q
 #$ -S /bin/bash
 #$ -cwd
-#$ -o polyMC_$JOB_ID.out
-#$ -e polyMC_$JOB_ID.err
+#$ -o polyMC_serial_bench_20_5_106.out
+#$ -e polyMC_serial_bench_20_5_106.err
 
 . /etc/profile
 module load gcc
-export OMP_NUM_THREADS=$NSLOTS
+export OMP_NUM_THREADS=1
 export MPLBACKEND=Agg
 
-make clean
-make
-make run
-make clean
+# Clean
+rm -f *.mod *.o *.x
+rm -f ../bin/*.o ../bin/*.mod ../bin/*.x
+
+make -j1
+make -j1 run
