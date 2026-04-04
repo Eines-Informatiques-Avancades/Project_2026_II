@@ -1,0 +1,41 @@
+#!/bin/csh
+#
+# SGE submission script for main_parallel_star_equil_collab
+# Cluster: cerqt02
+#
+# ── Adjust these three lines before submitting ────────────────────────────────
+# NP          : total MPI ranks  (1 master + NP-1 workers)
+# OMP_THREADS : OpenMP threads per MPI rank (for energy calculations)
+# TOTAL_CORES = NP * OMP_THREADS
+set NP          = 3
+set OMP_THREADS = 1
+@ TOTAL_CORES   = $NP * $OMP_THREADS
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── SGE directives ────────────────────────────────────────────────────────────
+#$ -N equil_collab
+#$ -pe ompi 3       # ← hard-code NP*OMP_THREADS here manually
+#$ -q cerqt02.q
+#$ -S /bin/csh
+#$ -cwd
+#$ -o equil_collab.out
+#$ -e equil_collab.err
+#$ -m e
+#$ -M diazcalvomanel@gmail.com
+
+# ── Environment setup ─────────────────────────────────────────────────────────
+source /etc/profile.d/modules.csh
+module load openmpi/4.1.6_gcc-13.3.0
+
+# ── Set OpenMP threads per MPI rank ───────────────────────────────────────────
+setenv OMP_NUM_THREADS $OMP_THREADS
+
+# ── Compile and run ───────────────────────────────────────────────────────────
+mkdir -p ../results
+make -f Makefile_collab clean
+make -f Makefile_collab
+
+mpirun -np $NP ./main_parallel_star_equil_collab.x
+
+echo ""
+echo "Job finished."

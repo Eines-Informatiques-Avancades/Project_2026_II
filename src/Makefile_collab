@@ -1,0 +1,55 @@
+# Makefile for main_parallel_star_equil_collab
+# Location : src/Makefile_collab
+# Cluster  : cerqt02  |  MPI: openmpi/4.1.6_gcc-13.3.0
+# Compiler : mpif90 (wraps gfortran 13.3.0)
+#
+# Usage:
+#   make -f Makefile_collab              → compile
+#   make -f Makefile_collab clean        → remove objects, modules and binary
+
+# ── Compiler & flags ──────────────────────────────────────────────────────────
+FC     = mpif90
+FFLAGS = -O2 -fopenmp -cpp -Wall -Wno-unused-variable -Wno-unused-dummy-argument
+
+# ── Directories ───────────────────────────────────────────────────────────────
+LIBDIR = lib
+
+# ── Executable (stays in src/) ────────────────────────────────────────────────
+TARGET = main_parallel_star_equil_collab.x
+
+# ── Source files — ORDER MATTERS ──────────────────────────────────────────────
+# Library modules first (in lib/), then the main program (in src/)
+SRCS = \
+    $(LIBDIR)/parameters.f90         \
+    $(LIBDIR)/io.f90                 \
+    $(LIBDIR)/initial-conf.f90       \
+    $(LIBDIR)/energy.f90             \
+    $(LIBDIR)/energy_all_atoms.f90   \
+    $(LIBDIR)/observables.f90        \
+    $(LIBDIR)/monte_carlo.f90        \
+    main_parallel_star_equil_collab.f90
+
+OBJS = $(SRCS:.f90=.o)
+
+# ── Default target ─────────────────────────────────────────────────────────────
+all: results_dir $(TARGET)
+
+$(TARGET): $(OBJS)
+	$(FC) $(FFLAGS) -o $@ $^
+	@echo ""
+	@echo "  ✓  Built $(TARGET)"
+	@echo ""
+
+# ── Generic rule: .f90 → .o ───────────────────────────────────────────────────
+%.o: %.f90
+	$(FC) $(FFLAGS) -c $< -o $@
+
+# ── Make sure results/ exists ─────────────────────────────────────────────────
+results_dir:
+	@mkdir -p ../results
+
+# ── Clean ─────────────────────────────────────────────────────────────────────
+clean:
+	rm -f $(OBJS) $(LIBDIR)/*.mod *.mod $(TARGET)
+
+.PHONY: all clean results_dir
