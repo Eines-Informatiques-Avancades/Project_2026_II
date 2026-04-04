@@ -22,25 +22,25 @@ module parameters
   ! Lennard-Jones Parameters for UA calculations
   ! double precision, parameter:: sigma_cc  = 3.73d0   ! Angstrom
   ! double precision, parameter:: eps_cc    = 0.091d0  ! kcal/mol
-  
+
   double precision, parameter:: kb        = 0.001987d0 ! kcal/(mol·K)
 
   ! Prepare for MC with explicit hydrogens:
 
   ! FORCE FIELD PARAMETERS: OPLS-AA for Polyethylene
   ! ! Reference: Saether et al., Macromolecules 2021 (Table 1, SI)
-  
+
   ! --- Lennard-Jones Parameters (sigma in Angstroms, eps in kcal/mol) ---
   double precision, parameter :: sigma_cc = 3.50d0
   double precision, parameter :: eps_cc   = 0.066d0
-  
+
   double precision, parameter :: sigma_hh = 2.50d0
   double precision, parameter :: eps_hh   = 0.030d0
-  
+
   ! Cross-interactions (Explicitly calculated in the paper's Table 1)
   double precision, parameter :: sigma_ch = 2.96d0
   double precision, parameter :: eps_ch   = 0.045d0
-  
+
   ! --- Torsional Parameters (kcal/mol) ---
   ! These are EFFECTIVE backbone parameters.
   ! They mathematically combine the C-C-C-C, C-C-C-H, and H-C-C-H dihedrals 

@@ -1,0 +1,406 @@
+========== JOB INFO ==========
+HOSTNAME: nami02
+PWD: /home/cmm11/EIA/Project_2026_II_fork/src
+NSLOTS: 3
+SHELL: /bin/bash
+PATH before module init:
+/opt/Modules/4.7.1/bin:/scratch/165633.1.cerqt01.q:/usr/local/bin:/bin:/usr/bin
+
+========== MODULE INIT ==========
+Loaded /etc/profile.d/modules.sh
+
+========== MODULE COMMAND ==========
+module is a function
+module () 
+{ 
+    unset _mlshdbg;
+    if [ "${MODULES_SILENT_SHELL_DEBUG:-0}" = '1' ]; then
+        case "$-" in 
+            *v*x*)
+                set +vx;
+                _mlshdbg='vx'
+            ;;
+            *v*)
+                set +v;
+                _mlshdbg='v'
+            ;;
+            *x*)
+                set +x;
+                _mlshdbg='x'
+            ;;
+            *)
+                _mlshdbg=''
+            ;;
+        esac;
+    fi;
+    unset _mlre _mlIFS;
+    if [ -n "${IFS+x}" ]; then
+        _mlIFS=$IFS;
+    fi;
+    IFS=' ';
+    for _mlv in ${MODULES_RUN_QUARANTINE:-};
+    do
+        if [ "${_mlv}" = "${_mlv##*[!A-Za-z0-9_]}" -a "${_mlv}" = "${_mlv#[0-9]}" ]; then
+            if [ -n "`eval 'echo ${'$_mlv'+x}'`" ]; then
+                _mlre="${_mlre:-}${_mlv}_modquar='`eval 'echo ${'$_mlv'}'`' ";
+            fi;
+            _mlrv="MODULES_RUNENV_${_mlv}";
+            _mlre="${_mlre:-}${_mlv}='`eval 'echo ${'$_mlrv':-}'`' ";
+        fi;
+    done;
+    if [ -n "${_mlre:-}" ]; then
+        eval `eval ${_mlre} /usr/bin/tclsh /opt/Modules/4.7.1/libexec/modulecmd.tcl sh '"$@"'`;
+    else
+        eval `/usr/bin/tclsh /opt/Modules/4.7.1/libexec/modulecmd.tcl sh "$@"`;
+    fi;
+    _mlstatus=$?;
+    if [ -n "${_mlIFS+x}" ]; then
+        IFS=$_mlIFS;
+    else
+        unset IFS;
+    fi;
+    unset _mlre _mlv _mlrv _mlIFS;
+    if [ -n "${_mlshdbg:-}" ]; then
+        set -$_mlshdbg;
+    fi;
+    unset _mlshdbg;
+    return $_mlstatus
+}
+
+========== AVAILABLE MODULES ==========
+------------------------ /opt/modules/modulefiles/Libs -------------------------
+alps/1.3.5_intel-11.1.072          libxc/1.2.0_intel10.1                  
+alps/2.0.0_intel-11.1.072          libxc/1.2.0_intel11.1.072              
+alps/2.0.0_p060312_intel-11.1.072  libxc/2.2.2_gcc                        
+alps/2.0.0_p130312_intel-11.1.072  libxc/2.2.2_intel11.1.072              
+blas/3.6.0_gcc                     libxc/2.2.2_intel2015.0                
+blas/3.8.0_gcc-5.5.0               libxc/3.0.0_ics-11.1.072               
+eigen/3.3.7_gcc                    libxc/3.0.0_intel2015.0                
+fftw3/3.2.2                        libxc/4.0.2_intel2015.0                
+fftw3/3.2.2_gcc-4.3.2              matplotlib/1.1.0                       
+fftw3/3.2.2_ics-11.1.072           mkl/9.1                                
+fftw3/3.2.2_pgi-10.2               mkl/10.1                               
+fftw3/3.3.5_gcc-5.5.0              numpy/1.6.1                            
+fftw3/3.3.5_ics-11.1.072           numpy/1.10.1                           
+glibc/2.11.1                       numpy/1.10.1_python-2.7.10_ase-3.11.0  
+gsl/1.14_gcc                       parallel_python/1.6.1                  
+gsl/1.14_intel10.1                 petsc/3.0.0-p12_intel10.1              
+gsl/1.14_intel11.1.072             petsc/3.0.0-p12_intel10.1_complex      
+hdf5/1.8.6_mpi                     petsc/3.1-p4_ics-11.1.072              
+hdf5/1.10.5_gcc                    petsc/3.1-p4_ics-11.1.072_fftw3        
+intel_mkl/11.0.074                 python-ase/3.5.1.2175                  
+intel_mkl/11.1.072                 python-ase/3.11.0                      
+intel_mkl/2015.0                   scalapack/2.0.2_gcc                    
+intel_mkl/2016.1                   scalapack/2.0.2_gcc-5.5.0              
+lapack/3.6.1_gcc                   scipy/0.10.0                           
+lapack/3.8.0_gcc-5.5.0             scipy/0.16.0                           
+libmatheval/1.1.11                 slepc/3.0.0-p12_intel10.1              
+libmatheval/1.1.11_ics-11.1.072    
+
+-------------------- /opt/modules/modulefiles/Applications ---------------------
+abinit/6.12.3_ompi                             siesta/3.1.pl9_ompi             
+adf/2010.02                                    siesta/3.1_ompi                 
+adf/2012.01                                    siesta/3.2_ompi                 
+adf/2012.01a                                   siesta/4.0.1_ompi               
+adf/2012.01c                                   siesta/4.0_ompi                 
+adf/2013.01                                    siesta/4.1-b4_ompi              
+adf/2014.10                                    siesta/green                    
+adf/2016.106                                   siesta/green-20140903           
+adf/2017.103                                   siesta/green_2014.1             
+adf/2017.201.r58219                            siesta/ldau_ompi                
+adf/2017.202.r58691                            siesta/smeagol_1.2_ompi         
+adf/2019.104                                   siesta/trunk-367_ompi           
+amber/10_ompi                                  siesta/trunk-408_ompi           
+amber/11_ompi                                  siesta/trunk-427_ompi           
+amber/12_ompi                                  siesta/trunk-428_ompi           
+amber/14_ompi                                  siesta/trunk-431_ompi           
+amber/16_ompi                                  siesta/trunk-462_ompi           
+ambertools/16_ompi                             siesta/trunk-560.1_ompi         
+anaconda/5.0                                   turbomole/5.10                  
+ape/2.2.1_intel11.1.072                        turbomole/5.10_mpi              
+artaios/1.9                                    turbomole/7.3                   
+artaios/2.0                                    turbomole/7.3_mpi               
+artaios/020914_beta                            uspex/9.4.4_matlab_g2           
+artaios/artaios/1.9                            vasp/4.6.36_ompi                
+artaios/artaios/2.0                            vasp/5.2.12.11nov11_ompi        
+artaios/artaios/020914_beta                    vasp/5.2.12.11nov11_ompi_g4     
+bader/0.28a                                    vasp/5.3.2_ompi                 
+blcr/0.8.2                                     vasp/5.3.3_ompi                 
+charmm/c35b1r1_heap_size_ompi                  vasp/5.3.3_ompi_g4              
+charmm/c35b1r1_heap_size_ompi_serial           vasp/5.3.3_ompi_g4_240114       
+charmm/c35b1r1_ompi                            vasp/5.3.5_ompi                 
+charmm/c35b1r2                                 vasp/5.4.1_05Feb16_ompi         
+charmm/c48b2                                   vasp/5.4.1_05Feb16_patch1_ompi  
+chemsh/3.7.1                                   vasp/5.4.1_beef_0.1.1_ompi      
+columbus/7.0                                   vasp/5.4.1_ompi                 
+condon/gcc_ompi                                vasp/5.4.1_ompi_sol             
+cp2k/6.1                                       vasp/5.4.1_ompi_sol_vtst        
+cpmd/3.15.1_qmmm_ompi_g11_plumed_libmatheval   vasp/5.4.4_ompi                 
+cpmd/3.15.3_ompi                               vasp/vv                         
+critic/2                                       xtb/5.9                         
+crystal/09_ompi                                xtb/6.0                         
+crystal/17_1.0.2_ompi                          xtb/6.1.beta                    
+crystal/17_ompi                                xz/5.2.2                        
+dftb+/1.2.2                                    yambo/3.3.0.r41_ompi            
+dftb+/17.1                                     zacros/1.01                     
+dftb+/081217                                   zacros/1.02                     
+dgrid/4.6                                      zacros/2.0                      
+dl_poly/2.17_modfhl                            zacros/3.01                     
+dl_poly/2.17_ompi                              zacros/3.02                     
+dl_poly/4.02_ompi                              zacros/3.03                     
+dl_poly/4.09_ompi                              
+espresso/4.3.2_ompi                            
+espresso/5.0.2_ompi                            
+espresso/5.0.3_ompi                            
+espresso/5.1.2-environ_ompi                    
+espresso/5.2.1_ompi                            
+espresso/5.2.1_ompi_mod_g2                     
+espresso/5.3.0_ompi                            
+esqc/para                                      
+fesetup/1.1                                    
+fesetup/1.2                                    
+fhi-aims/071914_4_libxc_ompi_mkl11.0           
+fhi-aims/071914_4_ompi_mkl11.0                 
+fhi-aims/081213_ompi                           
+fhi-aims/081912_ompi                           
+fhi-aims/150518_ompi                           
+fhi-aims/150518_ompi_g4                        
+fhi-aims/160328_3                              
+fhi-aims/160328_3_ompi_2015                    
+fhi-aims/160328_3_ompi_2015_git                
+fhi-aims/160328_3_ompi_2015_libxc3.0.0         
+fhi-aims/160328_3_ompi_2015_libxc3.0.0_eliseo  
+fhi-aims/171221                                
+fhi-aims/171221_1_ompi                         
+fhi-aims/171221_1_ompi_libxc4.0.2              
+fhi-aims/191216_ompi                           
+firefly/820_ompi                               
+gamess-uk/7.0_ompi                             
+gamess-uk/7.0_qmmm_ompi                        
+gamess-uk/8.0.200312_ompi                      
+gamess/2006_ompi                               
+gamess/2010r2                                  
+gamess/2010r2_ompi                             
+gamess/2013r1                                  
+gamess/2013r1-CAT                              
+gamess/2013r1-CAT_2015                         
+gamess/2013r1-CAT_test                         
+gamess/2013r1_ompi                             
+gamess/2016r1                                  
+gamess/2016r1_ompi                             
+gaussian/g03d02                                
+gaussian/g09b01                                
+gaussian/g09b01.old                            
+gaussian/g09b01_nbo_mod                        
+gaussian/g09b01_pb                             
+gaussian/g09d01                                
+gaussian/g16a03                                
+gaussian/g16b01                                
+gaussian/g16b01_cerqt2                         
+gollum/1.1.1                                   
+gollum/1.1.2                                   
+gollum/2                                       
+gpaw/0.8.0.8092_ompi                           
+gpaw/1.1.0_ompi                                
+gpaw/1.1.0_ompi_gcc                            
+gpaw/1.1.0_ompi_test                           
+gromacs/3.3.1_ompi                             
+gromacs/4.0.2_localpressure_ompi               
+gromacs/4.0.7_fftw3_ompi                       
+gromacs/4.5.5_fftw3_ompi                       
+gromacs/4.5.5_mkl_ompi                         
+gromacs/5.1.2_fftw                             
+gromacs/2016.1_mkl_ompi                        
+gromacs/2019.4                                 
+gromacs/2021.1                                 
+gulp/4.3_ompi                                  
+gulp/5.1_gcc_ompi                              
+gulp/5.2_gcc_ompi                              
+inelastica/1.1                                 
+jaguar/7.7                                     
+jaguar/7.8                                     
+jaguar/suite2012                               
+jaguar/suite2014.2                             
+java/1.6.0_45                                  
+java/8.0_131                                   
+jumbomem/2.1                                   
+lammps/100215_ompi                             
+lammps/100815_ompi_intel2015                   
+lammps/100815_ompi_intel2015_molfile           
+lammps/210912_ompi                             
+lammps/210912_ompi_molfile                     
+lammps/221015_ompi                             
+lammps/280614_ompi                             
+lammps/300716_ase3.11_ompi                     
+mathematica/9.0.1                              
+mcccs_towhee/7.2.0                             
+mctdh/85.17                                    
+mecp/crossing                                  
+molcas/7.2                                     
+molcas/7.4.p45                                 
+molcas/7.4.p45_chi                             
+molcas/7.4.p45_ompi                            
+molcas/7.6.p51                                 
+molcas/7.6.p51_polyaniso                       
+molcas/7.8.p47                                 
+molcas/7.8.p47_polyaniso                       
+molcas/7.8.p47_polyaniso_g1                    
+molcas/8.0                                     
+molcas/8.0.p01                                 
+molcas/8.0.p01_intel11                         
+molcas/8.2                                     
+molcas/8.4                                     
+molpro/2009.1p20                               
+mopac/2012                                     
+msindo/3.5                                     
+newtonx/1.2.5                                  
+newtonx/1.4.0                                  
+newtonx/1.4.0_compiled                         
+newtonx/2b13_cioverlapod                       
+nhf/nhf                                        
+numactl/2.0.6                                  
+nwchem/5.1.1_ompi                              
+nwchem/6.0_ompi                                
+nwchem/6.1_ompi                                
+nwchem/6.3_ompi                                
+nwchem/2011_oct_ompi                           
+octave/3.4.0                                   
+octave/3.8.2                                   
+octopus/4.0                                    
+octopus/4.1                                    
+octopus/4.1.2_ompi                             
+onetep/4.2.0_ompi                              
+openbabel/2.2.3_gcc                            
+openmx/3.5_ompi                                
+orca/2.7.0.r1730_ompi                          
+orca/2.8.0.2_ompi                              
+orca/2.9_ompi                                  
+orca/3.0.0_ompi                                
+orca/3.0.1_ompi                                
+orca/3.0.2_ompi                                
+orca/3.0.3_ompi                                
+orca/4.0.0.2_ompi                              
+orca/4.0.1.2_ompi                              
+orca/4.1.0                                     
+orca/4.2.1_ompi                                
+phi/1.5_ompi                                   
+phi/2.0                                        
+phi/2.1.6                                      
+plumed/2.2.3_g11_libmatheval                   
+plumed/2.2.3_g11_libmatheval_ics-11.1.072      
+plumed/2.2.3_g11_libmatheval_ompi-1.6.5        
+plumed/2.3.1_ics-2015.0                        
+python/2.7                                     
+python/2.7.10_ase3.11.0                        
+python/2.7.10_ase3.11.0_numpy-1.10.1_gcc       
+python/2.7.10_ase3.11.0_shared                 
+python/2.7.10_ase3.13.0_numpy                  
+python/2.7.10_shared                           
+python/2.7.10_shared_ucs4                      
+python/2.7.15                                  
+python/3.3.3                                   
+python/3.4.3                                   
+python/3.7.1                                   
+python/3.7.3_ase-3.11.0                        
+qchem/4.0                                      
+qchem/4.0.0.1                                  
+qchem/4.0.0.1_mpich                            
+qchem/4.0.1.0                                  
+qchem/4.0.1.0_mpich                            
+qchem/4.0_mpich                                
+qchem/4.1.1                                    
+qchem/4.1.1_ompi                               
+qchem/4.2.2_ompi                               
+qchem/4.4_ompi                                 
+qchem/5.0.1_ompi                               
+qchem/5.0_ompi                                 
+qchem/5.1_ompi_g8                              
+qchem/eliseo                                   
+quantumwise/atk-10.8.2                         
+quantumwise/atk-11.8                           
+quantumwise/atk-11.8_DFT                       
+quantumwise/atk-12.2                           
+quantumwise/atk-12.8                           
+quantumwise/atk-2014.1                         
+quantumwise/atk-2014.2                         
+quantumwise/atk-2014.3                         
+quantumwise/atk-2015.1                         
+quantumwise/atk-2016.1                         
+qwalk/0.97.1                                   
+qwalk/0.97.1_ompi                              
+R/3.1.2_gcc                                    
+R/3.1.2_intel-11.1.072                         
+sharc/2014_intel_mkl_11.1.072                  
+sharc/2014_intel_mkl_2015                      
+siesta/3.0-rc2_parallel_ompi_netcdf            
+
+---------------------- /opt/modules/modulefiles/Compilers ----------------------
+cmake/2.8.0   gcc/4.8.3  intel/9.1                      pgi/10.2   
+cmake/2.8.8   gcc/4.8.5  intel/10.1                     pgi/19.10  
+cmake/3.5.2   gcc/5.5.0  intel_compiler_suite/11.1.072  
+cmake/3.8.0   gcc/6.2.0  intel_compiler_suite/2015.0    
+cmake/3.15.5  gcc/8.3.0  intel_compiler_suite/2016.1    
+
+------------------------- /opt/modules/modulefiles/MPI -------------------------
+mpich/3.2_gcc-6.2.0                             OpenMPI/1.8.8_gcc-5.5.0    
+mpich/3.2_ics-2015.0                            openmpi/1.8.8_gcc-5.5.0    
+ofed/1.5.1                                      OpenMPI/1.8.8_gcc-8.3.0    
+OpenMPI/1.4.2_ics-11.1.072_ofed-1.5.1_blcr-8.2  openmpi/1.8.8_gcc-8.3.0    
+openmpi/1.4.2_ics-11.1.072_ofed-1.5.1_blcr-8.2  OpenMPI/1.8.8_ics-2015.0   
+OpenMPI/1.4.2_intel-10.1_ofed-1.5.1_blcr-8.2    openmpi/1.8.8_ics-2015.0   
+openmpi/1.4.2_intel-10.1_ofed-1.5.1_blcr-8.2    OpenMPI/1.8.8_ics-2016.1   
+OpenMPI/1.4.2_pgi-10.2_ofed-1.5.1_blcr-8.2      openmpi/1.8.8_ics-2016.1   
+openmpi/1.4.2_pgi-10.2_ofed-1.5.1_blcr-8.2      OpenMPI/1.10.4_ics-2015.0  
+OpenMPI/1.4.3_gcc-4.3.2_ofed-1.5.1              openmpi/1.10.4_ics-2015.0  
+openmpi/1.4.3_gcc-4.3.2_ofed-1.5.1              OpenMPI/2.0.1_ics-2015.0   
+OpenMPI/1.4.3_gcc-4.3.2_ofed-1.5.1_32b          openmpi/2.0.1_ics-2015.0   
+openmpi/1.4.3_gcc-4.3.2_ofed-1.5.1_32b          OpenMPI/2.0.2_ics-2015.0   
+OpenMPI/1.6.5_ics-11.1.072_ofed-1.5.1_blcr-8.2  openmpi/2.0.2_ics-2015.0   
+openmpi/1.6.5_ics-11.1.072_ofed-1.5.1_blcr-8.2  OpenMPI/2.1.0_ics-2016.0   
+OpenMPI/1.6.5_ics-2015.0_ofed-1.5.1_blcr-8.2    openmpi/2.1.0_ics-2016.0   
+openmpi/1.6.5_ics-2015.0_ofed-1.5.1_blcr-8.2    OpenMPI/3.1.3_ics-2015.0   
+OpenMPI/1.8.1_ics-2015.0                        openmpi/3.1.3_ics-2015.0   
+openmpi/1.8.1_ics-2015.0                        
+
+========== TRY COMMON LOADS ==========
+Loading openmpi/3.1.3_ics-2015.0
+  Loading requirement: intel_compiler_suite/2015.0 ofed/1.5.1
+
+========== LOADED MODULES ==========
+Currently Loaded Modulefiles:
+ 1) gcc/8.3.0                          3) ofed/1.5.1 <aL>           
+ 2) intel_compiler_suite/2015.0 <aL>   4) openmpi/3.1.3_ics-2015.0  
+
+Key:
+<module-tag>  <aL>=auto-loaded  
+
+========== COMPILERS ==========
+/opt/gcc/8.3.0/bin/gfortran
+/aplic/MPI/OpenMPI/3.1.3_ics-2015.0/bin/mpif90
+/aplic/MPI/OpenMPI/3.1.3_ics-2015.0/bin/mpirun
+
+========== VERSION INFO ==========
+ifort (IFORT) 15.0.0 20140723
+Copyright (C) 1985-2014 Intel Corporation.  All rights reserved.
+
+mpirun (Open MPI) 3.1.3
+
+Report bugs to http://www.open-mpi.org/community/help/
+
+========== MAKE TEST ==========
+rm -f ../bin/*.o ../bin/*.mod ../bin/main_serial.x ../bin/main_parallel.x
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c lib/parameters.f90 -o ../bin/parameters.o
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c lib/io.f90 -o ../bin/io.o
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c lib/initial-conf.f90 -o ../bin/initial-conf.o
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c lib/energy.f90 -o ../bin/energy.o
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c lib/energy_all_atoms.f90 -o ../bin/energy_all_atoms.o
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c lib/monte_carlo.f90 -o ../bin/monte_carlo.o
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c lib/observables.f90 -o ../bin/observables.o
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c main_parallel.f90 -o ../bin/main_parallel.o
+make parallel exit code: 2
+
+========== RUN TEST ==========
+mpif90 -O2 -Wall -Wextra -I/usr/mpi/gcc/mvapich-1.2.0/include/f90choice/ -fopenmp -cpp -J../bin -I../bin -c main_parallel.f90 -o ../bin/main_parallel.o
+make run_parallel exit code: 2
+
+========== END ==========

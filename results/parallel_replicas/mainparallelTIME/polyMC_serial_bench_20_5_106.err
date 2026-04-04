@@ -1,0 +1,35 @@
+lib/io.f90:114:0:
+
+           out = out(2:n-1)
+ 
+Warning: '__builtin_memmove' reading 256 bytes from a region of size 255 [-Wstringop-overflow=]
+lib/energy_all_atoms.f90:161:68:
+
+   subroutine delta_energy(coords_old, coords_new, n_atoms, n_carbons, k, de_total, de_lj, de_tors)
+                                                                    1
+Warning: Unused dummy argument 'n_carbons' at (1) [-Wunused-dummy-argument]
+lib/monte_carlo.f90:94:56:
+
+   subroutine mc_step(n_carbons, n_atoms, coords, symbols, explicit_h, beta, max_delta, &
+                                                        1
+Warning: Unused dummy argument 'symbols' at (1) [-Wunused-dummy-argument]
+main_serial.f90:109:0:
+
+   open(unit=u_ener, file=trim(energy_file), status='replace')
+ 
+Warning: 'u_ener' may be used uninitialized in this function [-Wmaybe-uninitialized]
+main_serial.f90:112:0:
+
+   open(unit=u_obs, file=trim(obs_file), status='replace')
+ 
+Warning: 'u_obs' may be used uninitialized in this function [-Wmaybe-uninitialized]
+main_serial.f90:115:0:
+
+   open(unit=u_tors, file=trim(tors_file), status='replace')
+ 
+Warning: 'u_tors' may be used uninitialized in this function [-Wmaybe-uninitialized]
+main_serial.f90:118:0:
+
+   open(unit=u_cpu, file=trim(cpu_file), status='replace')
+ 
+Warning: 'u_cpu' may be used uninitialized in this function [-Wmaybe-uninitialized]

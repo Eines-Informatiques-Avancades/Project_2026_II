@@ -1,0 +1,19 @@
+rm -f ../bin/*.o ../bin/*.mod ../bin/main_serial.x ../bin/main_parallel.x
+gfortran -O2 -Wall -Wextra -J../bin -I../bin -c lib/parameters.f90 -o ../bin/parameters.o
+Running serial: nc=50, conf=1, steps=1000000
+Running serial: nc=50, conf=4, steps=1000000
+Running serial: nc=50, conf=5, steps=1000000
+Running serial: nc=100, conf=1, steps=1000000
+Running serial: nc=100, conf=4, steps=1000000
+Running serial: nc=100, conf=5, steps=1000000
+Running serial: nc=200, conf=1, steps=1000000
+Running serial: nc=200, conf=4, steps=1000000
+Running serial: nc=200, conf=5, steps=1000000
+Running serial: nc=100, conf=1, steps=100000
+Running serial: nc=100, conf=4, steps=100000
+Running serial: nc=100, conf=5, steps=100000
+Running serial: nc=100, conf=1, steps=10000000
+Running serial: nc=100, conf=4, steps=10000000
+Running serial: nc=100, conf=5, steps=10000000
+rm -f ../bin/*.o ../bin/*.mod ../bin/main_serial.x ../bin/main_parallel.x
+All serial benchmark runs complete.

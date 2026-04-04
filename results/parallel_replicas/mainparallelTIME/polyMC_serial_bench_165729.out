@@ -1,0 +1,340 @@
+gfortran -O2 -Wall -Wextra -cpp -J../bin -I../bin -c lib/parameters.f90 -o ../bin/parameters.o
+gfortran -O2 -Wall -Wextra -cpp -J../bin -I../bin -c lib/io.f90 -o ../bin/io.o
+gfortran -O2 -Wall -Wextra -cpp -J../bin -I../bin -c lib/initial-conf.f90 -o ../bin/initial-conf.o
+gfortran -O2 -Wall -Wextra -cpp -J../bin -I../bin -c lib/energy.f90 -o ../bin/energy.o
+gfortran -O2 -Wall -Wextra -cpp -J../bin -I../bin -c lib/energy_all_atoms.f90 -o ../bin/energy_all_atoms.o
+gfortran -O2 -Wall -Wextra -cpp -J../bin -I../bin -c lib/monte_carlo.f90 -o ../bin/monte_carlo.o
+gfortran -O2 -Wall -Wextra -cpp -J../bin -I../bin -c lib/observables.f90 -o ../bin/observables.o
+gfortran -O2 -Wall -Wextra -cpp -J../bin -I../bin -c main_serial.f90 -o ../bin/main_serial.o
+gfortran -O2 -Wall -Wextra -cpp -o ../bin/main_serial.x ../bin/parameters.o ../bin/io.o ../bin/initial-conf.o ../bin/energy.o ../bin/energy_all_atoms.o ../bin/monte_carlo.o ../bin/observables.o ../bin/main_serial.o
+Running serial: nc=20, conf=1, steps=1000000
+ [MC Simulation] Initialization Complete
+ [MC Simulation] Carbons: 20
+ [MC Simulation] Total Steps: 1000000
+ [MC Simulation] T_ini (K):   300.0000  T_fin (K):   300.0000
+ [MC Simulation] Cooling factor per step:   0.0000E+00
+ ------------------------------------------------------------
+ Step:         1 | Energy:     -0.8365 | Acc:  0.00%
+ Step:     10000 | Energy:     10.1184 | Acc: 30.30%
+ Step:     20000 | Energy:      7.3084 | Acc: 31.96%
+ Step:     30000 | Energy:      8.4318 | Acc: 33.35%
+ Step:     40000 | Energy:     10.2439 | Acc: 34.08%
+ Step:     50000 | Energy:      8.8725 | Acc: 34.64%
+ Step:     60000 | Energy:      9.4084 | Acc: 34.59%
+ Step:     70000 | Energy:     10.6421 | Acc: 34.67%
+ Step:     80000 | Energy:     16.9537 | Acc: 35.13%
+ Step:     90000 | Energy:      9.7901 | Acc: 35.39%
+ Step:    100000 | Energy:      5.8568 | Acc: 35.61%
+ Step:    110000 | Energy:      8.5341 | Acc: 35.22%
+ Step:    120000 | Energy:      5.5382 | Acc: 35.14%
+ Step:    130000 | Energy:     13.3329 | Acc: 34.98%
+ Step:    140000 | Energy:      9.1424 | Acc: 34.47%
+ Step:    150000 | Energy:     14.2334 | Acc: 34.30%
+ Step:    160000 | Energy:     12.9756 | Acc: 34.20%
+ Step:    170000 | Energy:     11.2250 | Acc: 34.28%
+ Step:    180000 | Energy:     14.6770 | Acc: 34.50%
+ Step:    190000 | Energy:      7.9681 | Acc: 34.59%
+ Step:    200000 | Energy:     10.9257 | Acc: 34.71%
+ Step:    210000 | Energy:      6.1232 | Acc: 34.84%
+ Step:    220000 | Energy:      9.2007 | Acc: 35.00%
+ Step:    230000 | Energy:      9.4603 | Acc: 35.08%
+ Step:    240000 | Energy:      4.1235 | Acc: 35.08%
+ Step:    250000 | Energy:     13.1209 | Acc: 34.77%
+ Step:    260000 | Energy:      7.5596 | Acc: 34.52%
+ Step:    270000 | Energy:     14.5530 | Acc: 34.59%
+ Step:    280000 | Energy:      6.9516 | Acc: 34.69%
+ Step:    290000 | Energy:      9.3089 | Acc: 34.78%
+ Step:    300000 | Energy:      9.8396 | Acc: 34.55%
+ Step:    310000 | Energy:      6.9668 | Acc: 34.53%
+ Step:    320000 | Energy:     14.5791 | Acc: 34.64%
+ Step:    330000 | Energy:      6.9653 | Acc: 34.54%
+ Step:    340000 | Energy:      7.1437 | Acc: 34.43%
+ Step:    350000 | Energy:      5.2828 | Acc: 34.48%
+ Step:    360000 | Energy:     12.1988 | Acc: 34.52%
+ Step:    370000 | Energy:      5.5359 | Acc: 34.49%
+ Step:    380000 | Energy:     10.6858 | Acc: 34.55%
+ Step:    390000 | Energy:      8.4956 | Acc: 34.46%
+ Step:    400000 | Energy:      9.5312 | Acc: 34.55%
+ Step:    410000 | Energy:      8.5213 | Acc: 34.61%
+ Step:    420000 | Energy:      9.5713 | Acc: 34.69%
+ Step:    430000 | Energy:      5.9948 | Acc: 34.74%
+ Step:    440000 | Energy:      3.8149 | Acc: 34.74%
+ Step:    450000 | Energy:      6.9475 | Acc: 34.68%
+ Step:    460000 | Energy:      7.0858 | Acc: 34.72%
+ Step:    470000 | Energy:      6.3862 | Acc: 34.66%
+ Step:    480000 | Energy:     11.8510 | Acc: 34.60%
+ Step:    490000 | Energy:     10.9123 | Acc: 34.52%
+ Step:    500000 | Energy:      9.8659 | Acc: 34.60%
+ Step:    510000 | Energy:      5.3931 | Acc: 34.67%
+ Step:    520000 | Energy:      8.0498 | Acc: 34.71%
+ Step:    530000 | Energy:      3.1388 | Acc: 34.58%
+ Step:    540000 | Energy:      6.0235 | Acc: 34.46%
+ Step:    550000 | Energy:      7.7122 | Acc: 34.32%
+ Step:    560000 | Energy:      9.1395 | Acc: 34.24%
+ Step:    570000 | Energy:     11.0263 | Acc: 34.18%
+ Step:    580000 | Energy:     10.3903 | Acc: 34.12%
+ Step:    590000 | Energy:      8.5467 | Acc: 34.04%
+ Step:    600000 | Energy:      7.1638 | Acc: 34.06%
+ Step:    610000 | Energy:      8.0961 | Acc: 34.14%
+ Step:    620000 | Energy:      9.0430 | Acc: 34.21%
+ Step:    630000 | Energy:      8.2902 | Acc: 34.11%
+ Step:    640000 | Energy:     15.7004 | Acc: 34.13%
+ Step:    650000 | Energy:      3.7446 | Acc: 34.15%
+ Step:    660000 | Energy:     10.1292 | Acc: 34.15%
+ Step:    670000 | Energy:     11.7975 | Acc: 34.17%
+ Step:    680000 | Energy:     10.5232 | Acc: 34.16%
+ Step:    690000 | Energy:      9.4018 | Acc: 34.13%
+ Step:    700000 | Energy:     11.0654 | Acc: 34.16%
+ Step:    710000 | Energy:     10.2211 | Acc: 34.09%
+ Step:    720000 | Energy:      7.1596 | Acc: 34.06%
+ Step:    730000 | Energy:      7.3906 | Acc: 34.03%
+ Step:    740000 | Energy:     14.3554 | Acc: 34.07%
+ Step:    750000 | Energy:      8.0187 | Acc: 34.09%
+ Step:    760000 | Energy:      7.2422 | Acc: 34.09%
+ Step:    770000 | Energy:     11.3619 | Acc: 34.08%
+ Step:    780000 | Energy:      3.9049 | Acc: 34.07%
+ Step:    790000 | Energy:      5.4340 | Acc: 34.04%
+ Step:    800000 | Energy:     13.9222 | Acc: 34.08%
+ Step:    810000 | Energy:     13.9533 | Acc: 34.02%
+ Step:    820000 | Energy:     13.1450 | Acc: 34.07%
+ Step:    830000 | Energy:     16.5314 | Acc: 34.11%
+ Step:    840000 | Energy:      9.5017 | Acc: 34.05%
+ Step:    850000 | Energy:      6.9631 | Acc: 34.09%
+ Step:    860000 | Energy:      5.9921 | Acc: 34.10%
+ Step:    870000 | Energy:      7.4787 | Acc: 34.11%
+ Step:    880000 | Energy:     10.3188 | Acc: 34.07%
+ Step:    890000 | Energy:     12.9133 | Acc: 34.05%
+ Step:    900000 | Energy:      8.7967 | Acc: 34.07%
+ Step:    910000 | Energy:      8.3262 | Acc: 34.07%
+ Step:    920000 | Energy:      9.7721 | Acc: 34.04%
+ Step:    930000 | Energy:     10.9059 | Acc: 33.99%
+ Step:    940000 | Energy:      6.9308 | Acc: 33.96%
+ Step:    950000 | Energy:     11.5063 | Acc: 33.92%
+ Step:    960000 | Energy:      8.7315 | Acc: 33.95%
+ Step:    970000 | Energy:      7.9417 | Acc: 33.98%
+ Step:    980000 | Energy:      9.5669 | Acc: 33.97%
+ Step:    990000 | Energy:      9.6753 | Acc: 34.01%
+ Step:   1000000 | Energy:     15.3386 | Acc: 34.03%
+ ------------------------------------------------------------
+ [MC Simulation] Finished Successfully
+Running serial: nc=20, conf=4, steps=1000000
+ [MC Simulation] Initialization Complete
+ [MC Simulation] Carbons: 20
+ [MC Simulation] Total Steps: 1000000
+ [MC Simulation] T_ini (K):   300.0000  T_fin (K):   300.0000
+ [MC Simulation] Cooling factor per step:   0.0000E+00
+ ------------------------------------------------------------
+ Step:         1 | Energy:      6.9931 | Acc:  0.00%
+ Step:     10000 | Energy:      7.0004 | Acc: 37.10%
+ Step:     20000 | Energy:     12.6946 | Acc: 35.09%
+ Step:     30000 | Energy:     11.6253 | Acc: 35.70%
+ Step:     40000 | Energy:      8.6184 | Acc: 36.07%
+ Step:     50000 | Energy:      8.2706 | Acc: 35.97%
+ Step:     60000 | Energy:     12.2836 | Acc: 36.35%
+ Step:     70000 | Energy:      7.1364 | Acc: 36.44%
+ Step:     80000 | Energy:      9.4167 | Acc: 36.67%
+ Step:     90000 | Energy:      8.5399 | Acc: 36.34%
+ Step:    100000 | Energy:      3.4175 | Acc: 36.41%
+ Step:    110000 | Energy:     11.1943 | Acc: 36.30%
+ Step:    120000 | Energy:     10.4330 | Acc: 36.27%
+ Step:    130000 | Energy:     11.6299 | Acc: 36.33%
+ Step:    140000 | Energy:      9.4020 | Acc: 36.26%
+ Step:    150000 | Energy:      6.9124 | Acc: 36.23%
+ Step:    160000 | Energy:     10.6181 | Acc: 35.90%
+ Step:    170000 | Energy:     11.8710 | Acc: 35.58%
+ Step:    180000 | Energy:      9.6023 | Acc: 35.57%
+ Step:    190000 | Energy:      8.6577 | Acc: 35.54%
+ Step:    200000 | Energy:      7.4613 | Acc: 35.45%
+ Step:    210000 | Energy:      5.5865 | Acc: 35.36%
+ Step:    220000 | Energy:     12.4148 | Acc: 35.27%
+ Step:    230000 | Energy:      7.6919 | Acc: 35.36%
+ Step:    240000 | Energy:      4.2445 | Acc: 35.47%
+ Step:    250000 | Energy:      6.6647 | Acc: 35.19%
+ Step:    260000 | Energy:      8.5528 | Acc: 35.00%
+ Step:    270000 | Energy:     14.4479 | Acc: 35.04%
+ Step:    280000 | Energy:      5.2649 | Acc: 35.04%
+ Step:    290000 | Energy:      7.5078 | Acc: 35.15%
+ Step:    300000 | Energy:      5.5795 | Acc: 35.22%
+ Step:    310000 | Energy:      8.5469 | Acc: 35.27%
+ Step:    320000 | Energy:      7.3178 | Acc: 35.35%
+ Step:    330000 | Energy:     10.7563 | Acc: 35.31%
+ Step:    340000 | Energy:     11.3917 | Acc: 35.29%
+ Step:    350000 | Energy:      9.0984 | Acc: 35.36%
+ Step:    360000 | Energy:      9.2506 | Acc: 35.40%
+ Step:    370000 | Energy:     12.2516 | Acc: 35.43%
+ Step:    380000 | Energy:      7.5159 | Acc: 35.50%
+ Step:    390000 | Energy:     10.1671 | Acc: 35.52%
+ Step:    400000 | Energy:      7.5363 | Acc: 35.50%
+ Step:    410000 | Energy:      6.4293 | Acc: 35.49%
+ Step:    420000 | Energy:      7.5996 | Acc: 35.47%
+ Step:    430000 | Energy:      8.2120 | Acc: 35.30%
+ Step:    440000 | Energy:      6.8515 | Acc: 35.35%
+ Step:    450000 | Energy:     11.5164 | Acc: 35.34%
+ Step:    460000 | Energy:     10.1774 | Acc: 35.39%
+ Step:    470000 | Energy:      5.3466 | Acc: 35.40%
+ Step:    480000 | Energy:      9.8989 | Acc: 35.38%
+ Step:    490000 | Energy:      6.8056 | Acc: 35.24%
+ Step:    500000 | Energy:     10.8420 | Acc: 35.23%
+ Step:    510000 | Energy:      6.4001 | Acc: 35.26%
+ Step:    520000 | Energy:      6.4963 | Acc: 35.31%
+ Step:    530000 | Energy:      6.6861 | Acc: 35.31%
+ Step:    540000 | Energy:      4.8111 | Acc: 35.34%
+ Step:    550000 | Energy:      7.5065 | Acc: 35.32%
+ Step:    560000 | Energy:      7.6506 | Acc: 35.33%
+ Step:    570000 | Energy:      3.5863 | Acc: 35.28%
+ Step:    580000 | Energy:      3.2697 | Acc: 35.12%
+ Step:    590000 | Energy:      6.2722 | Acc: 35.00%
+ Step:    600000 | Energy:      6.4568 | Acc: 34.96%
+ Step:    610000 | Energy:      6.3877 | Acc: 34.92%
+ Step:    620000 | Energy:      9.9624 | Acc: 34.91%
+ Step:    630000 | Energy:      8.2456 | Acc: 34.90%
+ Step:    640000 | Energy:     10.0770 | Acc: 34.94%
+ Step:    650000 | Energy:      8.5454 | Acc: 34.88%
+ Step:    660000 | Energy:      9.1693 | Acc: 34.92%
+ Step:    670000 | Energy:      6.7731 | Acc: 34.95%
+ Step:    680000 | Energy:     11.7106 | Acc: 34.93%
+ Step:    690000 | Energy:     10.2147 | Acc: 34.98%
+ Step:    700000 | Energy:     13.0992 | Acc: 34.93%
+ Step:    710000 | Energy:      9.7045 | Acc: 34.91%
+ Step:    720000 | Energy:      4.1620 | Acc: 34.92%
+ Step:    730000 | Energy:      9.5269 | Acc: 34.93%
+ Step:    740000 | Energy:     14.4370 | Acc: 34.96%
+ Step:    750000 | Energy:      7.4736 | Acc: 35.00%
+ Step:    760000 | Energy:      8.9739 | Acc: 35.00%
+ Step:    770000 | Energy:      5.1831 | Acc: 35.03%
+ Step:    780000 | Energy:      7.2818 | Acc: 35.05%
+ Step:    790000 | Energy:      9.9322 | Acc: 35.02%
+ Step:    800000 | Energy:      9.4618 | Acc: 34.91%
+ Step:    810000 | Energy:      8.7865 | Acc: 34.81%
+ Step:    820000 | Energy:     11.5062 | Acc: 34.83%
+ Step:    830000 | Energy:     11.4897 | Acc: 34.87%
+ Step:    840000 | Energy:      8.2054 | Acc: 34.90%
+ Step:    850000 | Energy:      8.9727 | Acc: 34.88%
+ Step:    860000 | Energy:      9.9415 | Acc: 34.88%
+ Step:    870000 | Energy:      4.6394 | Acc: 34.92%
+ Step:    880000 | Energy:      8.7705 | Acc: 34.96%
+ Step:    890000 | Energy:      4.2693 | Acc: 34.99%
+ Step:    900000 | Energy:      5.7851 | Acc: 34.98%
+ Step:    910000 | Energy:      8.8810 | Acc: 34.92%
+ Step:    920000 | Energy:      4.9087 | Acc: 34.83%
+ Step:    930000 | Energy:     13.8195 | Acc: 34.85%
+ Step:    940000 | Energy:      6.8061 | Acc: 34.87%
+ Step:    950000 | Energy:      8.8700 | Acc: 34.91%
+ Step:    960000 | Energy:      7.8744 | Acc: 34.92%
+ Step:    970000 | Energy:     10.2891 | Acc: 34.94%
+ Step:    980000 | Energy:     16.1093 | Acc: 34.97%
+ Step:    990000 | Energy:      8.3907 | Acc: 34.95%
+ Step:   1000000 | Energy:      5.6191 | Acc: 34.97%
+ ------------------------------------------------------------
+ [MC Simulation] Finished Successfully
+Running serial: nc=20, conf=5, steps=1000000
+ [MC Simulation] Initialization Complete
+ [MC Simulation] Carbons: 20
+ [MC Simulation] Total Steps: 1000000
+ [MC Simulation] T_ini (K):   300.0000  T_fin (K):   300.0000
+ [MC Simulation] Cooling factor per step:   0.0000E+00
+ ------------------------------------------------------------
+ Step:         1 | Energy:      0.1749 | Acc:  0.00%
+ Step:     10000 | Energy:      6.4350 | Acc: 34.53%
+ Step:     20000 | Energy:      8.1180 | Acc: 34.52%
+ Step:     30000 | Energy:     10.5595 | Acc: 35.80%
+ Step:     40000 | Energy:      8.7888 | Acc: 36.32%
+ Step:     50000 | Energy:      5.5168 | Acc: 35.13%
+ Step:     60000 | Energy:     14.0788 | Acc: 34.49%
+ Step:     70000 | Energy:     10.8552 | Acc: 34.62%
+ Step:     80000 | Energy:     13.4419 | Acc: 34.13%
+ Step:     90000 | Energy:      7.6554 | Acc: 34.39%
+ Step:    100000 | Energy:      8.2482 | Acc: 33.95%
+ Step:    110000 | Energy:      5.2893 | Acc: 33.35%
+ Step:    120000 | Energy:      6.9336 | Acc: 32.73%
+ Step:    130000 | Energy:     17.1004 | Acc: 32.93%
+ Step:    140000 | Energy:      7.0164 | Acc: 33.24%
+ Step:    150000 | Energy:      9.6020 | Acc: 33.37%
+ Step:    160000 | Energy:      6.5442 | Acc: 32.98%
+ Step:    170000 | Energy:      6.3478 | Acc: 32.64%
+ Step:    180000 | Energy:      9.6001 | Acc: 32.41%
+ Step:    190000 | Energy:      8.5222 | Acc: 32.58%
+ Step:    200000 | Energy:     11.6261 | Acc: 32.60%
+ Step:    210000 | Energy:      1.8360 | Acc: 32.45%
+ Step:    220000 | Energy:     10.6952 | Acc: 32.51%
+ Step:    230000 | Energy:      9.1341 | Acc: 32.50%
+ Step:    240000 | Energy:      8.1832 | Acc: 32.51%
+ Step:    250000 | Energy:     14.4213 | Acc: 32.77%
+ Step:    260000 | Energy:      6.8298 | Acc: 32.74%
+ Step:    270000 | Energy:      6.9441 | Acc: 32.89%
+ Step:    280000 | Energy:     14.2321 | Acc: 33.03%
+ Step:    290000 | Energy:     10.1449 | Acc: 33.16%
+ Step:    300000 | Energy:      9.0291 | Acc: 33.31%
+ Step:    310000 | Energy:      7.2939 | Acc: 33.31%
+ Step:    320000 | Energy:      9.0077 | Acc: 33.10%
+ Step:    330000 | Energy:      3.9701 | Acc: 33.16%
+ Step:    340000 | Energy:      9.0461 | Acc: 33.22%
+ Step:    350000 | Energy:      6.5086 | Acc: 33.25%
+ Step:    360000 | Energy:      8.6187 | Acc: 33.35%
+ Step:    370000 | Energy:      8.9306 | Acc: 33.42%
+ Step:    380000 | Energy:     11.4720 | Acc: 33.40%
+ Step:    390000 | Energy:      7.6285 | Acc: 33.53%
+ Step:    400000 | Energy:      7.6867 | Acc: 33.65%
+ Step:    410000 | Energy:     12.0848 | Acc: 33.59%
+ Step:    420000 | Energy:      8.5675 | Acc: 33.52%
+ Step:    430000 | Energy:      7.2906 | Acc: 33.32%
+ Step:    440000 | Energy:      6.9093 | Acc: 33.41%
+ Step:    450000 | Energy:      6.4551 | Acc: 33.44%
+ Step:    460000 | Energy:      5.1927 | Acc: 33.24%
+ Step:    470000 | Energy:      5.1907 | Acc: 33.27%
+ Step:    480000 | Energy:     11.9670 | Acc: 33.35%
+ Step:    490000 | Energy:      9.9497 | Acc: 33.43%
+ Step:    500000 | Energy:     11.3081 | Acc: 33.47%
+ Step:    510000 | Energy:      5.7135 | Acc: 33.56%
+ Step:    520000 | Energy:      8.2688 | Acc: 33.65%
+ Step:    530000 | Energy:      8.6900 | Acc: 33.63%
+ Step:    540000 | Energy:      7.7482 | Acc: 33.70%
+ Step:    550000 | Energy:     10.6056 | Acc: 33.72%
+ Step:    560000 | Energy:      9.0696 | Acc: 33.75%
+ Step:    570000 | Energy:     13.5973 | Acc: 33.83%
+ Step:    580000 | Energy:      9.4630 | Acc: 33.90%
+ Step:    590000 | Energy:      4.6483 | Acc: 33.93%
+ Step:    600000 | Energy:      7.2186 | Acc: 33.89%
+ Step:    610000 | Energy:      8.6591 | Acc: 33.96%
+ Step:    620000 | Energy:      7.2003 | Acc: 33.98%
+ Step:    630000 | Energy:     11.5428 | Acc: 34.04%
+ Step:    640000 | Energy:     12.8276 | Acc: 34.08%
+ Step:    650000 | Energy:      6.6767 | Acc: 34.14%
+ Step:    660000 | Energy:     11.2382 | Acc: 34.18%
+ Step:    670000 | Energy:      7.8177 | Acc: 34.20%
+ Step:    680000 | Energy:     12.2973 | Acc: 34.21%
+ Step:    690000 | Energy:     11.1805 | Acc: 34.25%
+ Step:    700000 | Energy:      8.5255 | Acc: 34.26%
+ Step:    710000 | Energy:      9.6009 | Acc: 34.26%
+ Step:    720000 | Energy:      5.4610 | Acc: 34.22%
+ Step:    730000 | Energy:     11.6634 | Acc: 34.18%
+ Step:    740000 | Energy:     14.0484 | Acc: 34.22%
+ Step:    750000 | Energy:     11.4227 | Acc: 34.27%
+ Step:    760000 | Energy:      4.2934 | Acc: 34.31%
+ Step:    770000 | Energy:      8.4071 | Acc: 34.26%
+ Step:    780000 | Energy:      4.9960 | Acc: 34.19%
+ Step:    790000 | Energy:     12.5882 | Acc: 34.20%
+ Step:    800000 | Energy:     10.5443 | Acc: 34.21%
+ Step:    810000 | Energy:      8.6705 | Acc: 34.14%
+ Step:    820000 | Energy:     11.8789 | Acc: 34.17%
+ Step:    830000 | Energy:     11.7155 | Acc: 34.18%
+ Step:    840000 | Energy:      8.4215 | Acc: 34.23%
+ Step:    850000 | Energy:      8.0205 | Acc: 34.25%
+ Step:    860000 | Energy:      7.7956 | Acc: 34.27%
+ Step:    870000 | Energy:     13.0653 | Acc: 34.29%
+ Step:    880000 | Energy:      6.5862 | Acc: 34.30%
+ Step:    890000 | Energy:      5.4797 | Acc: 34.33%
+ Step:    900000 | Energy:      7.3137 | Acc: 34.28%
+ Step:    910000 | Energy:     15.9019 | Acc: 34.29%
+ Step:    920000 | Energy:      6.7896 | Acc: 34.27%
+ Step:    930000 | Energy:      9.8235 | Acc: 34.30%
+ Step:    940000 | Energy:      4.8429 | Acc: 34.34%
+ Step:    950000 | Energy:     10.6742 | Acc: 34.38%
+ Step:    960000 | Energy:     10.6696 | Acc: 34.41%
+ Step:    970000 | Energy:      8.4649 | Acc: 34.44%
+ Step:    980000 | Energy:      9.4920 | Acc: 34.47%
+ Step:    990000 | Energy:     10.1162 | Acc: 34.47%
+ Step:   1000000 | Energy:     11.4484 | Acc: 34.50%
+ ------------------------------------------------------------
+ [MC Simulation] Finished Successfully
+All serial benchmark runs complete.
