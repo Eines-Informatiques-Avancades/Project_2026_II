@@ -222,40 +222,52 @@ program main_parallel_star_equil_collab
                         iprobe_flag, status_arr, ierr)
         if (.not. iprobe_flag) exit
 
-        call MPI_Recv(msg, 1, MPI_INTEGER, MPI_ANY_SOURCE, MPI_ANY_TAG, &
-                      MPI_COMM_WORLD, status_arr, ierr)
+        ! Inspect the sender and the tag BEFORE receiving the message
         worker = status_arr(MPI_SOURCE)
         tag    = status_arr(MPI_TAG)
 
-        if (tag == TAG_REQUEST_WORK) then
-          num_idle = num_idle + 1
-          idle_workers(num_idle) = worker
-          worker_state(worker) = 0
-
-        else if (tag == TAG_EQUIL_DONE) then
-          task = msg
-          call MPI_Recv(master_coords(task,:,:), size(coords), &
-                        MPI_DOUBLE_PRECISION, worker, TAG_EQUIL_DONE, &
+        ! Only receive in 'msg' (1 integer) if it is a task control message
+        if (tag == TAG_REQUEST_WORK .or. tag == TAG_EQUIL_DONE .or. tag == TAG_PROD_DONE) then
+          
+          call MPI_Recv(msg, 1, MPI_INTEGER, worker, tag, &
                         MPI_COMM_WORLD, status_arr, ierr)
-          equil_done(task)   = .true.
-          equil_active(task) = .false.
-          write(*,'(A,I3,A,I2,A)') &
-            " [Master] Worker ", worker, &
-            " finished equil conf=", equil_confs(task), &
-            ". Unlocking 10 production jobs."
-          do p = 1, 10
-            total_available_prods = total_available_prods + 1
-            prod_queue(total_available_prods) = task
-          end do
 
-        else if (tag == TAG_PROD_DONE) then
-          completed_prods = completed_prods + 1
-          worker_state(worker) = 0
-          num_idle = num_idle + 1
-          idle_workers(num_idle) = worker
-          write(*,'(A,I3,A,I2,A)') &
-            " [Master] Worker ", worker, &
-            " finished production. Total: ", completed_prods, "/30"
+          if (tag == TAG_REQUEST_WORK) then
+            num_idle = num_idle + 1
+            idle_workers(num_idle) = worker
+            worker_state(worker) = 0
+
+          else if (tag == TAG_EQUIL_DONE) then
+            task = msg
+            ! Receive coordinates (larger buffer) upon equilibration completion
+            call MPI_Recv(master_coords(task,:,:), size(coords), &
+                          MPI_DOUBLE_PRECISION, worker, TAG_EQUIL_DONE, &
+                          MPI_COMM_WORLD, status_arr, ierr)
+            equil_done(task)   = .true.
+            equil_active(task) = .false.
+            write(*,'(A,I3,A,I2,A)') &
+              " [Master] Worker ", worker, &
+              " finished equil conf=", equil_confs(task), &
+              ". Unlocking 10 production jobs."
+            do p = 1, 10
+              total_available_prods = total_available_prods + 1
+              prod_queue(total_available_prods) = task
+            end do
+
+          else if (tag == TAG_PROD_DONE) then
+            completed_prods = completed_prods + 1
+            worker_state(worker) = 0
+            num_idle = num_idle + 1
+            idle_workers(num_idle) = worker
+            write(*,'(A,I3,A,I2,A)') &
+              " [Master] Worker ", worker, &
+              " finished production. Total: ", completed_prods, "/30"
+          end if
+
+        else
+          ! If the TAG is TAG_SYNC_OBS or TAG_EQUIL_COORDS, it is physics data.
+          ! Exit this "drain" loop so Block (c) can process it with the correct buffer size.
+          exit
         end if
       end do
 
