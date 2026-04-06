@@ -52,75 +52,117 @@ endif
 
 OBJ_DIR = ../bin
 EXE          = $(OBJ_DIR)/main_serial.x
-EXE_PARALLEL = $(OBJ_DIR)/main_parallel_replicas.x
+EXE_PARALLEL_STAR = $(OBJ_DIR)/main_parallel_star.x
+EXE_PARALLEL_RPLC = $(OBJ_DIR)/main_parallel_replicas.x
 
 LIB_OBJ = $(OBJ_DIR)/parameters.o \
-           $(OBJ_DIR)/io.o \
-           $(OBJ_DIR)/initial-conf.o \
-           $(OBJ_DIR)/energy.o \
-           $(OBJ_DIR)/energy_all_atoms.o \
-           $(OBJ_DIR)/monte_carlo.o \
-           $(OBJ_DIR)/observables.o
+          $(OBJ_DIR)/io.o \
+          $(OBJ_DIR)/initial-conf.o \
+          $(OBJ_DIR)/energy.o \
+          $(OBJ_DIR)/energy_all_atoms.o \
+          $(OBJ_DIR)/monte_carlo.o \
+          $(OBJ_DIR)/observables.o
 
-MAIN_OBJ          = $(OBJ_DIR)/main_serial.o
-MAIN_PARALLEL_OBJ = $(OBJ_DIR)/main_parallel_replicas.o
+MAIN_OBJ = $(OBJ_DIR)/main_serial.o
+MAIN_PARALLEL_STAR_OBJ = $(OBJ_DIR)/main_parallel_star.o
+MAIN_PARALLEL_RPLC_OBJ = $(OBJ_DIR)/main_parallel_replicas.o
 
+# Executables for serial and parallel versions
 $(EXE): $(LIB_OBJ) $(MAIN_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_OBJ)
 
-$(EXE_PARALLEL): $(LIB_OBJ) $(MAIN_PARALLEL_OBJ)
+$(EXE_PARALLEL_STAR): $(LIB_OBJ) $(MAIN_PARALLEL_STAR_OBJ)
 	@mkdir -p $(OBJ_DIR)
-	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_OBJ)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_STAR_OBJ)
 
+$(EXE_PARALLEL_RPLC): $(LIB_OBJ) $(MAIN_PARALLEL_RPLC_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_RPLC_OBJ)
+
+# Pattern rule for modules inside lib/
 $(OBJ_DIR)/%.o: lib/%.f90
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
 
-$(OBJ_DIR)/energy.o:           lib/energy.f90           $(OBJ_DIR)/parameters.o
-$(OBJ_DIR)/energy_all_atoms.o: lib/energy_all_atoms.f90 $(OBJ_DIR)/parameters.o
-$(OBJ_DIR)/io.o:               lib/io.f90               $(OBJ_DIR)/parameters.o
-$(OBJ_DIR)/initial-conf.o:     lib/initial-conf.f90     $(OBJ_DIR)/parameters.o
-$(OBJ_DIR)/monte_carlo.o:      lib/monte_carlo.f90      $(OBJ_DIR)/parameters.o \
-                                                         $(OBJ_DIR)/initial-conf.o \
-                                                         $(OBJ_DIR)/energy.o \
-                                                         $(OBJ_DIR)/energy_all_atoms.o
-$(OBJ_DIR)/observables.o:      lib/observables.f90      $(OBJ_DIR)/energy.o \
-                                                         $(OBJ_DIR)/energy_all_atoms.o
+# Explicit dependencies
+$(OBJ_DIR)/energy.o: lib/energy.f90 \
+                     $(OBJ_DIR)/parameters.o
 
+$(OBJ_DIR)/energy_all_atoms.o: lib/energy_all_atoms.f90 \
+                               $(OBJ_DIR)/parameters.o
+
+$(OBJ_DIR)/io.o: lib/io.f90 \
+                 $(OBJ_DIR)/parameters.o
+
+$(OBJ_DIR)/initial-conf.o: lib/initial-conf.f90 \
+                           $(OBJ_DIR)/parameters.o
+
+$(OBJ_DIR)/monte_carlo.o: lib/monte_carlo.f90 \
+                          $(OBJ_DIR)/parameters.o \
+                          $(OBJ_DIR)/initial-conf.o \
+                          $(OBJ_DIR)/energy.o \
+                          $(OBJ_DIR)/energy_all_atoms.o
+
+$(OBJ_DIR)/observables.o: lib/observables.f90 \
+                          $(OBJ_DIR)/energy.o \
+                          $(OBJ_DIR)/energy_all_atoms.o
+
+# Main program depends on everything
 $(OBJ_DIR)/main_serial.o: main_serial.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
 
+# Parallel main object dependency (star version)
+$(OBJ_DIR)/main_parallel_star.o: main_parallel_star.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+
+# Parallel main object dependency (replicas version)
 $(OBJ_DIR)/main_parallel_replicas.o: main_parallel_replicas.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
 
-.PHONY: all parallel clean run run_parallel figures pipeline pipeline_parallel
+.PHONY: all parallel_star parallel_replicas clean run run_parallel_star run_parallel_replicas \
+        figures pipeline pipeline_parallel_star pipeline_parallel_replicas
 
-all:      $(EXE)
-parallel: $(EXE_PARALLEL)
+# Compilation targets
+all: $(EXE)
+parallel_star: $(EXE_PARALLEL_STAR)
+parallel_replicas: $(EXE_PARALLEL_RPLC)
 
+# Run targets
 run: all
 	@mkdir -p ../results
 	$(EXE)
 
-run_parallel: parallel
+run_parallel_star: parallel_star
 	@mkdir -p ../results
 	@echo "Starting MPI simulation with $(NP) processes and $(OMP_THREADS) OpenMP threads each..."
-	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL)
+	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL_STAR)
 
-figures:
-	python lib/plot_results.py
+run_parallel_replicas: parallel_replicas
+	@mkdir -p ../results
+	@echo "Starting MPI simulation with $(NP) processes..."
+	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL_RPLC)
 
-clean:
-	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL)
-	rm -f *.mod *.o
-
+# Pipeline targets
 pipeline:
 	$(MAKE) run
 	$(MAKE) figures
 
-pipeline_parallel:
-	$(MAKE) run_parallel
+pipeline_parallel_star:
+	$(MAKE) run_parallel_star
 	$(MAKE) figures
+
+pipeline_parallel_replicas:
+	$(MAKE) run_parallel_replicas
+	$(MAKE) figures
+
+# Utility targets
+figures:
+	python lib/plot_results.py
+
+clean:
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC)
+	rm -f *.mod *.o
