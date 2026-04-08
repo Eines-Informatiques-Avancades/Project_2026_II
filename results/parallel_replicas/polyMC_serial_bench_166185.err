@@ -1,0 +1,8 @@
+Loading openmpi/3.1.3_ics-2015.0
+  Loading requirement: intel_compiler_suite/2015.0 ofed/1.5.1
+lib/energy_all_atoms.f90(161): remark #7712: This variable has not been used.   [N_CARBONS]
+  subroutine delta_energy(coords_old, coords_new, n_atoms, n_carbons, k, de_total, de_lj, de_tors)
+-----------------------------------------------------------^
+lib/monte_carlo.f90(94): remark #7712: This variable has not been used.   [SYMBOLS]
+  subroutine mc_step(n_carbons, n_atoms, coords, symbols, explicit_h, beta, max_delta, &
+-------------------------------------------------^

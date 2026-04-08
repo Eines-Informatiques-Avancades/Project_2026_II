@@ -1,6 +1,6 @@
 #!/bin/bash
 #$ -N polyMC_parallel_bench
-#$ -pe smp 4
+#$ -pe smp 3
 #$ -q cerqt01.q
 #$ -S /bin/bash
 #$ -cwd
@@ -8,16 +8,13 @@
 #$ -e polyMC_parallel_bench_$JOB_ID.err
 
 . /etc/profile
-module load gcc
 module load openmpi
 export OMP_NUM_THREADS=1
 export MPLBACKEND=Agg
 
-# Clean
-rm -f *.mod *.o *.x
-rm -f ../bin/*.o ../bin/*.mod ../bin/*.x
+make clean
+make parallel
 
-make -j1 parallel
 mkdir -p ../results
 
 # N sweep: fixed n_steps = 1000000
@@ -46,4 +43,5 @@ EOF
   mpirun -np 3 ../bin/main_parallel_replicas.x
 done
 
+make clean
 echo "All parallel benchmark runs complete."

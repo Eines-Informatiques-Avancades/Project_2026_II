@@ -54,7 +54,7 @@ program main_serial
   T = T_ini 
   dT = (T_ini - T_fin) / dble(n_steps)
   beta = 1.0d0 / (kb * T)
-  max_delta = 0.2d0 ! radians (approx 11 degrees)
+  max_delta = 1.1d0 ! radians (approx 11 degrees)
   total_accepted = 0
   n_atoms = size(symbols) ! Number of atoms (including hydrogens)
 
@@ -78,7 +78,11 @@ program main_serial
   cpu_file    = '../results/cpu_'         // trim(run_tag) // '.dat'
   traj_file   = '../results/trajectory_'  // trim(run_tag) // '.xyz'
 
-
+  u_ener = 10
+  u_obs  = 11
+  u_tors = 12
+  u_cpu  = 13
+  u_traj = 14
 
   ! Torsion angles array
   allocate(phis(n_carbons - 3))
