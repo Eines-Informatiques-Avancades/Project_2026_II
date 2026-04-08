@@ -61,6 +61,8 @@ program main_serial
   double precision, parameter :: z_crit = 1.96d0
 
   double precision :: gbuf_E(n_geweke)
+  double precision :: gbuf_Rg(n_geweke)
+
   integer :: gbuf_count
   integer :: consec_passes
   logical :: equilibrated
@@ -68,6 +70,9 @@ program main_serial
   integer :: nA, nB, nBstart, bA, bB, bsA, bsB, ib
   double precision :: meanA_E, meanB_E, seA_E, seB_E, bm, z_E
   double precision :: tmp_E(n_geweke)
+  double precision :: meanA_Rg, meanB_Rg, seA_Rg, seB_Rg, z_Rg
+  double precision :: tmp_Rg(n_geweke)
+
   ! ─────────────────────────────────────────────────────────────────────────────
 
   ! 1. Initialize
@@ -81,7 +86,8 @@ program main_serial
   n_atoms = size(symbols)
 
   ! Initialise Geweke state
-  gbuf_E       = 0.0d0
+  gbuf_E  = 0.0d0
+  gbuf_Rg = 0.0d0
   gbuf_count   = 0
   consec_passes = 0
   equilibrated = .false.
@@ -140,21 +146,20 @@ program main_serial
 
   open(unit=u_tors, file=trim(tors_file_eq), status='replace')
   write(u_tors, '(A)') '# Step Torsion_Angles(rad)...'
-  print *, "DEBUG: Torsiones OK"
 
   open(unit=u_cpu, file=trim(cpu_file_eq), status='replace')
   write(u_cpu, '(A)') '# Step CPU_Time_s'
-  print *, "DEBUG: CPU OK"
 
   open(unit=u_traj, file=trim(traj_file_eq), status='replace')
-  print *, "DEBUG: Traj OK"
 
-  ! AQUÍ ES DONDE SUELE PASAR EL DESASTRE:
-  print *, "DEBUG: Intentando calcular energía inicial..."
+  open(unit=u_ener, file=trim(energy_file_eq), status='replace')
+  write(u_ener, '(A)') '# Step E_total E_lj E_tors'
+  open(unit=u_obs,  file=trim(obs_file_eq),    status='replace')
+  write(u_obs,  '(A)') '# Step Rg End_to_End'
+
   if (explicit_h) then
      call init_energy_topology(n_atoms, n_carbons, coords, symbols)
   end if
-  print *, "DEBUG: Energía inicial calculada con éxito"
 
   write(*,'(A)') " [MC Simulation] Initialization Complete"
   write(*,'(A)') " [MC Simulation] --- PHASE 1: EQUILIBRATION ---"
@@ -185,17 +190,17 @@ program main_serial
       write(u_ener, *) istep, E_total, E_lj, E_tors
       rg2  = compute_rg(n_carbons, coords)
       ree2 = compute_end_to_end(n_carbons, coords)
-      write(u_obs, *) istep, sqrt(rg2), sqrt(ree2)
+      write(u_obs, '(I10,2F15.4)') istep, sqrt(rg2), sqrt(ree2)
       call compute_torsion_angles(n_carbons, coords, phis)
-      write(u_tors, *) istep
-      write(u_tors, *) phis
-      write(comment, *) "Step ", istep, " E=", E_total
+      write(u_tors, '(I10)', advance='no') istep
+      write(u_tors, '(*(F10.4))') phis
+      write(comment,'(A,I0,A,F15.4)') "Step ",istep," E=",E_total
       call append_xyz(u_traj, comment, symbols, coords)
       call cpu_time(cpu_now)
       cpu_elapsed = cpu_now - cpu_start
-      write(u_cpu, *) istep, cpu_elapsed
+      write(u_cpu, '(I10,F15.6)') istep, cpu_elapsed
 
-      write(*,*) &
+      write(*,'(A,I10,A,F12.4,A,F5.1,A)') &
           " [EQUIL] Step:", istep, " | Energy:", E_total, &
           " | Acc:", (dble(total_accepted)/dble(istep))*100.0d0, "%"
     end if
@@ -208,6 +213,13 @@ program main_serial
       else
         gbuf_E(1:n_geweke-1) = gbuf_E(2:n_geweke)
         gbuf_E(n_geweke)     = E_total
+      end if
+
+      if (gbuf_count <= n_geweke) then
+        gbuf_Rg(gbuf_count) = rg2
+      else
+        gbuf_Rg(1:n_geweke-1) = gbuf_Rg(2:n_geweke)
+        gbuf_Rg(n_geweke)     = rg2
       end if
 
       if (gbuf_count >= n_geweke .and. mod(gbuf_count, eval_freq) == 0) then
@@ -250,6 +262,28 @@ program main_serial
         else
           consec_passes = 0
         end if
+        tmp_Rg   = gbuf_Rg
+        meanA_Rg = sum(tmp_Rg(1:nA)) / dble(nA)
+        seA_Rg   = 0.0d0
+        do ib = 1, bA
+          bm     = sum(tmp_Rg((ib-1)*bsA+1 : ib*bsA)) / dble(bsA)
+          seA_Rg = seA_Rg + (bm - meanA_Rg)**2
+        end do
+        seA_Rg   = seA_Rg / dble(bA * (bA - 1))
+        meanB_Rg = sum(tmp_Rg(nBstart:n_geweke)) / dble(nB)
+        seB_Rg   = 0.0d0
+        do ib = 1, bB
+          bm     = sum(tmp_Rg(nBstart+(ib-1)*bsB : nBstart+ib*bsB-1)) / dble(bsB)
+          seB_Rg = seB_Rg + (bm - meanB_Rg)**2
+        end do
+        seB_Rg = seB_Rg / dble(bB * (bB - 1))
+        z_Rg   = 0.0d0
+        if (seA_Rg + seB_Rg > 1.0d-12) &
+          z_Rg = abs(meanA_Rg - meanB_Rg) / sqrt(seA_Rg + seB_Rg)
+
+        write(*,'(A,F7.4,A,F10.4,A,F10.4,A,F7.4)') &
+          " [Geweke] z_E=", z_E, &
+          " muA_E=", meanA_E, " muB_E=", meanB_E, " z_Rg=", z_Rg
       end if
     end if
   end do
