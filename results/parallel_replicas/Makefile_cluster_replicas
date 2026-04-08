@@ -1,0 +1,116 @@
+# Author: Arthur Murphy
+# Contributors: Itxaso Muñoz-Aldalur, Oliwier Misztal
+# Corrected for:
+# - serial build also using MPI (MPI_Wtime)
+# - MPI wrapper compiler for both serial and parallel
+# - GNU / Intel-specific flags
+# - Intel module output flag (-module) instead of GNU-only -J
+
+MPIFC ?= mpif90
+NP ?= 3
+OMP_THREADS ?= 1
+
+OBJ_DIR = ../bin
+
+EXE          = $(OBJ_DIR)/main_serial.x
+EXE_PARALLEL = $(OBJ_DIR)/main_parallel_replicas.x
+
+LIB_OBJ = $(OBJ_DIR)/parameters.o \
+          $(OBJ_DIR)/io.o \
+          $(OBJ_DIR)/initial-conf.o \
+          $(OBJ_DIR)/energy.o \
+          $(OBJ_DIR)/energy_all_atoms.o \
+          $(OBJ_DIR)/monte_carlo.o \
+          $(OBJ_DIR)/observables.o
+
+MAIN_OBJ          = $(OBJ_DIR)/main_serial.o
+MAIN_PARALLEL_OBJ = $(OBJ_DIR)/main_parallel_replicas.o
+
+# Detect underlying compiler used by the MPI wrapper
+FC_SHOW := $(shell $(MPIFC) --showme:command 2>/dev/null || $(MPIFC) -show 2>/dev/null || echo $(MPIFC))
+
+# Compiler-family-specific flags
+ifeq ($(findstring ifort,$(FC_SHOW)),ifort)
+  COMPILER_FAMILY = intel
+  WARNFLAGS = -warn all
+  PPFLAGS   = -fpp
+  MODOUT    = -module $(OBJ_DIR)
+  OMPFLAG   = -qopenmp
+else ifeq ($(findstring ifx,$(FC_SHOW)),ifx)
+  COMPILER_FAMILY = intel
+  WARNFLAGS = -warn all
+  PPFLAGS   = -fpp
+  MODOUT    = -module $(OBJ_DIR)
+  OMPFLAG   = -qopenmp
+else
+  COMPILER_FAMILY = gnu
+  WARNFLAGS = -Wall -Wextra
+  PPFLAGS   = -cpp
+  MODOUT    = -J$(OBJ_DIR)
+  OMPFLAG   = -fopenmp
+endif
+
+FFLAGS = -O2 $(WARNFLAGS) $(PPFLAGS) -I$(OBJ_DIR)
+
+# Optional OpenMP support
+ifneq ($(OMP_THREADS),1)
+  FFLAGS += $(OMPFLAG) -D_USE_OPENMP
+endif
+
+.PHONY: all parallel clean run run_parallel info
+
+all: $(EXE)
+
+parallel: $(EXE_PARALLEL)
+
+info:
+	@echo "MPI wrapper       : $(MPIFC)"
+	@echo "Underlying FC     : $(FC_SHOW)"
+	@echo "Compiler family   : $(COMPILER_FAMILY)"
+	@echo "FFLAGS            : $(FFLAGS)"
+	@echo "NP                : $(NP)"
+	@echo "OMP_THREADS       : $(OMP_THREADS)"
+
+$(EXE): $(LIB_OBJ) $(MAIN_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(MPIFC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_OBJ)
+
+$(EXE_PARALLEL): $(LIB_OBJ) $(MAIN_PARALLEL_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(MPIFC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_OBJ)
+
+$(OBJ_DIR)/%.o: lib/%.f90
+	@mkdir -p $(OBJ_DIR)
+	$(MPIFC) $(FFLAGS) $(MODOUT) -c $< -o $@
+
+$(OBJ_DIR)/energy.o:           lib/energy.f90           $(OBJ_DIR)/parameters.o
+$(OBJ_DIR)/energy_all_atoms.o: lib/energy_all_atoms.f90 $(OBJ_DIR)/parameters.o
+$(OBJ_DIR)/io.o:               lib/io.f90               $(OBJ_DIR)/parameters.o
+$(OBJ_DIR)/initial-conf.o:     lib/initial-conf.f90     $(OBJ_DIR)/parameters.o
+$(OBJ_DIR)/monte_carlo.o:      lib/monte_carlo.f90      $(OBJ_DIR)/parameters.o \
+                                                       $(OBJ_DIR)/initial-conf.o \
+                                                       $(OBJ_DIR)/energy.o \
+                                                       $(OBJ_DIR)/energy_all_atoms.o
+$(OBJ_DIR)/observables.o:      lib/observables.f90      $(OBJ_DIR)/energy.o \
+                                                       $(OBJ_DIR)/energy_all_atoms.o
+
+$(OBJ_DIR)/main_serial.o: main_serial.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(MPIFC) $(FFLAGS) $(MODOUT) -c $< -o $@
+
+$(OBJ_DIR)/main_parallel_replicas.o: main_parallel_replicas.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(MPIFC) $(FFLAGS) $(MODOUT) -c $< -o $@
+
+run: all
+	@mkdir -p ../results
+	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np 1 $(EXE)
+
+run_parallel: parallel
+	@mkdir -p ../results
+	@echo "Starting MPI simulation with $(NP) processes and $(OMP_THREADS) OpenMP threads each..."
+	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL)
+
+clean:
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL)
+	rm -f *.mod *.o

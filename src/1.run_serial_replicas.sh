@@ -8,11 +8,13 @@
 #$ -e polyMC_serial_bench_$JOB_ID.err
 
 . /etc/profile
-module load gcc
+module load openmpi
+
 export OMP_NUM_THREADS=1
 export MPLBACKEND=Agg
 
 make clean
+make info
 make
 
 mkdir -p ../results
@@ -28,7 +30,7 @@ rng_seed   = 1234
 n_steps    = 1000000
 EOF
     echo "Running serial: nc=${nc}, conf=${conf}, steps=1000000"
-    ../bin/main_serial.x
+    mpirun -np 1 ../bin/main_serial.x
   done
 done
 
@@ -43,7 +45,7 @@ rng_seed   = 1234
 n_steps    = ${ns}
 EOF
     echo "Running serial: nc=100, conf=${conf}, steps=${ns}"
-    ../bin/main_serial.x
+    mpirun -np 1 ../bin/main_serial.x
   done
 done
 
