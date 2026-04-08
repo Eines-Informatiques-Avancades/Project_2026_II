@@ -14,7 +14,6 @@ export OMP_NUM_THREADS=1
 export MPLBACKEND=Agg
 
 make clean
-make info
 make
 
 mkdir -p ../results
