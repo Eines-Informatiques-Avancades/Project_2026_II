@@ -187,8 +187,7 @@ program main_serial
 
     ! Output periodically
     if (mod(istep, print_interval) == 0 .or. istep == 1) then
-      write(u_ener, *) istep, E_total, E_lj, E_tors
-      rg2  = compute_rg(n_carbons, coords)
+      write(u_ener, '(I10, 3F15.4)') istep, E_total, E_lj, E_tors      rg2  = compute_rg(n_carbons, coords)
       ree2 = compute_end_to_end(n_carbons, coords)
       write(u_obs, '(I10,2F15.4)') istep, sqrt(rg2), sqrt(ree2)
       call compute_torsion_angles(n_carbons, coords, phis)
@@ -209,10 +208,13 @@ program main_serial
     if (mod(istep, geweke_sample_interval) == 0) then
       gbuf_count = gbuf_count + 1
       if (gbuf_count <= n_geweke) then
-        gbuf_E(gbuf_count) = E_total
+        gbuf_E(gbuf_count)  = E_total
+       gbuf_Rg(gbuf_count) = rg2   << new
       else
-        gbuf_E(1:n_geweke-1) = gbuf_E(2:n_geweke)
-        gbuf_E(n_geweke)     = E_total
+        gbuf_E(1:n_geweke-1)  = gbuf_E(2:n_geweke)
+       gbuf_Rg(1:n_geweke-1) = gbuf_Rg(2:n_geweke)   << new
+        gbuf_E(n_geweke)      = E_total
+       gbuf_Rg(n_geweke)     = rg2   << new
       end if
 
       if (gbuf_count <= n_geweke) then
@@ -251,7 +253,32 @@ program main_serial
         z_E = 0.0d0
         if (seA_E + seB_E > 1.0d-12) &
           z_E = abs(meanA_E - meanB_E) / sqrt(seA_E + seB_E)
+        
+        tmp_Rg   = gbuf_Rg
+        meanA_Rg = sum(tmp_Rg(1:nA)) / dble(nA)
+        seA_Rg   = 0.0d0
+        do ib = 1, bA
+          bm     = sum(tmp_Rg((ib-1)*bsA+1 : ib*bsA)) / dble(bsA)
+          seA_Rg = seA_Rg + (bm - meanA_Rg)**2
+        end do
+        seA_Rg = seA_Rg / dble(bA * (bA - 1))
 
+        meanB_Rg = sum(tmp_Rg(nBstart:n_geweke)) / dble(nB)
+        seB_Rg   = 0.0d0
+        do ib = 1, bB
+          bm     = sum(tmp_Rg(nBstart+(ib-1)*bsB : nBstart+ib*bsB-1)) / dble(bsB)
+          seB_Rg = seB_Rg + (bm - meanB_Rg)**2
+        end do
+        seB_Rg = seB_Rg / dble(bB * (bB - 1))
+
+        z_Rg = 0.0d0
+        if (seA_Rg + seB_Rg > 1.0d-12) &
+          z_Rg = abs(meanA_Rg - meanB_Rg) / sqrt(seA_Rg + seB_Rg)
+
+        ! Restore the combined Terminal Output
+        write(*,'(A,F7.4,A,F10.4,A,F10.4,A,F7.4)') &
+          " [Geweke] z_E=", z_E, " muA=", meanA_E, " muB=", meanB_E, " z_Rg=", z_Rg
+        
         if (z_E < z_crit) then
           consec_passes = consec_passes + 1
           if (consec_passes >= n_consec) then
@@ -333,8 +360,7 @@ program main_serial
 
     ! Output periodically
     if (mod(istep, print_interval) == 0 .or. istep == 1) then
-      write(u_ener, '(I10, 3F15.4)') istep, E_total, E_lj, E_tors
-      rg2  = compute_rg(n_carbons, coords)
+      write(u_ener, '(I10, 3F15.4)') istep, E_total, E_lj, E_tors      rg2  = compute_rg(n_carbons, coords)
       ree2 = compute_end_to_end(n_carbons, coords)
       write(u_obs, '(I10, 2F15.4)') istep, sqrt(rg2), sqrt(ree2)
       call compute_torsion_angles(n_carbons, coords, phis)
