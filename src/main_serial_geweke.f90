@@ -209,12 +209,12 @@ program main_serial
       gbuf_count = gbuf_count + 1
       if (gbuf_count <= n_geweke) then
         gbuf_E(gbuf_count)  = E_total
-       gbuf_Rg(gbuf_count) = rg2   << new
+        gbuf_Rg(gbuf_count) = rg2  
       else
         gbuf_E(1:n_geweke-1)  = gbuf_E(2:n_geweke)
-       gbuf_Rg(1:n_geweke-1) = gbuf_Rg(2:n_geweke)   << new
+        gbuf_Rg(1:n_geweke-1) = gbuf_Rg(2:n_geweke)   
         gbuf_E(n_geweke)      = E_total
-       gbuf_Rg(n_geweke)     = rg2   << new
+        gbuf_Rg(n_geweke)     = rg2   
       end if
 
       if (gbuf_count <= n_geweke) then
