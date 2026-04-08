@@ -1,11 +1,10 @@
-! main_serial.f90
+! main_serial_replicas.f90
 ! Main (driver) program to run the Monte Carlo simulation
 ! Corrected to measure WALL TIME with MPI_Wtime(), for the replicas test
 !
-! Author: Arthur Murphy
-! Contributors: Itxaso Muñoz-Aldalur
+! Author: Itxaso Muñoz-Aldalur
 
-program main_serial
+program main_serial_replicas
   use mpi
   use parameters
   use io
@@ -81,6 +80,12 @@ program main_serial
   tors_file   = '../results/torsions_'    // trim(run_tag) // '.dat'
   cpu_file    = '../results/cpu_'         // trim(run_tag) // '.dat'
   traj_file   = '../results/trajectory_'  // trim(run_tag) // '.xyz'
+
+  u_ener = 10
+  u_obs  = 11
+  u_tors = 12
+  u_cpu  = 13
+  u_traj = 14
 
   allocate(phis(n_carbons - 3))
 
@@ -168,4 +173,4 @@ program main_serial
   deallocate(symbols, coords, phis)
   call MPI_Finalize(ierr)
 
-end program main_serial
+end program main_serial_replicas
