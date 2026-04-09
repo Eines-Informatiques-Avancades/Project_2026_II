@@ -11,7 +11,7 @@ import glob
 
 plt.style.use(os.path.join(os.path.dirname(__file__), 'science.mplstyle'))
 
-RESULTS_DIR = '../../results/parallel_replicas_good/'
+RESULTS_DIR = '../../results/parallel_replicas/'
 if not os.path.exists(RESULTS_DIR):
     print("Results directory not found.")
     exit(1)

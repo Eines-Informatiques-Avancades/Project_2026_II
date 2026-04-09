@@ -51,9 +51,10 @@ ifneq (,$(findstring parallel,$(MAKECMDGOALS)))
 endif
 
 OBJ_DIR = ../bin
-EXE          = $(OBJ_DIR)/main_serial.x
-EXE_PARALLEL_STAR = $(OBJ_DIR)/main_parallel_star.x
-EXE_PARALLEL_RPLC = $(OBJ_DIR)/main_parallel_replicas.x
+EXE                   = $(OBJ_DIR)/main_serial.x
+EXE_PARALLEL_STAR     = $(OBJ_DIR)/main_parallel_star.x
+EXE_PARALLEL_RPLC     = $(OBJ_DIR)/main_parallel_replicas.x
+EXE_PARALLEL_OBS      = $(OBJ_DIR)/main_parallel_observables.x
 
 LIB_OBJ = $(OBJ_DIR)/parameters.o \
           $(OBJ_DIR)/io.o \
@@ -63,9 +64,10 @@ LIB_OBJ = $(OBJ_DIR)/parameters.o \
           $(OBJ_DIR)/monte_carlo.o \
           $(OBJ_DIR)/observables.o
 
-MAIN_OBJ = $(OBJ_DIR)/main_serial.o
+MAIN_OBJ               = $(OBJ_DIR)/main_serial.o
 MAIN_PARALLEL_STAR_OBJ = $(OBJ_DIR)/main_parallel_star.o
 MAIN_PARALLEL_RPLC_OBJ = $(OBJ_DIR)/main_parallel_replicas.o
+MAIN_PARALLEL_OBS_OBJ  = $(OBJ_DIR)/main_parallel_observables.o
 
 # Executables for serial and parallel versions
 $(EXE): $(LIB_OBJ) $(MAIN_OBJ)
@@ -79,6 +81,10 @@ $(EXE_PARALLEL_STAR): $(LIB_OBJ) $(MAIN_PARALLEL_STAR_OBJ)
 $(EXE_PARALLEL_RPLC): $(LIB_OBJ) $(MAIN_PARALLEL_RPLC_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_RPLC_OBJ)
+
+$(EXE_PARALLEL_OBS): $(LIB_OBJ) $(MAIN_PARALLEL_OBS_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_OBS_OBJ)
 
 # Pattern rule for modules inside lib/
 $(OBJ_DIR)/%.o: lib/%.f90
@@ -123,13 +129,21 @@ $(OBJ_DIR)/main_parallel_replicas.o: main_parallel_replicas.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
 
-.PHONY: all parallel_star parallel_replicas clean run run_parallel_star run_parallel_replicas \
-        figures pipeline pipeline_parallel_star pipeline_parallel_replicas
+# Parallel observables post-processing
+$(OBJ_DIR)/main_parallel_observables.o: main_parallel_observables.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+
+.PHONY: all parallel_star parallel_replicas parallel_observables clean \
+        run run_parallel_star run_parallel_replicas run_parallel_observables \
+        figures pipeline pipeline_parallel_star pipeline_parallel_replicas \
+        pipeline_parallel_observables
 
 # Compilation targets
 all: $(EXE)
 parallel_star: $(EXE_PARALLEL_STAR)
 parallel_replicas: $(EXE_PARALLEL_RPLC)
+parallel_observables: $(EXE_PARALLEL_OBS)
 
 # Run targets
 run: all
@@ -146,6 +160,11 @@ run_parallel_replicas: parallel_replicas
 	@echo "Starting MPI simulation with $(NP) processes..."
 	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL_RPLC)
 
+run_parallel_observables: parallel_observables
+	@mkdir -p ../results/parallel_observables
+	@echo "Starting MPI observables post-processing with $(NP) processes..."
+	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL_OBS) ../results/results_main_star_equil_collab
+
 # Pipeline targets
 pipeline:
 	$(MAKE) run
@@ -159,10 +178,13 @@ pipeline_parallel_replicas:
 	$(MAKE) run_parallel_replicas
 	$(MAKE) figures
 
+pipeline_parallel_observables:
+	$(MAKE) run_parallel_observables
+
 # Utility targets
 figures:
 	python lib/plot_results.py
 
 clean:
-	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC)
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC) $(EXE_PARALLEL_OBS)
 	rm -f *.mod *.o
