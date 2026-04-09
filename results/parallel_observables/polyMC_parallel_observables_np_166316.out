@@ -1,0 +1,63 @@
+rm -f ../bin/*.o ../bin/*.mod ../bin/main_serial.x ../bin/main_parallel_star.x ../bin/main_parallel_replicas.x ../bin/main_parallel_observables.x
+rm -f *.mod *.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -J../bin -I../bin -c lib/parameters.f90 -o ../bin/parameters.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -J../bin -I../bin -c lib/io.f90 -o ../bin/io.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -J../bin -I../bin -c lib/initial-conf.f90 -o ../bin/initial-conf.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -J../bin -I../bin -c lib/energy.f90 -o ../bin/energy.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -J../bin -I../bin -c lib/energy_all_atoms.f90 -o ../bin/energy_all_atoms.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -J../bin -I../bin -c lib/monte_carlo.f90 -o ../bin/monte_carlo.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -J../bin -I../bin -c lib/observables.f90 -o ../bin/observables.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -J../bin -I../bin -c main_parallel_observables.f90 -o ../bin/main_parallel_observables.o
+mpif90 -O2 -Wall -Wextra -cpp -fopenmp -D_USE_OPENMP -o ../bin/main_parallel_observables.x ../bin/parameters.o ../bin/io.o ../bin/initial-conf.o ../bin/energy.o ../bin/energy_all_atoms.o ../bin/monte_carlo.o ../bin/observables.o ../bin/main_parallel_observables.o
+------------------------------------------------------------
+Input dir    : /home/cmm11/EIA/Copy/results/results_main_star_equil_collab
+Output dir   : /home/cmm11/EIA/Copy/results/parallel_observables
+Manifest file: /home/cmm11/EIA/Copy/results/parallel_observables/filelist_explicit.txt
+Building explicit manifest...
+  checking: /home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/equil
+  checking: /home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/prod
+  checking: /home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf4/equil
+  checking: /home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf4/prod
+  checking: /home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf5/equil
+  checking: /home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf5/prod
+Trajectory files found in explicit manifest: 42
+First lines of manifest:
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/equil/trajectory_equil_c1_w12.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/equil/trajectory_equil_c1_w13.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/equil/trajectory_equil_c1_w7.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/equil/trajectory_equil_c1_w8.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/prod/trajectory_prod_c1_sd6544_w8.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/prod/trajectory_prod_c1_sd6644_w12.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/prod/trajectory_prod_c1_sd6744_w4.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/prod/trajectory_prod_c1_sd6844_w2.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/prod/trajectory_prod_c1_sd6944_w1.xyz
+/home/cmm11/EIA/Copy/results/results_main_star_equil_collab/conf1/prod/trajectory_prod_c1_sd7044_w14.xyz
+------------------------------------------------------------
+Running MPI observables benchmark...
+Bench file: /home/cmm11/EIA/Copy/results/parallel_observables/benchmark_np.dat
+------------------------------------------------------------
+Running observables: np=1
+Log file    : /home/cmm11/EIA/Copy/results/parallel_observables/run_np1.log
+Metrics file: /home/cmm11/EIA/Copy/results/parallel_observables/metrics_np1.dat
+np=1  mpi_wall=15.467590  shell_wall=16.006976  exit_code=0
+------------------------------------------------------------
+Running observables: np=2
+Log file    : /home/cmm11/EIA/Copy/results/parallel_observables/run_np2.log
+Metrics file: /home/cmm11/EIA/Copy/results/parallel_observables/metrics_np2.dat
+np=2  mpi_wall=7.730765  shell_wall=8.286873  exit_code=0
+------------------------------------------------------------
+Running observables: np=4
+Log file    : /home/cmm11/EIA/Copy/results/parallel_observables/run_np4.log
+Metrics file: /home/cmm11/EIA/Copy/results/parallel_observables/metrics_np4.dat
+np=4  mpi_wall=3.861426  shell_wall=4.409644  exit_code=0
+------------------------------------------------------------
+Running observables: np=8
+Log file    : /home/cmm11/EIA/Copy/results/parallel_observables/run_np8.log
+Metrics file: /home/cmm11/EIA/Copy/results/parallel_observables/metrics_np8.dat
+np=8  mpi_wall=2.438024  shell_wall=3.117435  exit_code=0
+rm -f ../bin/*.o ../bin/*.mod ../bin/main_serial.x ../bin/main_parallel_star.x ../bin/main_parallel_replicas.x ../bin/main_parallel_observables.x
+rm -f *.mod *.o
+------------------------------------------------------------
+Benchmark complete.
+Results stored in: /home/cmm11/EIA/Copy/results/parallel_observables/benchmark_np.dat
+Manifest used     : /home/cmm11/EIA/Copy/results/parallel_observables/filelist_explicit.txt

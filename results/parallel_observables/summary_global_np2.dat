@@ -1,0 +1,12 @@
+# MPI post-processing of trajectory_*.xyz files
+# input_base_dir = /home/cmm11/EIA/Copy/results/results_main_star_equil_collab
+# total_trajectory_files = 42
+# mpi_ranks = 2
+# wall_time_s =        7.730765
+# conf phase n_traj n_frames mean_Rg_A std_Rg_A mean_Ree_A std_Ree_A
+   1 equil        4       1844      76.752468       5.835387      25.070051      35.405023
+   1  prod       10       1010      76.114671       0.609458      24.956652       1.475448
+   4 equil        4       1524      72.106503       7.379562      35.608062      40.536412
+   4  prod       10       1010      73.127267       1.013154      32.023231       2.311392
+   5 equil        4       1284      52.674102       7.830559      85.305795      32.266049
+   5  prod       10       1010      51.629846       0.365802      82.373082       4.707050
