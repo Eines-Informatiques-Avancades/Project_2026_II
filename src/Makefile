@@ -5,13 +5,17 @@ FC     = gfortran
 # -cpp in base FFLAGS so #ifdef in parameters.f90 works for serial AND parallel builds
 FFLAGS = -O2 -Wall -Wextra -cpp
 
+# Module output directory flag: gfortran uses -J, ifort uses -module
+# Default is gfortran; overridden below if ifort is detected via mpif90
+MODULE_DIR_FLAG = -J$(OBJ_DIR)
+
 NP ?= 4
 OMP_THREADS ?= 2
 
 # Make sure that MPI & OpenMP are installed for the parallel version and set appropriate FFLAGS
 # Also, turn on the C preprocessor to pass in _USE_OPENMP based on the number of OMP_THREADS
 # Any faults will exit make and provide error message
-ifneq (,$(findstring parallel,$(MAKECMDGOALS)))
+ifneq (,$(findstring parallel,$(MAKECMDGOALS))$(findstring bench_total,$(MAKECMDGOALS)))
   # MPI Compiler Wrapper Verification
   MPI_BIN := $(shell command -v mpif90 2>/dev/null)
   ifeq ($(strip $(MPI_BIN)),)
@@ -19,6 +23,16 @@ ifneq (,$(findstring parallel,$(MAKECMDGOALS)))
   endif
   # Overwrite Compiler for MPI parallelization flag linking
   FC = mpif90
+
+  # Detect if mpif90 wraps ifort (Intel) or gfortran (GNU) and adapt flags
+  MPIF90_VERSION := $(shell mpif90 --version 2>&1 | head -1)
+  ifeq (,$(findstring GNU,$(MPIF90_VERSION)))
+    # Intel Fortran (ifort): -module for module output, drop gfortran-only -Wall/-Wextra
+    FFLAGS := $(filter-out -Wall -Wextra,$(FFLAGS))
+    MODULE_DIR_FLAG = -module $(OBJ_DIR)
+  else
+    MODULE_DIR_FLAG = -J$(OBJ_DIR)
+  endif
 
   # MPI
   MPI_MOD_FILE := $(shell find /usr /opt -name mpi.mod -type f 2>/dev/null | head -n 1)
@@ -45,7 +59,12 @@ ifneq (,$(findstring parallel,$(MAKECMDGOALS)))
     $(error "C-Preprocessor is required but 'cpp' was not found! Please install it (e.g. 'sudo apt install cpp' or 'build-essential')")
   endif
   # -cpp already in base FFLAGS above, no need to add again here
+  # For bench_total: always define _USE_OPENMP so all OMP_THREADS counts (1,2,4,8)
+  # use the same OpenMP code path; actual thread count is controlled via OMP_NUM_THREADS.
+  # For parallel targets: only enable for OMP_THREADS > 1 (keeps a true-serial baseline).
   ifneq ($(OMP_THREADS),1)
+    FFLAGS += -D_USE_OPENMP
+  else ifneq (,$(findstring bench_total,$(MAKECMDGOALS)))
     FFLAGS += -D_USE_OPENMP
   endif
 endif
@@ -66,6 +85,7 @@ LIB_OBJ = $(OBJ_DIR)/parameters.o \
 MAIN_OBJ = $(OBJ_DIR)/main_serial.o
 MAIN_PARALLEL_STAR_OBJ = $(OBJ_DIR)/main_parallel_star.o
 MAIN_PARALLEL_RPLC_OBJ = $(OBJ_DIR)/main_parallel_replicas.o
+MAIN_BENCH_TOTAL_OBJ = $(OBJ_DIR)/main_bench_total.o
 
 # Executables for serial and parallel versions
 $(EXE): $(LIB_OBJ) $(MAIN_OBJ)
@@ -80,10 +100,14 @@ $(EXE_PARALLEL_RPLC): $(LIB_OBJ) $(MAIN_PARALLEL_RPLC_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_RPLC_OBJ)
 
+$(OBJ_DIR)/main_bench_total.x: $(LIB_OBJ) $(MAIN_BENCH_TOTAL_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_BENCH_TOTAL_OBJ)
+
 # Pattern rule for modules inside lib/
 $(OBJ_DIR)/%.o: lib/%.f90
 	@mkdir -p $(OBJ_DIR)
-	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+	$(FC) $(FFLAGS) $(MODULE_DIR_FLAG) -I$(OBJ_DIR) -c $< -o $@
 
 # Explicit dependencies
 $(OBJ_DIR)/energy.o: lib/energy.f90 \
@@ -111,25 +135,31 @@ $(OBJ_DIR)/observables.o: lib/observables.f90 \
 # Main program depends on everything
 $(OBJ_DIR)/main_serial.o: main_serial.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
-	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+	$(FC) $(FFLAGS) $(MODULE_DIR_FLAG) -I$(OBJ_DIR) -c $< -o $@
 
 # Parallel main object dependency (star version)
 $(OBJ_DIR)/main_parallel_star.o: main_parallel_star.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
-	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+	$(FC) $(FFLAGS) $(MODULE_DIR_FLAG) -I$(OBJ_DIR) -c $< -o $@
 
 # Parallel main object dependency (replicas version)
 $(OBJ_DIR)/main_parallel_replicas.o: main_parallel_replicas.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
-	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+	$(FC) $(FFLAGS) $(MODULE_DIR_FLAG) -I$(OBJ_DIR) -c $< -o $@
 
-.PHONY: all parallel_star parallel_replicas clean run run_parallel_star run_parallel_replicas \
+# Bench total dependency
+$(OBJ_DIR)/main_bench_total.o: main_bench_total.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) $(MODULE_DIR_FLAG) -I$(OBJ_DIR) -c $< -o $@
+
+.PHONY: all parallel_star parallel_replicas bench_total clean run run_parallel_star run_parallel_replicas \
         figures pipeline pipeline_parallel_star pipeline_parallel_replicas
 
 # Compilation targets
 all: $(EXE)
 parallel_star: $(EXE_PARALLEL_STAR)
 parallel_replicas: $(EXE_PARALLEL_RPLC)
+bench_total: $(OBJ_DIR)/main_bench_total.x
 
 # Run targets
 run: all
@@ -164,5 +194,5 @@ figures:
 	python lib/plot_results.py
 
 clean:
-	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC)
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC) $(OBJ_DIR)/main_bench_total.x
 	rm -f *.mod *.o
