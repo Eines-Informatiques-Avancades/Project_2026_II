@@ -12,7 +12,7 @@ module parameters
   ! Set to .true. to enable parallelization of the energy calculations
   ! (Note: Indentation not allowed here)
 #ifdef _USE_OPENMP
-  logical :: omp_total_energy = .true.
+  logical :: omp_total_energy = .false.
   logical :: omp_delta_energy = .true.
 #else
   logical :: omp_total_energy = .false.
