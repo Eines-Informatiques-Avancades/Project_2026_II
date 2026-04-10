@@ -10,6 +10,8 @@
 !    conf5/equil, conf5/prod
 !  - Rank 0 reads the manifest and broadcasts it to all ranks.
 !  - Each rank processes a round-robin subset of the files, accumulating sums for observables.
+!  - Mid-run checkpoint: MPI_Allreduce synchronises partial sums across all ranks so every
+!    rank can compute and print the global partial mean as a convergence diagnostic.
 !  - After processing, MPI_Reduce to get global sums and counts.
 
 program main_parallel_observables
@@ -46,6 +48,11 @@ program main_parallel_observables
 
   double precision, allocatable:: local_sum_phi(:,:,:),  global_sum_phi(:,:,:)
   double precision, allocatable:: local_sum_phi2(:,:,:), global_sum_phi2(:,:,:)
+
+  ! Checkpoint arrays (MPI_Allreduce mid-run) 
+  integer:: ckpt_frame_count(n_conf, n_phase), ic_ckpt, ip_ckpt
+  double precision:: ckpt_sum_rg(n_conf, n_phase)
+  double precision:: partial_mean_rg
 
   integer:: max_phi
   double precision:: t0, t1, wall_time
@@ -98,6 +105,7 @@ program main_parallel_observables
 
   t0 = MPI_Wtime()
 
+  ! File distribution: each rank processes its subset
   do ifile = rank + 1, nfiles, num_procs
     call process_trajectory(trim(files(ifile)), max_phi, &
          local_file_count, local_frame_count, &
@@ -105,6 +113,43 @@ program main_parallel_observables
          local_nphi, local_sum_phi, local_sum_phi2)
   enddo
 
+  ! Mid-run checkpoint: MPI_Allreduce so every rank sees the global partial mean
+  ! Each rank has finished its local file set. Before the final MPI_Reduce (which
+  ! only rank 0 sees), we perform an MPI_Allreduce on frame counts and Rg sums so
+  ! that ALL ranks can compute and report the global partial mean as a convergence
+  ! diagnostic. 
+  call MPI_Allreduce(local_frame_count, ckpt_frame_count, n_conf*n_phase, &
+                     MPI_INTEGER, MPI_SUM, MPI_COMM_WORLD, ierr)
+  call MPI_Allreduce(local_sum_rg, ckpt_sum_rg, n_conf*n_phase, &
+                     MPI_DOUBLE_PRECISION, MPI_SUM, MPI_COMM_WORLD, ierr)
+
+  ! Every rank prints its view of the global partial mean (convergence diagnostic)
+  if (rank == 0) then
+    write(*,'(A)') '------------------------------------------------------------'
+    write(*,'(A,I0,A)') '[checkpoint] Global partial Rg means after all ', &
+                         num_procs, ' ranks finished local processing:'
+    do ic_ckpt = 1, n_conf
+      do ip_ckpt = 1, n_phase
+        if (ckpt_frame_count(ic_ckpt, ip_ckpt) > 0) then
+          partial_mean_rg = ckpt_sum_rg(ic_ckpt, ip_ckpt) / &
+                            dble(ckpt_frame_count(ic_ckpt, ip_ckpt))
+          write(*,'(A,I0,A,A,A,F10.4,A,I0,A)') &
+               '  conf', conf_values(ic_ckpt), ' / ', &
+               trim(phase_names(ip_ckpt)), ': mean Rg = ', &
+               partial_mean_rg, ' Ang  (', &
+               ckpt_frame_count(ic_ckpt, ip_ckpt), ' frames)'
+        end if
+      end do
+    end do
+    write(*,'(A)') '[checkpoint] Proceeding to final MPI_Reduce and write step.'
+    write(*,'(A)') '------------------------------------------------------------'
+    call flush(6)
+  end if
+
+  ! Barrier: all ranks synchronise before the final Reduce + write
+  call MPI_Barrier(MPI_COMM_WORLD, ierr)
+
+  ! Final MPI_Reduce: collect all partial sums on rank 0 
   call MPI_Reduce(local_file_count, global_file_count, n_conf*n_phase, MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
   call MPI_Reduce(local_frame_count, global_frame_count, n_conf*n_phase, MPI_INTEGER, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
   call MPI_Reduce(local_nphi, global_nphi, n_conf*n_phase, MPI_INTEGER, MPI_MAX, 0, MPI_COMM_WORLD, ierr)

@@ -1,0 +1,22 @@
+Loading openmpi/4.1.6_gcc-13.3.0
+  Loading requirement: gcc/13.3.0
+lib/energy_all_atoms.f90:161:68:
+
+  161 |   subroutine delta_energy(coords_old, coords_new, n_atoms, n_carbons, k, de_total, de_lj, de_tors)
+      |                                                                    1
+Warning: Unused dummy argument ‘n_carbons’ at (1) [-Wunused-dummy-argument]
+lib/monte_carlo.f90:94:56:
+
+   94 |   subroutine mc_step(n_carbons, n_atoms, coords, symbols, explicit_h, beta, max_delta, &
+      |                                                        1
+Warning: Unused dummy argument ‘symbols’ at (1) [-Wunused-dummy-argument]
+main_parallel_observables.f90:308:34:
+
+  308 |     if (rank == 0) list = tmp_list
+      |                                  ^
+Warning: ‘tmp_list.dim[0].ubound’ may be used uninitialized [-Wmaybe-uninitialized]
+main_parallel_observables.f90:253:54:
+
+  253 |     character(len=max_path), allocatable:: tmp_list(:)
+      |                                                      ^
+note: ‘tmp_list.dim[0].ubound’ was declared here

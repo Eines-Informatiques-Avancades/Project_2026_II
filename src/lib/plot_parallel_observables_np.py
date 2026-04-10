@@ -1,5 +1,6 @@
 # plot_parallel_observables.py
 # Strong-scaling + observables comparison for main_parallel_observables.x
+# Author: Itxaso Muñoz-Aldalur
 #
 # What it does:
 #   1) Reads benchmark_np.dat with columns: np mpi_wall_time_s shell_wall_time_s exit_code

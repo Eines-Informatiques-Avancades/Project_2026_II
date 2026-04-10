@@ -1,0 +1,16 @@
+Generated speedup_vs_natoms.pdf
+
+   N_C  N_atoms   n_ranks  n_serial   t_serial(s)   t_parallel(s)   Speedup
+    20       42         3         3         42.71           15.22      2.81
+    50      102         3         3        239.32           88.33      2.71
+   100      202         3         3        790.35          276.21      2.86
+   200      402         3         3       3418.03          984.09      3.47
+   500     1002         3         3      17755.64         6113.38      2.90
+Generated speedup_vs_nsteps.pdf
+
+     n_steps   n_ranks  n_serial   t_serial(s)   t_parallel(s)   Speedup
+     100,000         3         3         76.29           26.11      2.92
+   1,000,000         3         3        790.35          276.21      2.86
+  10,000,000         3         3       8112.94         2883.55      2.81
+
+Done!

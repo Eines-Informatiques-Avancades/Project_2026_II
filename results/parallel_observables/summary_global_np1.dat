@@ -2,7 +2,7 @@
 # input_base_dir = /home/cmm11/EIA/Copy/results/results_main_star_equil_collab
 # total_trajectory_files = 42
 # mpi_ranks = 1
-# wall_time_s =       15.467590
+# wall_time_s =       19.352387
 # conf phase n_traj n_frames mean_Rg_A std_Rg_A mean_Ree_A std_Ree_A
    1 equil        4       1844      76.752468       5.835387      25.070051      35.405023
    1  prod       10       1010      76.114671       0.609458      24.956652       1.475448
