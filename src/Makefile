@@ -51,10 +51,12 @@ ifneq (,$(findstring parallel,$(MAKECMDGOALS)))
 endif
 
 OBJ_DIR = ../bin
-EXE                   = $(OBJ_DIR)/main_serial.x
-EXE_PARALLEL_STAR     = $(OBJ_DIR)/main_parallel_star.x
-EXE_PARALLEL_RPLC     = $(OBJ_DIR)/main_parallel_replicas.x
-EXE_PARALLEL_OBS      = $(OBJ_DIR)/main_parallel_observables.x
+EXE               = $(OBJ_DIR)/main_serial.x
+EXE_SERIAL_EQUIL  = $(OBJ_DIR)/main_serial_equil.x
+EXE_PARALLEL_STAR = $(OBJ_DIR)/main_parallel_star.x
+EXE_PARALLEL_RPLC = $(OBJ_DIR)/main_parallel_replicas.x
+EXE_PARALLEL_OBS  = $(OBJ_DIR)/main_parallel_observables.x
+
 
 LIB_OBJ = $(OBJ_DIR)/parameters.o \
           $(OBJ_DIR)/io.o \
@@ -64,7 +66,8 @@ LIB_OBJ = $(OBJ_DIR)/parameters.o \
           $(OBJ_DIR)/monte_carlo.o \
           $(OBJ_DIR)/observables.o
 
-MAIN_OBJ               = $(OBJ_DIR)/main_serial.o
+MAIN_OBJ = $(OBJ_DIR)/main_serial.o
+MAIN_SERIAL_EQUIL_OBJ  = $(OBJ_DIR)/main_serial_equil.o
 MAIN_PARALLEL_STAR_OBJ = $(OBJ_DIR)/main_parallel_star.o
 MAIN_PARALLEL_RPLC_OBJ = $(OBJ_DIR)/main_parallel_replicas.o
 MAIN_PARALLEL_OBS_OBJ  = $(OBJ_DIR)/main_parallel_observables.o
@@ -73,6 +76,10 @@ MAIN_PARALLEL_OBS_OBJ  = $(OBJ_DIR)/main_parallel_observables.o
 $(EXE): $(LIB_OBJ) $(MAIN_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_OBJ)
+
+$(EXE_SERIAL_EQUIL): $(LIB_OBJ) $(MAIN_SERIAL_EQUIL_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_SERIAL_EQUIL_OBJ)
 
 $(EXE_PARALLEL_STAR): $(LIB_OBJ) $(MAIN_PARALLEL_STAR_OBJ)
 	@mkdir -p $(OBJ_DIR)
@@ -119,6 +126,11 @@ $(OBJ_DIR)/main_serial.o: main_serial.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
 
+# Serial with Geweke equilibration
+$(OBJ_DIR)/main_serial_equil.o: main_serial_equil.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+
 # Parallel main object dependency (star version)
 $(OBJ_DIR)/main_parallel_star.o: main_parallel_star.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
@@ -134,13 +146,15 @@ $(OBJ_DIR)/main_parallel_observables.o: main_parallel_observables.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
 
-.PHONY: all parallel_star parallel_replicas parallel_observables clean \
-        run run_parallel_star run_parallel_replicas run_parallel_observables \
-        figures pipeline pipeline_parallel_star pipeline_parallel_replicas \
-        pipeline_parallel_observables
+.PHONY: all clean run figures pipeline \
+        serial_equil run_serial_equil \
+        parallel_star run_parallel_star pipeline_parallel_star \
+        parallel_replicas run_parallel_replicas pipeline_parallel_replicas \
+        parallel_observables run_parallel_observables
 
 # Compilation targets
 all: $(EXE)
+serial_equil: $(EXE_SERIAL_EQUIL)
 parallel_star: $(EXE_PARALLEL_STAR)
 parallel_replicas: $(EXE_PARALLEL_RPLC)
 parallel_observables: $(EXE_PARALLEL_OBS)
@@ -149,6 +163,10 @@ parallel_observables: $(EXE_PARALLEL_OBS)
 run: all
 	@mkdir -p ../results
 	$(EXE)
+
+run_serial_equil: serial_equil
+	@mkdir -p ../results
+	$(EXE_SERIAL_EQUIL)
 
 run_parallel_star: parallel_star
 	@mkdir -p ../results
@@ -178,13 +196,11 @@ pipeline_parallel_replicas:
 	$(MAKE) run_parallel_replicas
 	$(MAKE) figures
 
-pipeline_parallel_observables:
-	$(MAKE) run_parallel_observables
-
 # Utility targets
 figures:
 	python lib/plot_results.py
 
 clean:
-	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC) $(EXE_PARALLEL_OBS)
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod
+	rm -f $(EXE) $(EXE_SERIAL_EQUIL) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC) $(EXE_PARALLEL_OBS)
 	rm -f *.mod *.o

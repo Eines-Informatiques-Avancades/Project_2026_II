@@ -69,17 +69,25 @@ program main_parallel_star
   integer :: ierr, rank, num_procs
   integer :: status(MPI_STATUS_SIZE)
   integer :: msg, worker, tag, c_type, seed_to_use, idx, p
-  integer :: equil_confs(3)
+  !integer :: equil_confs(3)
   
   ! Master specific variables
-  integer :: prod_queue(30)
+  !integer :: prod_queue(30)
   integer :: next_equil, next_prod, completed_prods, total_available_prods
   integer :: waiting_workers(1000)
   integer :: num_waiting
   double precision, allocatable :: master_coords(:,:,:)
+  !logical :: needs_equil(3)
+  character(len=256) :: check_file
 
   ! Setup configs
-  equil_confs = (/ 1, 4, 5 /)
+  !equil_confs = (/ 1, 4, 5 /)
+
+  ! TEMPORARY OVERWRITING TO GET JUST 1 CONF TYPE
+  integer :: equil_confs(1) = (/ 4 /)
+  integer :: prod_queue(10)
+  logical :: needs_equil(1)
+
 
   ! 1. MPI Initialize
   call MPI_Init(ierr)
@@ -117,15 +125,42 @@ program main_parallel_star
      ! MASTER NODE LOGIC
      ! ---------------------------------------------------------
      write(*,*) "[Rank 0] Master initialized. Managing Task Queue for ", num_procs - 1, " workers."
-     allocate(master_coords(3, size(coords, 1), size(coords, 2)))
+     allocate(master_coords(size(equil_confs), size(coords, 1), size(coords, 2)))
      
      next_equil = 1
      next_prod = 1
      completed_prods = 0
      total_available_prods = 0
      num_waiting = 0
-     
-     do while (completed_prods < 30)
+     needs_equil = .true. ! default, but dynamically overwritten based on confs/input.dat
+
+     ! ==== Equilibration Bypass Check ====
+     do idx = 1, size(equil_confs)
+        c_type = equil_confs(idx)
+        check_file = ""
+        if (c_type == 1) check_file = equil_conf1_xyz_file
+        if (c_type == 2) check_file = equil_conf2_xyz_file
+        if (c_type == 3) check_file = equil_conf3_xyz_file
+        if (c_type == 4) check_file = equil_conf4_xyz_file
+        if (c_type == 5) check_file = equil_conf5_xyz_file
+        
+        ! If a file is provided instead of .false.
+        if (len_trim(check_file) > 0) then
+           write(*,*) "[Master] Bypassing Equil for Conf ", c_type, " using file!"
+           call read_xyz(check_file, coords, symbols)
+           master_coords(idx,:,:) = coords(:,:)
+           needs_equil(idx) = .false.
+           
+           ! Instantly unlock 10 production jobs for this configuration
+           do p = 1, 10
+              total_available_prods = total_available_prods + 1
+              prod_queue(total_available_prods) = idx
+           end do
+        end if
+     end do
+     ! ================================
+
+     do while (completed_prods < size(prod_queue))
         ! Wait for message
         call MPI_Recv(msg, 1, MPI_INTEGER, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
         worker = status(MPI_SOURCE)
@@ -150,13 +185,19 @@ program main_parallel_star
         else if (tag == TAG_PROD_DONE) then
            completed_prods = completed_prods + 1
            write(*,*) "[Master] Worker ", worker, " FINISHED PRODUCTION. Total finished: ", & 
-                      completed_prods, "/30"
+                      completed_prods, "/", size(prod_queue)
         end if
         
         ! Try pushing work to currently waiting workers
         do while (num_waiting > 0)
            worker = waiting_workers(num_waiting)
-           if (next_equil <= 3) then
+
+           ! Skip over pre-loaded equilibration configs
+           do while (next_equil <= size(equil_confs) .and. .not. needs_equil(next_equil))
+              next_equil = next_equil + 1
+           end do
+
+           if (next_equil <= size(equil_confs)) then
               ! Assign Equilibration
               c_type = equil_confs(next_equil)
               call MPI_Send(c_type, 1, MPI_INTEGER, worker, TAG_DO_EQUIL, MPI_COMM_WORLD, ierr)
