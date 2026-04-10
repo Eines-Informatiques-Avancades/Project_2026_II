@@ -96,7 +96,7 @@ The dominant cost in `compute_total_energy` is the $\mathcal{O}(N^2)$ double loo
 
 The two loops inside the subroutine have different iteration structures and were scheduled accordingly. The LJ pair loop has a triangular iteration space (the inner bound depends on `i`), so `schedule(dynamic, 10)` is used to prevent faster threads from sitting idle while slower ones finish large inner loops. The torsional loop over the carbon backbone is uniform in length and uses the default static scheduling, which has lower overhead when the workload is balanced.
 
-Both parallel regions are wrapped in an `if(omp_total_energy)` runtime guard, which is set from the input file. This allows the same binary to run in purely serial mode during development or lightweight tests without any code changes.
+Both parallel regions are wrapped in an `if(omp_total_energy)` runtime guard. In the current implementation, `omp_total_energy` is not read from the input file; it is enabled or disabled by the build configuration via the OpenMP-related compile-time settings in `src/lib/parameters.f90`. This means serial and OpenMP-enabled behavior are selected at compile time rather than toggled from `confs/input.dat`.
 
 #### `delta_energy`
 
