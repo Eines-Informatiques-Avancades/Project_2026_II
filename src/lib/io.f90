@@ -1,5 +1,7 @@
 ! Module input/output for reading/writing files
 ! Author: Itxaso Muñoz-Aldalur
+! Contributors: Arthur Murphy
+
 module io
   use parameters
   implicit none
@@ -80,6 +82,23 @@ contains
       case("xyz_file")
         call parse_string(val, tmp)
         xyz_file = output_path
+      
+      ! Equilibrated configurations
+      case("equil_conf1_xyz")
+        call parse_string(val, tmp)
+        if (trim(tmp) /= ".false." .and. trim(tmp) /= "false" .and. trim(tmp)/="") equil_conf1_xyz_file = tmp
+      case("equil_conf2_xyz")
+        call parse_string(val, tmp)
+        if (trim(tmp) /= ".false." .and. trim(tmp) /= "false" .and. trim(tmp)/="") equil_conf2_xyz_file = tmp
+      case("equil_conf3_xyz")
+        call parse_string(val, tmp)
+        if (trim(tmp) /= ".false." .and. trim(tmp) /= "false" .and. trim(tmp)/="") equil_conf3_xyz_file = tmp
+      case("equil_conf4_xyz")
+        call parse_string(val, tmp)
+        if (trim(tmp) /= ".false." .and. trim(tmp) /= "false" .and. trim(tmp)/="") equil_conf4_xyz_file = tmp
+      case("equil_conf5_xyz")
+        call parse_string(val, tmp)
+        if (trim(tmp) /= ".false." .and. trim(tmp) /= "false" .and. trim(tmp)/="") equil_conf5_xyz_file = tmp
 
       case default
         ! write(*,*) "Warning: unknown key: ", trim(key)
@@ -184,6 +203,49 @@ contains
            coords(i,1), coords(i,2), coords(i,3)
     enddo
   end subroutine write_xyz_unit
+
+  subroutine read_xyz(filename, coords, symbols)
+    character(len=*), intent(in) :: filename
+    double precision, allocatable, intent(inout) :: coords(:, :)
+    character(len=2), allocatable, intent(inout) :: symbols(:)
+    integer :: u, ios, n_atoms, i
+    character(len=512) :: comment
+    
+    u = 88
+    open(unit=u, file=trim(filename), status="old", action="read", iostat=ios)
+    if (ios /= 0) then
+      write(*,*) "ERROR: cannot open XYZ file: ", trim(filename)
+      stop 1
+    endif
+    
+    ! Read number of atoms
+    read(u, *, iostat=ios) n_atoms
+    if (ios /= 0) then
+      write(*,*) "ERROR: failed reading atom count from ", trim(filename)
+      stop 1
+    endif
+    
+    ! Read the comment line
+    read(u, '(A)') comment
+    
+    ! Reallocate memory precisely to the file's atom count
+    if (allocated(coords)) deallocate(coords)
+    if (allocated(symbols)) deallocate(symbols)
+    allocate(coords(n_atoms, 3))
+    allocate(symbols(n_atoms))
+    
+    ! Parse coordinates
+    do i = 1, n_atoms
+      read(u, *, iostat=ios) symbols(i), coords(i, 1), coords(i, 2), coords(i, 3)
+      if (ios /= 0) then
+         write(*,*) "ERROR: failed reading atom ", i, " from ", trim(filename)
+         stop 1
+      endif
+    enddo
+    
+    close(u)
+    write(*,*) "Successfully loaded geometry from: ", trim(filename)
+  end subroutine read_xyz
 
 
 end module io

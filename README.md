@@ -18,6 +18,16 @@ List of participants:
 
 ---
 
+### Parallelization Efforts:
+
+- Multiple configurations simulataneously: Itxaso Muñoz Aldalur
+- Broadcasting input parameters to all workers: Itxaso Muñoz Aldalur
+- Equilibrium optimization: Manel Díaz Calvo
+- Energy calculations: Oliwier Misztal
+- Ensemble averaging after equilibrium: Arthur Ian Murphy
+
+---
+
 ### File Structure:
 
 ```Project_2026_II\```
