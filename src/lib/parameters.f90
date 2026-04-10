@@ -1,6 +1,6 @@
 ! Global module for the parameters
 ! Author: Itxaso Muñoz-Aldalur
-! Contributors: Oliwier Misztal
+! Contributors: Oliwier Misztal & Arthur Murphy
 
 module parameters
   implicit none
@@ -12,7 +12,7 @@ module parameters
   ! Set to .true. to enable parallelization of the energy calculations
   ! (Note: Indentation not allowed here)
 #ifdef _USE_OPENMP
-  logical :: omp_total_energy = .true.
+  logical :: omp_total_energy = .false.
   logical :: omp_delta_energy = .true.
 #else
   logical :: omp_total_energy = .false.
@@ -50,6 +50,13 @@ module parameters
   double precision, parameter :: opls_c1 =  0.8700d0   ! 1.74 / 2
   double precision, parameter :: opls_c2 = -0.0785d0   ! -0.157 / 2
   double precision, parameter :: opls_c3 =  1.5075d0   ! (0.279 + 4*0.366 + 4*0.318) / 2
+
+  ! --- Equilibration filenames (to skip Geweke test) ---
+  character(len=256) :: equil_conf1_xyz_file = ""
+  character(len=256) :: equil_conf2_xyz_file = ""
+  character(len=256) :: equil_conf3_xyz_file = ""
+  character(len=256) :: equil_conf4_xyz_file = ""
+  character(len=256) :: equil_conf5_xyz_file = ""
 
 end module parameters
 

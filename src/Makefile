@@ -70,9 +70,13 @@ ifneq (,$(findstring parallel,$(MAKECMDGOALS))$(findstring bench_total,$(MAKECMD
 endif
 
 OBJ_DIR = ../bin
-EXE          = $(OBJ_DIR)/main_serial.x
+EXE               = $(OBJ_DIR)/main_serial.x
+EXE_SERIAL_EQUIL  = $(OBJ_DIR)/main_serial_equil.x
+EXE_PARALLEL      = $(OBJ_DIR)/main_parallel.x
 EXE_PARALLEL_STAR = $(OBJ_DIR)/main_parallel_star.x
 EXE_PARALLEL_RPLC = $(OBJ_DIR)/main_parallel_replicas.x
+EXE_PARALLEL_OBS  = $(OBJ_DIR)/main_parallel_observables.x
+
 
 LIB_OBJ = $(OBJ_DIR)/parameters.o \
           $(OBJ_DIR)/io.o \
@@ -83,14 +87,25 @@ LIB_OBJ = $(OBJ_DIR)/parameters.o \
           $(OBJ_DIR)/observables.o
 
 MAIN_OBJ = $(OBJ_DIR)/main_serial.o
+MAIN_SERIAL_EQUIL_OBJ  = $(OBJ_DIR)/main_serial_equil.o
+MAIN_PARALLEL_OBJ      = $(OBJ_DIR)/main_parallel.o
 MAIN_PARALLEL_STAR_OBJ = $(OBJ_DIR)/main_parallel_star.o
 MAIN_PARALLEL_RPLC_OBJ = $(OBJ_DIR)/main_parallel_replicas.o
-MAIN_BENCH_TOTAL_OBJ = $(OBJ_DIR)/main_bench_total.o
+MAIN_BENCH_TOTAL_OBJ   = $(OBJ_DIR)/main_bench_total.o
+MAIN_PARALLEL_OBS_OBJ  = $(OBJ_DIR)/main_parallel_observables.o
 
 # Executables for serial and parallel versions
 $(EXE): $(LIB_OBJ) $(MAIN_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_OBJ)
+
+$(EXE_SERIAL_EQUIL): $(LIB_OBJ) $(MAIN_SERIAL_EQUIL_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_SERIAL_EQUIL_OBJ)
+
+$(EXE_PARALLEL): $(LIB_OBJ) $(MAIN_PARALLEL_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_OBJ)
 
 $(EXE_PARALLEL_STAR): $(LIB_OBJ) $(MAIN_PARALLEL_STAR_OBJ)
 	@mkdir -p $(OBJ_DIR)
@@ -103,6 +118,10 @@ $(EXE_PARALLEL_RPLC): $(LIB_OBJ) $(MAIN_PARALLEL_RPLC_OBJ)
 $(OBJ_DIR)/main_bench_total.x: $(LIB_OBJ) $(MAIN_BENCH_TOTAL_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_BENCH_TOTAL_OBJ)
+  
+$(EXE_PARALLEL_OBS): $(LIB_OBJ) $(MAIN_PARALLEL_OBS_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_PARALLEL_OBS_OBJ)
 
 # Pattern rule for modules inside lib/
 $(OBJ_DIR)/%.o: lib/%.f90
@@ -137,6 +156,16 @@ $(OBJ_DIR)/main_serial.o: main_serial.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) $(MODULE_DIR_FLAG) -I$(OBJ_DIR) -c $< -o $@
 
+# Serial with Geweke equilibration
+$(OBJ_DIR)/main_serial_equil.o: main_serial_equil.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+
+# Parallel main object dependency (combined version)
+$(OBJ_DIR)/main_parallel.o: main_parallel.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+
 # Parallel main object dependency (star version)
 $(OBJ_DIR)/main_parallel_star.o: main_parallel_star.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
@@ -152,29 +181,55 @@ $(OBJ_DIR)/main_bench_total.o: main_bench_total.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) $(MODULE_DIR_FLAG) -I$(OBJ_DIR) -c $< -o $@
 
-.PHONY: all parallel_star parallel_replicas bench_total clean run run_parallel_star run_parallel_replicas \
-        figures pipeline pipeline_parallel_star pipeline_parallel_replicas
+# Parallel observables post-processing
+$(OBJ_DIR)/main_parallel_observables.o: main_parallel_observables.f90 $(LIB_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+
+.PHONY: all clean run figures pipeline \
+        serial_equil run_serial_equil \
+        parallel_star run_parallel_star pipeline_parallel_star \
+        parallel_combined run_parallel_combined \
+        parallel_replicas bench_total run_parallel_replicas pipeline_parallel_replicas \
+        parallel_observables run_parallel_observables
 
 # Compilation targets
 all: $(EXE)
+serial_equil: $(EXE_SERIAL_EQUIL)
 parallel_star: $(EXE_PARALLEL_STAR)
+parallel_combined: $(EXE_PARALLEL)
 parallel_replicas: $(EXE_PARALLEL_RPLC)
 bench_total: $(OBJ_DIR)/main_bench_total.x
+parallel_observables: $(EXE_PARALLEL_OBS)
 
 # Run targets
 run: all
 	@mkdir -p ../results
 	$(EXE)
 
+run_serial_equil: serial_equil
+	@mkdir -p ../results
+	$(EXE_SERIAL_EQUIL)
+
 run_parallel_star: parallel_star
 	@mkdir -p ../results
 	@echo "Starting MPI simulation with $(NP) processes and $(OMP_THREADS) OpenMP threads each..."
 	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL_STAR)
 
+run_parallel_combined: parallel_combined
+	@mkdir -p ../results
+	@echo "Starting MPI simulation with $(NP) processes and $(OMP_THREADS) OpenMP threads each..."
+	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL)
+
 run_parallel_replicas: parallel_replicas
 	@mkdir -p ../results
 	@echo "Starting MPI simulation with $(NP) processes..."
 	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL_RPLC)
+
+run_parallel_observables: parallel_observables
+	@mkdir -p ../results/parallel_observables
+	@echo "Starting MPI observables post-processing with $(NP) processes..."
+	OMP_NUM_THREADS=$(OMP_THREADS) mpirun -np $(NP) $(EXE_PARALLEL_OBS) ../results/results_main_star_equil_collab
 
 # Pipeline targets
 pipeline:
@@ -195,4 +250,6 @@ figures:
 
 clean:
 	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC) $(OBJ_DIR)/main_bench_total.x
+	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod
+	rm -f $(EXE) $(EXE_PARALLEL) $(EXE_SERIAL_EQUIL) $(EXE_PARALLEL_STAR) $(EXE_PARALLEL_RPLC) $(EXE_PARALLEL_OBS)
 	rm -f *.mod *.o

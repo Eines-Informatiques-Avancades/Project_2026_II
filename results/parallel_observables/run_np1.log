@@ -1,0 +1,9 @@
+[read_file_list] manifest = /home/cmm11/EIA/Copy/results/parallel_observables/filelist_explicit.txt
+[read_file_list] nfiles   = 42
+------------------------------------------------------------
+ [parallel_observables] files processed: 42
+ [parallel_observables] MPI ranks:       1
+ [parallel_observables] wall time:         15.467590 s
+BENCHMARK_MPI_WALL    15.467590
+ [parallel_observables] manifest used: /home/cmm11/EIA/Copy/results/parallel_observables/filelist_explicit.txt
+ [parallel_observables] results written to: /home/cmm11/EIA/Copy/results/parallel_observables

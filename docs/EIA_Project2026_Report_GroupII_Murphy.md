@@ -33,9 +33,11 @@ Most times, approving and merging was straightforward with no issues, but there 
 
 ## Makefile
 
+As the project evolved, so did the Makefile. Here are some of the features we implemented:
 
+<br>
 
-Starting off with the Makefile, there are few main variables that control the compilation process. 
+Starting off, there are few main variables that control the compilation process. 
 
 ```makefile
 FC       = gfortran
@@ -46,32 +48,35 @@ LIB_OBJ  = $(OBJ_DIR)/parameters.o \
            $(OBJ_DIR)/io.o \
            ...
 MAIN_OBJ = $(OBJ_DIR)/main_serial.o
+
+NP          ?= 4
+OMP_THREADS ?= 2
 ```
 -  ```FC```: Stands for "Fortran Compiler". We tell it to use gfortran.
 -  ```FFLAGS```: These are the compiler flags. ```-O2``` is the optimization schema, and ```-Wall -Wextra``` enables warnings.
 -  ```OBJ_DIR``` & ```EXE```: Defines the compiled binaries directory and the name of the final executable.
 -  ```LIB_OBJ``` & ```MAIN_OBJ```: Defines the object files for the library and the main program.
+-  ```NP``` & ```OMP_THREADS```: Defines the number of processes (MPI) and threads (openMP) to use for the parallel version of the program. The default values are set to 4 and 2, respectively, but they can be overridden by setting them when compiling in the command line (e.g., ```make run_parallel NP=7 OMP_THREADS=3```).
 
 <br>
 
-Then we have the targets and dependencies.
+In order to encompass both the serial and parallel versions of the program, we perform a check on the make command for the word `parallel`. If found, we search the system to ensure the user enviroment has the necessary MPI and OpenMP libraries installed. If not, we print an error message and exit. If they are installed, we overwrite the compiler and add the MPI and OpenMP flags to the `FFLAGS` variable.
 
 ```makefile
-all: $(EXE)
-
-$(EXE): $(LIB_OBJ) $(MAIN_OBJ)
-	@mkdir -p $(OBJ_DIR)
-	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_OBJ)
+ifneq (,$(findstring parallel,$(MAKECMDGOALS)))
+  # MPI Compiler Wrapper Verification
+  MPI_BIN := $(shell command -v mpif90 2>/dev/null)
+  ifeq ($(strip $(MPI_BIN)),)
+    $(error "MPI Compiler is required but 'mpif90' was not found! Please install it (e.g. 'sudo apt install openmpi-bin')")
+  endif
+  # Overwrite Compiler for MPI parallelization flag linking
+  FC = mpif90
+  ...
 ```
--  ```all```: This is the default target that needs ```$(EXE)``` to exist.
--  ```$(EXE)```: To build the final executable, it needs all the .o files from the ```../bin``` folder, which it makes sure exists (```mkdir -p```), and then links them all together using ```gfortran``` to output (```-o $@```) the final program.
-   - Note: The ```@``` symbol is used 2 different ways here: 
-      1. Before the ```mkdir``` command to suppress being printed to the terminal.
-      2. As an automatic variable representing the target name (```$(EXE)``` in this case).
 
 <br>
 
-Next, instead of writing a rule for every single ```.f90``` file, we use a pattern rule (using ```%```).
+Instead of writing a rule for every single ```.f90``` file, we use a pattern rule (using ```%```).
 
 ```makefile
 $(OBJ_DIR)/%.o: lib/%.f90
@@ -84,9 +89,15 @@ $(OBJ_DIR)/%.o: lib/%.f90
 
 <br>
 
-We follow that up with the explicit dependencies to create the ```.o``` files for the library modules and the main program, the latter of which requires all the library object files.
+The following is an example of the `all` target (serial version of the program) with its executable structure, which we then follow up with the explicit dependencies to create the ```.o``` files for the library modules and the main program
 
 ```makefile
+all: $(EXE)
+
+$(EXE): $(LIB_OBJ) $(MAIN_OBJ)
+	@mkdir -p $(OBJ_DIR)
+	$(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_OBJ)
+
 $(OBJ_DIR)/energy.o: lib/energy.f90 \
                      $(OBJ_DIR)/parameters.o
 ...
@@ -94,7 +105,14 @@ $(OBJ_DIR)/energy.o: lib/energy.f90 \
 $(OBJ_DIR)/main_serial.o: main_serial.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+
 ```
+-  ```all```: This is the default target that needs ```$(EXE)``` to exist.
+-  ```$(EXE)```: To build the final executable, it needs all the .o files from the ```../bin``` folder, which it makes sure exists (```mkdir -p```), and then links them all together using ```gfortran``` or ```mpif90``` to output (```-o $@```) the final program.
+   - **Note**: The ```@``` symbol is used 2 different ways here: 
+      1. Before the ```mkdir``` command to suppress being printed to the terminal.
+      2. As an automatic variable representing the target name (```$(EXE)``` in this case).
+
 
 <br>
 
@@ -125,7 +143,96 @@ pipeline:
 
 <br>
 
-## Main
+## Main - Serial
+
+Since the initial code submission, we have updated the serial version of our file `main_serial_equil.f90` to incorporate an equilibration check based on the Geweke equilibration diagnostic (Geweke, J. 1992). Specifically designed for Markov Chain Monte Carlo simulations, this technique allows us to separate the simulation into equilibration and production phases during runtime as opposed to analyzing the results afterwards. It also allows us to identify and save an equilibrated geometry which can then be used to save time by bypassing the initial phase. 
+
+<br>
+
+The simulation begins by reading in the configurations from `input.dat` and building the starting coordinates. If these are not overwritten by a previously saved equilibration .xyz file, the program will initialized and enter **Phase 1: Equilibration**.
+
+```fortran
+  do while (.not. is_equilibrated)
+    istep = istep + 1
+
+    ! Annealing:
+    if (istep <= n_steps) then
+      T = T_ini - dT * dble(istep - 1)
+    else
+      T = T_fin
+    end if
+    
+    ! Monte Carlo Step
+    call mc_step(n_carbons, n_atoms, coords, symbols, explicit_h, &
+                 beta, max_delta, E_total, E_lj, E_tors, accepted_step)
+    
+    if (accepted_step) total_accepted = total_accepted + 1
+
+    ! Output periodically
+    if (mod(istep, print_interval) == 0 .or. istep == 1) then
+      ! Energies
+      write(u_ener, '(I10, 3F15.4)') istep, E_total, E_lj, E_tors
+
+      ! Observables
+      rg2 = compute_rg(n_carbons, coords)
+      ree2 = compute_end_to_end(n_carbons, coords)
+      write(u_obs, '(I10, 2F15.4)') istep, sqrt(rg2), sqrt(ree2)
+      ...
+```
+- `do while (.not. is_equilibrated)`: Replaces traditional hard-coded burn-in periods with a dynamic loop that stays alive until equilibration is met.
+- `T = T_ini - dT * dble(istep - 1)`: We had originally discussed introducing simulated annealing to help the simulation escape local minima, however the project instructions say to assume a fixed temperature. This portion of the code was left in case we wanted to set T_ini & T_fin to different values. 
+- `call mc_step(...)`: Subroutine to perform a single Monte Carlo step.
+- We control when to compute & store the observables (energy, torsion, trajectory, etc) based on the `print_interval` variable.
+
+<br>
+
+# --------- MANEL REVIEW NEEDED ---------
+
+As stated above we use the Geweke equilibration diagnostic for a dynamic determination of reaching equilibrium. To prevent false positives due to auto-correlation between adjacent MC steps, we evaluate the system periodically:
+
+```fortran
+    ! --- Geweke Check ---
+    if (mod(istep, geweke_sample_interval) == 0) then
+      
+      gbuf_count = gbuf_count + 1
+      if (gbuf_count <= n_geweke) then
+        gbuf_E(gbuf_count) = E_total
+        gbuf_Rg(gbuf_count) = rg2
+      else
+        ! ... (shift buffer and add new state) ...
+      end if
+      
+      if (gbuf_count >= n_geweke .and. mod(gbuf_count, eval_freq) == 0) then
+        ! ... (calculate standard errors and Z-scores) ...
+        if (z_E < z_crit) then
+            ! ... 
+            is_equilibrated = .true.
+      ...
+```
+- `mod(istep, geweke_sample_interval) == 0`: Enforces periodic sampling (e.g., every 10,000 steps) so the data points entering the convergence test are truly statistically independent.
+- `gbuf_E` & `gbuf_Rg`: Sliding window arrays of size `n_geweke` (300) that hold the recent energy and Radius of Gyration states respectively.
+- `z_E < z_crit`: Evaluates the $Z$-score comparing the means of the first 10% and last 50% of the buffer. If it falls below the critical threshold ($1.96$), the system is flagged as structurally stable (`is_equilibrated = .true.`).
+
+<br>
+
+Once equilibrium is reached, all Phase 1 files are closed and the program transitions seamlessly into **Phase 2: Production**, resetting the clock and creating new tracking files.
+
+```fortran
+  ! ======================================================
+  ! PHASE 2: PRODUCTION
+  ! ======================================================
+  
+  call cpu_time(cpu_start)
+  do istep = 1, n_steps
+
+    call mc_step(n_carbons, n_atoms, coords, symbols, explicit_h, &
+                 beta, max_delta, E_total, E_lj, E_tors, accepted_step)
+  ...
+```
+- `call cpu_time(cpu_start)`: We separate the 2 phases' timers to assist in benchmarking as there is the ability to preload an equilibrated geometry and go straight into production. 
+- `n_steps`: Benchmarking the benefits of parallelization is also helped by ensuring production runs have the same number of MCS performed. This can be controlled from the `input.dat` file settings. 
+
+<br>
 
 ## Visualization
 
@@ -184,4 +291,66 @@ def plot_torsions(tors_file, energy_file, explicit_h=True):
 - ```c1, c2, c3```: The TraPPE-UA United Atom coefficients, or the OPLS-AA Effective Backbone coefficients, loaded depending on the simulation type.
 - ```torsion_potential(phi)```: Returns the theoretical energy (in kcal/mol) for any given dihedral angle ($\phi$) using trigonometric identities, which is then overlaid on the secondary Y-axis spanning across the histograms.
 
-## Parallelization
+## Parallelization - Ensemble Averaging
+
+Moving to an Orchestrator-Worker (Star) topology helped with the transition of the serial environment to a dynamically balanced parallel framework with OpenMPI. It achieves maximum CPU utilization by ensuring free workers are constantly assigned tasks until the simulation is complete.
+
+<br>
+
+Although this architechure adds overhead by requiring a single core to abstain from participating in the simulation's calculations, the orchestrator node performs the administrative tasks such as the initial file reading as well as organizing and distributing the workload. This relies upon tags being sent between the nodes to coordinate the simulation.
+
+```fortran
+  ! MPI Tags
+  integer, parameter :: TAG_REQUEST_WORK = 1
+  integer, parameter :: TAG_DO_EQUIL     = 2
+  integer, parameter :: TAG_DO_PROD      = 3
+  integer, parameter :: TAG_WAIT         = 4
+  integer, parameter :: TAG_DIE          = 5
+  integer, parameter :: TAG_EQUIL_DONE   = 6
+  integer, parameter :: TAG_PROD_DONE    = 7
+```
+
+
+
+First, the simulation is cleanly segregated into phases where the **Orchestrator Node** acts as a central dispatcher:
+
+```fortran
+      do while (completed_prods < size(prod_queue))
+         ! Wait for any worker to finish its task and ask for more
+         call MPI_Recv(msg, 1, MPI_INTEGER, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+         sender = status(MPI_SOURCE)
+         tag_recvd = status(MPI_TAG)
+```
+- `MPI_Recv`: The orchestrator lies in wait for any incoming communication from the worker nodes. 
+- `MPI_ANY_SOURCE`: Instead of statically assigning jobs to specific processors up-front, the orchestrator listens to the *entire pool* of available cores. As soon as a worker node finishes its current 1-million-step job, it pings the orchestrator, which instantly deploys the next job from the queue directly to that specific idle worker, ensuring optimal resource utilization. 
+- **Staged Execution**: By cleanly separating the logic phases, the orchestrator refuses to load the 10 production jobs into the queue until the prerequisite equilibration run officially finishes. The moment equilibration is met, jobs pop into the queue and cores are reused instantly, guaranteeing no resources are ever permanently "blocked" waiting in idle lines.
+
+<br>
+
+Once a worker has sent an incoming communication signal back to the orchestrator, the orchestrator checks the tag and executes the appropriate logic:
+
+```fortran
+         if (tag_recvd == TAG_EQUIL_DONE) then
+           ! ... (Orchestrator caches the equilibrated .xyz coordinates and unlocks the production queue)
+         else if (tag_recvd == TAG_PROD_DONE) then 
+           ! ... (Orchestrator tallies the completed production run)
+         end if
+
+         ! If jobs remain in the queue, immediately deploy the next one to the 'sender'
+         if (jobs_assigned < size(prod_queue)) then
+            call MPI_Send(TAG_DO_PROD, 1, MPI_INTEGER, sender, TAG_DO_PROD, MPI_COMM_WORLD, ierr)
+```
+- `MPI_Send`: Deploys the next instruction array sequentially to whichever Worker ID is populated in the `sender` variable.
+- `TAG_DO_PROD`: An arbitrarily assigned integer tag that tells the receiving Worker process exactly which computational sub-routine to pivot into. 
+
+<br>
+
+The benefits of this star topology combined with phased execution of equilibration runs followed by production runs is compared below to the serial version of the program. As the number of dynamic active nodes increases, the time to complete 10-million MC Steps decreases, albeit non-ideally:
+
+
+![MPI Parallel Speedup Analysis](img/parallel_star_speedup_plot.png)
+_Fig. x: Comparing timing & efficiency of Ensemble Averaging with various core count to Serial production run_
+
+<br>
+
+Simply adding more cores does not result in a perfectly linear speedup. This can be attributed to parallelization overhead plus device hardware bottlenecks. The most efficient use of cores is found in factors of 10 (2 & 5 cores), in which cases all worker nodes are participating in the final group of remaining 1M MCS steps. The non-factors of 10 could see performance improvements with the addition of a dynamic algorithm that determines how many steps are left once there are fewer 1M MCS jobs remaining than cores participating. This would eliminates worker "dead-time" towards the end of the production run.

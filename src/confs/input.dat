@@ -6,3 +6,9 @@
 ! T_ini = 10.d0
 ! T_fin = 0.01d0
  n_steps = 10000000
+! Filepaths for pre-equilibrated geometries. Set to .false. to equilibrate normally.
+  equil_conf1_xyz = .false.
+  equil_conf2_xyz = .false.
+  equil_conf3_xyz = .false.
+  equil_conf4_xyz = "../src/confs/equil_conf4_initial.xyz"
+  equil_conf5_xyz = .false.
