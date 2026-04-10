@@ -291,4 +291,66 @@ def plot_torsions(tors_file, energy_file, explicit_h=True):
 - ```c1, c2, c3```: The TraPPE-UA United Atom coefficients, or the OPLS-AA Effective Backbone coefficients, loaded depending on the simulation type.
 - ```torsion_potential(phi)```: Returns the theoretical energy (in kcal/mol) for any given dihedral angle ($\phi$) using trigonometric identities, which is then overlaid on the secondary Y-axis spanning across the histograms.
 
-## Parallelization
+## Parallelization - Ensemble Averaging
+
+Moving to an Orchestrator-Worker (Star) topology helped with the transition of the serial environment to a dynamically balanced parallel framework with OpenMPI. It achieves maximum CPU utilization by ensuring free workers are constantly assigned tasks until the simulation is complete.
+
+<br>
+
+Although this architechure adds overhead by requiring a single core to abstain from participating in the simulation's calculations, the orchestrator node performs the administrative tasks such as the initial file reading as well as organizing and distributing the workload. This relies upon tags being sent between the nodes to coordinate the simulation.
+
+```fortran
+  ! MPI Tags
+  integer, parameter :: TAG_REQUEST_WORK = 1
+  integer, parameter :: TAG_DO_EQUIL     = 2
+  integer, parameter :: TAG_DO_PROD      = 3
+  integer, parameter :: TAG_WAIT         = 4
+  integer, parameter :: TAG_DIE          = 5
+  integer, parameter :: TAG_EQUIL_DONE   = 6
+  integer, parameter :: TAG_PROD_DONE    = 7
+```
+
+
+
+First, the simulation is cleanly segregated into phases where the **Orchestrator Node** acts as a central dispatcher:
+
+```fortran
+      do while (completed_prods < size(prod_queue))
+         ! Wait for any worker to finish its task and ask for more
+         call MPI_Recv(msg, 1, MPI_INTEGER, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, status, ierr)
+         sender = status(MPI_SOURCE)
+         tag_recvd = status(MPI_TAG)
+```
+- `MPI_Recv`: The orchestrator lies in wait for any incoming communication from the worker nodes. 
+- `MPI_ANY_SOURCE`: Instead of statically assigning jobs to specific processors up-front, the orchestrator listens to the *entire pool* of available cores. As soon as a worker node finishes its current 1-million-step job, it pings the orchestrator, which instantly deploys the next job from the queue directly to that specific idle worker, ensuring optimal resource utilization. 
+- **Staged Execution**: By cleanly separating the logic phases, the orchestrator refuses to load the 10 production jobs into the queue until the prerequisite equilibration run officially finishes. The moment equilibration is met, jobs pop into the queue and cores are reused instantly, guaranteeing no resources are ever permanently "blocked" waiting in idle lines.
+
+<br>
+
+Once a worker has sent an incoming communication signal back to the orchestrator, the orchestrator checks the tag and executes the appropriate logic:
+
+```fortran
+         if (tag_recvd == TAG_EQUIL_DONE) then
+           ! ... (Orchestrator caches the equilibrated .xyz coordinates and unlocks the production queue)
+         else if (tag_recvd == TAG_PROD_DONE) then 
+           ! ... (Orchestrator tallies the completed production run)
+         end if
+
+         ! If jobs remain in the queue, immediately deploy the next one to the 'sender'
+         if (jobs_assigned < size(prod_queue)) then
+            call MPI_Send(TAG_DO_PROD, 1, MPI_INTEGER, sender, TAG_DO_PROD, MPI_COMM_WORLD, ierr)
+```
+- `MPI_Send`: Deploys the next instruction array sequentially to whichever Worker ID is populated in the `sender` variable.
+- `TAG_DO_PROD`: An arbitrarily assigned integer tag that tells the receiving Worker process exactly which computational sub-routine to pivot into. 
+
+<br>
+
+The benefits of this star topology combined with phased execution of equilibration runs followed by production runs is compared below to the serial version of the program. As the number of dynamic active nodes increases, the time to complete 10-million MC Steps decreases, albeit non-ideally:
+
+
+![MPI Parallel Speedup Analysis](img/parallel_star_speedup_plot.png)
+_Fig. x: Comparing timing & efficiency of Ensemble Averaging with various core count to Serial production run_
+
+<br>
+
+Simply adding more cores does not result in a perfectly linear speedup. This can be attributed to parallelization overhead plus device hardware bottlenecks. The most efficient use of cores is found in factors of 10 (2 & 5 cores), in which cases all worker nodes are participating in the final group of remaining 1M MCS steps. The non-factors of 10 could see performance improvements with the addition of a dynamic algorithm that determines how many steps are left once there are fewer 1M MCS jobs remaining than cores participating. This would eliminates worker "dead-time" towards the end of the production run.

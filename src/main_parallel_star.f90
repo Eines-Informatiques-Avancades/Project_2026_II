@@ -46,15 +46,23 @@ program main_parallel_star
   double precision :: cpu_start, cpu_now, cpu_elapsed
   !double precision :: omp_get_wtime
 
-  ! Equilibrium variables
-  integer, parameter :: block_size = 100
-  integer, parameter :: sample_interval = 1000
-  integer :: e_count1 = 0, e_count2 = 0
-  double precision :: sum_e1 = 0.0d0, sum_sq_e1 = 0.0d0, mu1, var1
-  double precision :: sum_e2 = 0.0d0, sum_sq_e2 = 0.0d0, mu2, var2
-  double precision :: t_stat
-  double precision, parameter :: t_crit = 1.96d0
-  logical :: record_block2 = .false.
+  ! Geweke convergence variables
+  integer, parameter :: geweke_sample_interval = 10000
+  integer, parameter :: n_geweke  = 300
+  integer, parameter :: fA_pct    = 10
+  integer, parameter :: fB_pct    = 50
+  integer, parameter :: n_consec  = 3
+  integer, parameter :: eval_freq = 10
+  double precision, parameter :: z_crit = 1.96d0
+
+  double precision :: gbuf_E(n_geweke)
+  double precision :: gbuf_Rg(n_geweke)
+  integer :: gbuf_count
+  integer :: consec_passes
+  integer :: nA, nB, nBstart, bA, bB, bsA, bsB, ib
+  double precision :: meanA_E, meanB_E, seA_E, seB_E, bm, z_E
+  double precision :: meanA_Rg, meanB_Rg, seA_Rg, seB_Rg, z_Rg
+  double precision :: tmp_E(n_geweke), tmp_Rg(n_geweke)
 
   ! MPI Tags
   integer, parameter :: TAG_REQUEST_WORK = 1
@@ -84,7 +92,7 @@ program main_parallel_star
   !equil_confs = (/ 1, 4, 5 /)
 
   ! TEMPORARY OVERWRITING TO GET JUST 1 CONF TYPE
-  integer :: equil_confs(1) = (/ 4 /)
+  integer :: equil_confs(1) = (/ 5 /)
   integer :: prod_queue(10)
   logical :: needs_equil(1)
 
@@ -300,9 +308,10 @@ program main_parallel_star
            dT = (T_ini - T_fin) / dble(n_steps)
            max_delta = 1.1d0  ! radians (approx 60 degrees)
            total_accepted = 0
-           sum_e1 = 0.0d0; sum_sq_e1 = 0.0d0; e_count1 = 0
-           sum_e2 = 0.0d0; sum_sq_e2 = 0.0d0; e_count2 = 0
-           record_block2 = .false.
+           gbuf_count = 0
+           consec_passes = 0
+           gbuf_E = 0.0d0
+           gbuf_Rg = 0.0d0
 
            cpu_start = MPI_Wtime()
            ! 3. Main Monte Carlo Loop
@@ -343,39 +352,83 @@ program main_parallel_star
                  write(u_cpu, '(I10, F15.6)') istep, cpu_elapsed
               end if
 
-              ! Check for equilibrium using Welch's t-test (Welch, B.L., Biometrika, 34(1/2), 1947)
+              ! --- Geweke Check ---
               if (abs(T - T_fin) < 1.0d-8) then
-                if (mod(istep, sample_interval) == 0) then
-                  if (.not. record_block2) then
-                    sum_e1    = sum_e1 + E_total
-                    sum_sq_e1 = sum_sq_e1 + (E_total * E_total)
-                    e_count1  = e_count1 + 1
-                    if (e_count1 == block_size) record_block2 = .true.
+                if (mod(istep, geweke_sample_interval) == 0) then
+                  gbuf_count = gbuf_count + 1
+                  if (gbuf_count <= n_geweke) then
+                    gbuf_E(gbuf_count) = E_total
+                    gbuf_Rg(gbuf_count) = rg2
                   else
-                    sum_e2    = sum_e2 + E_total
-                    sum_sq_e2 = sum_sq_e2 + (E_total * E_total)
-                    e_count2  = e_count2 + 1
-                    if (e_count2 == block_size) then
-                       mu1  = sum_e1 / dble(block_size)
-                       var1 = (sum_sq_e1 - dble(block_size)*mu1*mu1) / dble(block_size - 1)
-                       mu2  = sum_e2 / dble(block_size)
-                       var2 = (sum_sq_e2 - dble(block_size)*mu2*mu2) / dble(block_size - 1)
-                       if (var1 + var2 > 1.0d-12) then
-                          t_stat = abs(mu1 - mu2) / sqrt((var1 + var2) / dble(block_size))
-                       else
-                          t_stat = 0.0d0
-                       end if
-
-                       if (t_stat < t_crit) then
-                          exit
-                       end if
-
-                       sum_e1 = sum_e2; sum_sq_e1 = sum_sq_e2; e_count1 = block_size
-                       sum_e2 = 0.0d0; sum_sq_e2 = 0.0d0; e_count2 = 0
+                    gbuf_E(1:n_geweke-1) = gbuf_E(2:n_geweke)
+                    gbuf_Rg(1:n_geweke-1) = gbuf_Rg(2:n_geweke)
+                    gbuf_E(n_geweke) = E_total
+                    gbuf_Rg(n_geweke) = rg2
+                  end if
+            
+                  if (gbuf_count >= n_geweke .and. mod(gbuf_count, eval_freq) == 0) then
+                    nA      = max(2, n_geweke * fA_pct / 100)
+                    nB      = max(2, n_geweke * fB_pct / 100)
+                    nBstart = n_geweke - nB + 1
+                    tmp_E   = gbuf_E
+                    tmp_Rg  = gbuf_Rg
+            
+                    meanA_E = sum(tmp_E(1:nA)) / dble(nA)
+                    meanB_E = sum(tmp_E(nBstart:n_geweke)) / dble(nB)
+                    bA = max(2, int(sqrt(dble(nA)))); bsA = nA / bA
+                    seA_E = 0.0d0
+                    do ib = 1, bA
+                      bm = sum(tmp_E((ib-1)*bsA+1:ib*bsA)) / dble(bsA)
+                      seA_E = seA_E + (bm - meanA_E)**2
+                    end do
+                    seA_E = seA_E / (dble(bA) * dble(bA - 1))
+                    bB = max(2, int(sqrt(dble(nB)))); bsB = nB / bB
+                    seB_E = 0.0d0
+                    do ib = 1, bB
+                      bm = sum(tmp_E(nBstart+(ib-1)*bsB:nBstart+ib*bsB-1)) / dble(bsB)
+                      seB_E = seB_E + (bm - meanB_E)**2
+                    end do
+                    seB_E = seB_E / (dble(bB) * dble(bB - 1))
+                    z_E = 0.0d0
+                    if (seA_E + seB_E > 1.0d-12) &
+                      z_E = abs(meanA_E - meanB_E) / sqrt(seA_E + seB_E)
+            
+                    meanA_Rg = sum(tmp_Rg(1:nA)) / dble(nA)
+                    meanB_Rg = sum(tmp_Rg(nBstart:n_geweke)) / dble(nB)
+                    seA_Rg = 0.0d0
+                    do ib = 1, bA
+                      bm = sum(tmp_Rg((ib-1)*bsA+1:ib*bsA)) / dble(bsA)
+                      seA_Rg = seA_Rg + (bm - meanA_Rg)**2
+                    end do
+                    seA_Rg = seA_Rg / (dble(bA) * dble(bA - 1))
+                    seB_Rg = 0.0d0
+                    do ib = 1, bB
+                      bm = sum(tmp_Rg(nBstart+(ib-1)*bsB:nBstart+ib*bsB-1)) / dble(bsB)
+                      seB_Rg = seB_Rg + (bm - meanB_Rg)**2
+                    end do
+                    seB_Rg = seB_Rg / (dble(bB) * dble(bB - 1))
+                    z_Rg = 0.0d0
+                    if (seA_Rg + seB_Rg > 1.0d-12) &
+                      z_Rg = abs(meanA_Rg - meanB_Rg) / sqrt(seA_Rg + seB_Rg)
+            
+                    write(*,'(A,I0,A,F7.4,A,F10.4,A,F10.4,A,F7.4)') &
+                      " [Worker ", rank, "] z_E=", z_E, " muA=", meanA_E, " muB=", meanB_E, " z_Rg=", z_Rg
+            
+                    if (z_E < z_crit) then
+                      consec_passes = consec_passes + 1
+                      write(*,'(A,I0,A,I2,A,I2,A)') " [Worker ", rank, "] PASSED (", consec_passes, "/", n_consec, ")"
+                      if (consec_passes >= n_consec) then
+                        write(*,'(A,I0,A,I10,A)') " *** EQUILIBRIUM DETECTED (Worker ", rank, ") at step ", istep, " ***"
+                        exit
+                      end if
+                    else
+                      if (consec_passes > 0) write(*,'(A,I0,A)') " [Worker ", rank, "] failed - reset"
+                      consec_passes = 0
                     end if
                   end if
-                end if 
+                end if
               end if
+              ! --- End Geweke Check ---
            end do
            close(u_ener); close(u_obs); close(u_tors); close(u_traj); close(u_cpu)
 
