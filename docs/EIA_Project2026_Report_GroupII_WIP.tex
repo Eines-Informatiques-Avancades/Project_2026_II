@@ -119,21 +119,7 @@
 Polymer
 Chain}}{Monte Carlo Simulation of a Simple Polymer Chain}}\label{monte-carlo-simulation-of-a-simple-polymer-chain}
 
-\subsection{UNUSED WRITING}\label{unused-writing}
-
-\begin{itemize}
-\tightlist
-\item
-  \textbf{Data Visualization}: A robust plotting script
-  (\href{./src/lib/plot_results.py}{plot\_results.py}) parses the
-  inputs, mathematically detects thermodynamic equilibration to strip
-  burn-in data, and generates theoretical overlays.
-\item
-  \textbf{Build Pipeline}: The updated \texttt{src/Makefile} fully
-  automates the workflow, featuring a \texttt{make\ pipeline} macro that
-  compiles the binaries, runs the Fortran simulation, and generates the
-  Python \texttt{.pdf} figures in one shot.
-\end{itemize}
+12 April 2026
 
 \subsection{\texorpdfstring{Team
 \textbf{Project\_2026\_II}}{Team Project\_2026\_II}}\label{team-project_2026_ii}
@@ -1602,22 +1588,124 @@ minutes, and \_\_ seconds. The parallel code was run using the
 
 \subsection{Conclusion}\label{conclusion}
 
+\subsubsection{Computer Simulation vs Real-World
+Results}\label{computer-simulation-vs-real-world-results}
+
+While this Monte Carlo simulation successfully modeled the
+conformational sampling of a polymer chain, it is important to recognize
+the limitations when comparing theoretical calculations to real-world
+experimental results.
+
+\begin{itemize}
+\tightlist
+\item
+  By employing the OPLS-AA and TraPPE-UA force fields, we gain robust
+  mathematical approximations of energy landscapes; however, these
+  empirical potentials cannot fully capture the dynamic complexities of
+  real-world solvent interactions or subtle quantum effects.
+\item
+  The isolation of a single polymer chain within the simulation neglects
+  the significant impact of intermolecular forces and environmental
+  factors that would be present in a real-world scenario.
+\item
+  Additionally, our exclusion of standard 1-4 steric repulsions skewed
+  the expected torsional distribution towards a cis-like geometry,
+  highlighting how algorithmic approximations can yield results that
+  diverge from established empirical physical behaviors.
+\end{itemize}
+
+\subsubsection{Nonlinearity of Parallel
+Speedup}\label{nonlinearity-of-parallel-speedup}
+
+One of the key observations from our performance analysis is that
+parallelization rarely translates evenly into a 1:1, linear speedup. In
+a perfect scenario, assigning four cores would make the code run four
+times faster. However, as seen in our MPI benchmarks, adding more
+workers inherently introduces communication overhead. The time required
+for the orchestrator to pass messages, synchronize coordinates during
+ensemble sampling, and track dynamic convergence tests gradually eats
+into the raw processing speed. At certain hardware boundaries,
+communication bottlenecks and competition for physical system resources
+make additional core count benefits negligible.
+
+\subsubsection{Navigating Resource
+Utilization}\label{navigating-resource-utilization}
+
+Combining multiple High-Performance Computing (HPC) methodologies---like
+MPI and OpenMP---offered profound acceleration capabilities, but as
+stated in the
+\href{./EIA_Project2026_Report_GroupII.md\#parallelization-with-mpi--openmp}{Parallelization
+with MPI \& OpenMP} section, requires careful resource management to
+prevent oversubscription. Breaking up the simulation workflow into
+phases proved to be a critical step in reusing resources and limiting
+the system size required to run the program.
+
+\subsubsection{HPC Optimization}\label{hpc-optimization}
+
+Ultimately, achieving high performance is not simply a matter of
+checking if a particular parallel processing technique outpaces its
+serial counterpart, rather it requires a coordinated benchmarking
+strategy. Optimizing an HPC code ecosystem demands that we carefully
+evaluate how different techniques overlap and complement one another.
+Were this a commercial or funded research project, benchmarking the
+performance of the various technique combinations (and against the
+system hardware available) would be prudent.
+
+\subsection{Summary of the Combined Parallelized Program
+Logic}\label{summary-of-the-combined-parallelized-program-logic}
+
 \begin{figure}
 \centering
 \pandocbounded{\includegraphics[keepaspectratio,alt={Resouce Utilization}]{./img/ParallelProcessing_ResourceUtilization.png}}
 \caption{Resouce Utilization}
 \end{figure}
 
-drawbacks to simulation vs realworld results
+The diagram above illustrates our parallel processing architecture,
+which leverages a central Master Node to efficiently orchestrate tasks
+across the system. With combined optimization and parallelization
+techniques, a possible workflow functions as follows:
 
-overhead introduced making parallelization not a linear speedup
+\begin{itemize}
+\tightlist
+\item
+  The Master Node checks if an equilibrated geometry already exists,
+  allowing it to bypass the computationally heavy equilibration phase
+  for previously processed configurations (such as Conf 4, which
+  immediately unlocks its production runs).
+\item
+  For new configurations (like Confs 1 and 5), the system simultaneously
+  deploys independent replicas.
+\item
+  These replicas utilize a collaborative swarm logic, aided by the
+  Geweke Convergence test running on 2 workers with 2 threads each, to
+  dynamically find equilibrium as fast as possible.
+\item
+  Since an equilibrated geometry for conformation type 4 is already
+  supplied, the 2 workers with their 2 OpenMP threads each are
+  immediately available to assist in the production runs for that
+  configuration.
+\item
+  Meanwhile equilibration completes for conformations 4 \& 5, and those
+  workers become available to start assisting in the remaining jobs from
+  the shared 30-job global production queue.
+\end{itemize}
 
-navigating resource utilization with combined techniques
-
-Potential improvements
-
-HPC optimization (ensuring best use of resources involves benchmarking
-combination of techniques, not just individual vs serial)
+Total core count for this scenario (default when
+\texttt{run\_parallel.qsub} is invoked) is \textbf{13 cores}: -
+\textbf{1} Master Node (\textbf{1 core}) - 2 Workers each running a
+Conformation Equilibration - Each of these workers takes 2 cores for
+Swarm Logic - Each node calculates energy via 2 OpenMP threads
+(\(2x2x2=\) \textbf{8 cores}) - 2 Workers immediately start production
+runs on equilibration-bypassed conformation \#4. (\emph{Why 2? The
+system opts to utilize the same number of workers for a bypassed
+configuration as it would a swarm-logic equilibration.}) - These
+workers' energy calculations are threaded with OpenMP (\(2x2=\)
+\textbf{4 cores}) - When the equilibration phase is done for
+conformations 1 \& 5, those workers are reassigned unfinished chunks of
+the production queue, \emph{reusing the CPU resources}, 4 cores per
+conformation. (\textbf{+0 cores}) - As workers finish their subtasks,
+they inform the orchestrator, receiving any pending jobs from the global
+queue until all 30 production jobs are completed. (\textbf{+0 cores})
 
 \subsection{References}\label{references}
 
