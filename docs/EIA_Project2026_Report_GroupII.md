@@ -1,10 +1,8 @@
 # **Monte Carlo Simulation of a Simple Polymer Chain**
 
-## UNUSED WRITING
-
-
-  - **Data Visualization**: A robust plotting script ([plot_results.py](./src/lib/plot_results.py))   parses the inputs, mathematically detects thermodynamic equilibration to strip burn-in data, and   generates theoretical overlays.
-  - **Build Pipeline**: The updated `src/Makefile` fully automates the workflow, featuring a `make pipeline` macro that compiles the binaries, runs the Fortran simulation, and generates the Python `.pdf` figures in one shot.
+<p align='right'>
+ 12 April 2026 
+</p>
 
 
 ## Team **Project_2026_II**
@@ -230,6 +228,7 @@ Combining these two frameworks is tricky. If left unchecked, $N$ MPI processes m
 We mitigated this risk by enforcing strict administrative control through our Makefile compilation arguments (NP and OMP_THREADS). This gives the user explicit, compile-time authority to cleanly balance the execution matrix (e.g., forcing OMP_THREADS=1 during heavily populated MPI ensemble sampling) to prevent thread-collisions and ensure hardware resources are optimized efficiently.
 
 Further detail of how the parallelization was implemented within the code itself is included in the [Parallelization Section](./EIA_Project2026_Report_GroupII.md#parallelization-techniques).
+
 
 <br>
 
@@ -774,17 +773,50 @@ The serial code was run on a single core of an Intel Core i7-11800H processor, t
 
 ## Conclusion
 
+
+### Computer Simulation vs Real-World Results
+
+While this Monte Carlo simulation successfully modeled the conformational sampling of a polymer chain, it is important to recognize the limitations when comparing theoretical calculations to real-world experimental results. 
+
+- By employing the OPLS-AA and TraPPE-UA force fields, we gain robust mathematical approximations of energy landscapes; however, these empirical potentials cannot fully capture the dynamic complexities of real-world solvent interactions or subtle quantum effects. 
+- The isolation of a single polymer chain within the simulation neglects the significant impact of intermolecular forces and environmental factors that would be present in a real-world scenario. 
+- Additionally, our exclusion of standard 1-4 steric repulsions skewed the expected torsional distribution towards a cis-like geometry, highlighting how algorithmic approximations can yield results that diverge from established empirical physical behaviors.
+
+### Nonlinearity of Parallel Speedup
+
+One of the key observations from our performance analysis is that parallelization rarely translates evenly into a 1:1, linear speedup. In a perfect scenario, assigning four cores would make the code run four times faster. However, as seen in our MPI benchmarks, adding more workers inherently introduces communication overhead. The time required for the orchestrator to pass messages, synchronize coordinates during ensemble sampling, and track dynamic convergence tests gradually eats into the raw processing speed. At certain hardware boundaries, communication bottlenecks and competition for physical system resources make additional core count benefits negligible.
+
+### Navigating Resource Utilization
+
+Combining multiple High-Performance Computing (HPC) methodologies—like MPI and OpenMP—offered profound acceleration capabilities, but as stated in the [Parallelization with MPI & OpenMP](./EIA_Project2026_Report_GroupII.md#parallelization-with-mpi--openmp) section, requires careful resource management to prevent oversubscription. Breaking up the simulation workflow into phases proved to be a critical step in reusing resources and limiting the system size required to run the program. 
+
+### HPC Optimization
+
+Ultimately, achieving high performance is not simply a matter of checking if a particular parallel processing technique outpaces its serial counterpart, rather it requires a coordinated benchmarking strategy. Optimizing an HPC code ecosystem demands that we carefully evaluate how different techniques overlap and complement one another. Were this a commercial or funded research project, benchmarking the performance of the various technique combinations (and against the system hardware available) would be prudent. 
+
+## Summary of the Combined Parallelized Program Logic
 ![Resouce Utilization](./img/ParallelProcessing_ResourceUtilization.png)
 
-drawbacks to simulation vs realworld results
+The diagram above illustrates our parallel processing architecture, which leverages a central Master Node to efficiently orchestrate tasks across the system. With combined optimization and parallelization techniques, a possible workflow functions as follows:
 
-overhead introduced making parallelization not a linear speedup
+- The Master Node checks if an equilibrated geometry already exists, allowing it to bypass the computationally heavy equilibration phase for previously processed configurations (such as Conf 4, which immediately unlocks its production runs).
+- For new configurations (like Confs 1 and 5), the system simultaneously deploys independent replicas. 
+- These replicas utilize a collaborative swarm logic, aided by the Geweke Convergence test running on 2 workers with 2 threads each, to dynamically find equilibrium as fast as possible. 
+- Since an equilibrated geometry for conformation type 4 is already supplied, the 2 workers with their 2 OpenMP threads each are immediately available to assist in the production runs for that configuration.
+- Meanwhile equilibration completes for conformations 4 & 5, and those workers become available to start assisting in the remaining jobs from the shared 30-job global production queue.
 
-navigating resource utilization with combined techniques
+<br>
 
-Potential improvements
+Total core count for this scenario (default when `run_parallel.qsub` is invoked) is **13 cores**:
+  - **1** Master Node (**1 core**)
+  - 2 Workers each running a Conformation Equilibration
+    - Each of these workers takes 2 cores for Swarm Logic
+      - Each node calculates energy via 2 OpenMP threads ($2x2x2=$ **8 cores**)
+  - 2 Workers immediately start production runs on equilibration-bypassed conformation #4. (_Why 2? The system opts to utilize the same number of workers for a bypassed configuration as it would a swarm-logic equilibration._)
+    - These workers' energy calculations are threaded with OpenMP ($2x2=$ **4 cores**)
+  - When the equilibration phase is done for conformations 1 & 5, those workers are reassigned unfinished chunks of the production queue, _reusing the CPU resources_, 4 cores per conformation. (**+0 cores**)
+  - As workers finish their subtasks, they inform the orchestrator, receiving any pending jobs from the global queue until all 30 production jobs are completed. (**+0 cores**)
 
-HPC optimization (ensuring best use of resources involves benchmarking combination of techniques, not just individual vs serial)
 
 ## References
 - [1] Roy, V. (2020). Convergence Diagnostics for Markov Chain Monte Carlo. *Annual Review of Statistics and Its Application*, 7, 387–412. https://doi.org/10.1146/annurev-statistics-031219-041300
