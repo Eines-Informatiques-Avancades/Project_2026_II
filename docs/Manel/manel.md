@@ -54,6 +54,8 @@ To solve this, the code computes $SE_A$ and $SE_B$ using batch means. Instead of
 
 Under the null hypothesis of stationarity, $z$ follows a standard normal distribution. Equilibrium is accepted when $|z| < z_{\text{crit}} = 1.96$ (95% confidence level) on $n_{\text{consec}} = 3$ consecutive evaluations, preventing false positives caused by temporary plateaus. The test is re-evaluated every `eval_freq` synchronisation points once the buffer is full.
 
+For a comprehensive review of MCMC convergence diagnostics, including a detailed discussion of the Geweke test and its limitations, see Roy (2020).
+
 ---
 
 # Parallel Equilibration via Collaborative Population MPI
@@ -191,3 +193,9 @@ In the serial run, the polymer chain often becomes trapped in metastable states 
 For instance, at the 100 kcal/mol threshold, the 8-worker group reaches the target in only 50,000 steps, compared to the 1.18 million steps required by the serial run, resulting in a speedup of **23.60×**.
 
 We also observe stochastic fluctuations typical of Monte Carlo methods, such as the anomalous efficiency at $w=2$ for the 110 kcal/mol threshold. As the energy targets become more stringent (90 kcal/mol), the speedup values tend to stabilize, as finding further conformational improvements becomes more difficult even for a larger population.
+
+---
+
+# References
+
+Roy, V. (2020). Convergence Diagnostics for Markov Chain Monte Carlo. *Annual Review of Statistics and Its Application*, 7, 387–412. https://doi.org/10.1146/annurev-statistics-031219-041300
