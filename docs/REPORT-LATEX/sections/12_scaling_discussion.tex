@@ -1,0 +1,171 @@
+% Source ownership:
+% - Itxaso: scaling of replicas + observables
+% - Arthur/Manel: broader discussion and combined-program logic
+
+\section{Scaling Analysis and Discussion}
+\label{sec:scaling}
+
+\subsection{Replica Parallelism: Speedup vs. System Size and Run Length}
+
+The independent-replica MPI strategy was benchmarked by varying both the
+polymer size and the production run length. In this approach, each MPI
+worker executes a different production replica, so the total wall time
+depends primarily on how much useful work can be distributed across
+workers before communication and orchestration overhead begin to matter.
+
+The first scaling study varies the number of carbons while keeping the
+simulation length fixed. As the chain becomes larger, each replica
+contains more internal work, especially in the energy calculations and
+observable evaluations, so the MPI orchestration overhead becomes less
+significant relative to the total runtime. For this reason, larger
+systems are expected to display better parallel efficiency than very
+small ones.
+
+The second study varies the number of Monte Carlo steps for a fixed
+system size. Short runs do not amortize the startup, scheduling, and I/O
+costs very well, whereas longer runs allow each worker to spend a much
+greater fraction of time performing actual MC sampling. Consequently,
+speedup generally improves as the number of production steps increases.
+
+In both cases, the speedup is not expected to be perfectly linear. The
+master node still performs administrative tasks such as initial file
+reading, dispatching jobs, receiving completion messages, and managing
+the production queue. This means that part of the total hardware budget
+is always reserved for orchestration rather than direct numerical work.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{speedup_vs_natoms.pdf}
+  \caption{Speedup of independent-replica parallelization: speedup as a function of chain length
+           (\(N_C \in \{20,50,100,200,500\}\), \(n_{\text{steps}} = 10^6\)).
+           All runs use 3 MPI ranks. The dashed line indicates ideal
+           linear scaling (\(S = 3\)).}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{speedup_vs_nsteps.pdf}
+  \caption{Speedup of independent-replica parallelization: speedup as a function of run length
+           (\(n_{\text{steps}} \in \{10^5, 10^6, 10^7\}\), \(N_C = 100\)).
+           All runs use 3 MPI ranks. The dashed line indicates ideal
+           linear scaling (\(S = 3\)).}
+\end{figure}
+
+\subsection{Observable Post-Processing: Strong Scaling}
+
+A second scaling study was carried out for the observable
+post-processing kernel, implemented in
+\texttt{main\_parallel\_observables}. Unlike the production simulations,
+this stage is a strong-scaling problem: the total dataset is fixed, and
+the number of MPI processes is increased to measure how efficiently the
+same workload can be completed.
+
+Each process reads a subset of trajectory files, computes the radius of
+gyration, end-to-end distance, and torsional statistics, and
+accumulates local partial sums. At the end of the run, the global
+results are assembled through MPI reductions on rank 0, which writes the
+final averaged observables.
+
+This workload is well suited to MPI because each trajectory file can be
+processed independently for most of the runtime. Communication is only
+required at the end, when the local statistics are combined into a
+single global dataset. As a result, the observable analysis behaves much
+closer to an embarrassingly parallel workload than the simulation phase
+itself.
+
+The scaling is therefore expected to be strong for moderate process
+counts, with efficiency gradually decreasing once the number of workers
+becomes large compared to the number of files. At that point, the amount
+of useful work per process shrinks and the fixed costs of process launch,
+file I/O, and final reductions become more visible.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{benchmark_vs_np.pdf}
+  \caption{Strong scaling of the observable post-processing kernel.
+           MPI wall-clock time (solid circles) and shell-measured
+           elapsed time (dashed squares) as a function of the number of
+           MPI processes \(n_p\).}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{observables_vs_np.pdf}
+  \caption{Mean radius of gyration \(R_g\) and mean end-to-end distance
+           \(R_{ee}\) as a function of the number of MPI processes \(n_p\).
+           The overlap of all curves confirms that the observable averages are
+           preserved exactly across the tested parallel decompositions.}
+\end{figure}
+
+\subsection{Discussion}
+
+One of the key observations from our performance analysis is that
+parallelization rarely translates into perfectly linear speedup. In an
+ideal case, doubling the number of cores would halve the runtime, but in
+practice communication overhead, process coordination, file handling,
+and hardware contention all reduce the efficiency of additional workers.
+
+This effect is visible in both the independent-replica and
+post-processing benchmarks. For the MPI production workflow, the master
+must coordinate task dispatch and receive status messages from workers.
+For the observables workflow, the amount of useful work per process
+eventually becomes too small compared to the fixed costs of launching
+processes and reducing the final results.
+
+Resource utilization is therefore just as important as raw parallelism.
+The orchestrator-worker design helps maintain high CPU occupancy by
+ensuring that free workers are immediately assigned new tasks from the
+queue. At the same time, the staged execution model avoids wasting
+resources on production jobs before equilibration has completed.
+
+Combining MPI and OpenMP also requires careful control to avoid
+oversubscription. If too many MPI ranks each spawn too many OpenMP
+threads, the runtime can degrade due to thread collisions and operating
+system scheduling overhead. This is why the Makefile parameters
+\texttt{NP} and \texttt{OMPTHREADS} are treated as a coordinated
+resource-management mechanism rather than as independent tuning knobs.
+
+Finally, the scaling trends also reflect the nonlinearity of Monte Carlo
+workloads themselves. Some replicas converge faster than others, some
+trajectories generate more favourable moved/fixed partitions inside
+\texttt{delta\_energy}, and some process counts match the available job
+granularity better than others. For this reason, the best-performing
+configuration is not always the one with the largest number of cores,
+but the one that best matches the size and structure of the workload.
+
+\subsection{Combined Parallel Workflow}
+
+The final program combines several levels of parallelism into a single
+coordinated workflow. At the top level, MPI is used to distribute work
+across processes in an orchestrator-worker star topology. Depending on
+the phase of execution, workers either participate in collaborative
+equilibration or execute independent production replicas drawn from a
+global queue.
+
+Within each worker, OpenMP is used to accelerate the most expensive
+energy kernels, especially the nested Lennard-Jones loops in
+\texttt{compute\_total\_energy} and \texttt{delta\_energy}. This creates
+a hybrid structure in which MPI handles macro-level task distribution
+while OpenMP performs micro-level acceleration inside each simulation
+task.
+
+A key design choice is that the simulation is separated into phases so
+that resources can be reused dynamically. If an equilibrated geometry
+already exists, the master can bypass the equilibration stage for that
+configuration and immediately unlock the corresponding production jobs.
+Meanwhile, workers that finish equilibration for other conformations are
+reassigned to the shared production queue, ensuring that CPU resources
+are not left idle.
+
+This combined architecture does not simply attempt to maximize the
+number of active cores at all times. Instead, it tries to maximize the
+amount of useful work completed per unit time while respecting the
+constraints of communication overhead, thread contention, and workload
+granularity. In this sense, the program acts as a coordinated HPC
+ecosystem rather than as a single parallel loop.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{ParallelProcessing_ResourceUtilization.png}
+  \caption{Schematic view of the combined MPI/OpenMP resource utilization strategy.}
+\end{figure}

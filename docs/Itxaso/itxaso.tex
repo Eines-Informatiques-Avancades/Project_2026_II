@@ -1,0 +1,649 @@
+% ============================================================
+%  Initialization, I/O & Parallelization — Implementation Report
+%  Compile with: pdflatex itxaso_implementation.tex
+%  Requires: amsmath, listings, booktabs, geometry, xcolor, graphicx
+% ============================================================
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{graphicx}
+
+% ── Fortran listings style ───────────────────────────────────
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{100,100,100}
+\definecolor{codekw}{RGB}{0,80,160}
+\definecolor{codestr}{RGB}{160,0,0}
+
+\lstdefinelanguage{Fortran90}{
+  morekeywords={program,end,use,implicit,none,integer,double,precision,
+                logical,character,allocatable,parameter,real,if,then,else,
+                do,while,call,subroutine,function,return,exit,allocate,
+                deallocate,write,read,open,close,len,size,max,min,abs,
+                sum,sqrt,mod,int,dble,any,trim,type},
+  sensitive=false,
+  morecomment=[l]{!},
+  morestring=[b]",
+  morestring=[b]'
+}
+
+\lstdefinelanguage{Python}{
+  morekeywords={def,return,for,if,else,elif,import,from,as,in,not,and,or,
+                True,False,None,class,with,lambda,yield,pass,break,continue},
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+  morestring=[b]'
+}
+
+\lstset{
+  language=Fortran90,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  commentstyle=\color{codecomment}\itshape,
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{gray!40},
+  breaklines=true,
+  numbers=none,
+  captionpos=b,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+}
+
+% ─────────────────────────────────────────────────────────────
+\begin{document}
+
+\title{\textbf{Initialization, I/O, Analysis \& Parallelization}\\
+       \large  of Polyethylene Chains}
+\author{Itxaso Muñoz-Aldalur (itxasoma)}
+\date{}
+\maketitle
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{Initial Configuration Generation}
+\label{sec:initial_conf}
+% ============================================================
+
+\subsection{Internal-Coordinate Builder}
+
+The \texttt{initial\_conf} module is responsible for generating the starting
+conformation of the polyethylene chain. The builder uses a recursive
+internal-coordinate approach: each successive carbon atom is placed by
+specifying a fixed C--C bond length ($d = 1.54\,\text{\AA}$), a fixed C--C--C
+bond angle ($\theta = 114^\circ$), and a selectable dihedral angle $\phi$.
+A hard-sphere overlap check with threshold $r_{\min} = 2.0\,\text{\AA}$ is
+performed after each placement to avoid unphysical self-intersections during
+chain construction.
+
+\begin{lstlisting}[caption={Core internal-coordinate placement loop in \texttt{initial\_conf.f90}.}]
+! Place carbon i based on the last two accepted positions
+do i = 4, n_carbons
+  ! Bond vector from i-2 to i-1 (normalised)
+  b1 = coords(i-1,:) - coords(i-2,:)
+  b1 = b1 / vnorm(b1)
+
+  ! Normal to the C(i-2)-C(i-1)-C(i) plane
+  b0 = coords(i-2,:) - coords(i-3,:)
+  n_vec = cross(b0, b1)
+  if (vnorm(n_vec) > 1.0d-8) n_vec = n_vec / vnorm(n_vec)
+
+  ! Proposed new position using dihedral phi
+  d_vec = bond_length * (                          &
+      -cos_theta * b1                              &
+      + sin_theta * (cos_phi * n_vec               &
+                   + sin_phi * cross(b1, n_vec)))
+
+  candidate = coords(i-1,:) + d_vec
+
+  ! Overlap check against all previously placed atoms
+  overlap = .false.
+  do j = 1, i-1
+    if (vnorm(candidate - coords(j,:)) < r_min) then
+      overlap = .true.
+      exit
+    end if
+  end do
+  if (.not. overlap) coords(i,:) = candidate
+end do
+\end{lstlisting}
+
+When explicit hydrogens are requested (\texttt{explicit\_h = .true.}), two
+hydrogen atoms are appended for each internal CH$_2$ group and one for each
+terminal CH$_3$ group, giving $N_{\text{atoms}} = 3N_C + 2$ total atoms for
+a chain of $N_C$ carbons. The hydrogen placement is based on a local tetrahedral
+frame: instead of placing the H atoms coplanar with the C--C--C backbone (chemically inconsistent), they are positioned out of the
+backbone plane at the correct tetrahedral angle of $\approx 109.5^\circ$.
+
+\begin{lstlisting}[caption={Out-of-plane hydrogen placement for internal CH$_2$ groups.}]
+! For each internal carbon i (not first or last):
+! Build local orthonormal frame {b_fwd, perp, out_of_plane}
+b_fwd = coords(i+1,:) - coords(i-1,:)
+b_fwd = b_fwd / vnorm(b_fwd)
+
+! Perpendicular to backbone, in the C(i-1)-C(i)-C(i+1) plane
+b_back = coords(i-1,:) - coords(i,:)
+b_back = b_back / vnorm(b_back)
+perp   = b_back - sum(b_back*b_fwd)*b_fwd
+if (vnorm(perp) > 1.0d-8) perp = perp / vnorm(perp)
+
+! Out-of-plane direction (cross product)
+out_of_plane = cross(b_fwd, perp)
+out_of_plane = out_of_plane / vnorm(out_of_plane)
+
+! Place H1 and H2 symmetrically out of plane (tetrahedral geometry)
+! cos(109.5 deg) ~ -1/3  =>  sin(109.5 deg) ~ sqrt(8/9)
+h1 = coords(i,:) + r_CH * ( (-1.0d0/3.0d0)*(-perp)  &
+     + sqrt(8.0d0/9.0d0) * 0.5d0 * ( out_of_plane + b_fwd) )
+h2 = coords(i,:) + r_CH * ( (-1.0d0/3.0d0)*(-perp)  &
+     + sqrt(8.0d0/9.0d0) * 0.5d0 * (-out_of_plane + b_fwd) )
+\end{lstlisting}
+
+\subsection{Configuration Modes}
+
+Five distinct initial configuration modes have been implemented, each designed
+to probe a different region of the polymer's conformational space:
+
+\begin{table}[ht]
+\centering
+\caption{Summary of implemented initial configuration types.}
+\label{tab:conf_types}
+\begin{tabular}{clp{9cm}}
+\toprule
+\texttt{conf\_type} & Name & Description \\
+\midrule
+1 & All-trans (planar) & All dihedrals set to $\phi = 0^\circ$; fully extended
+                         zigzag chain. Maximum end-to-end distance. \\
+2 & Random & Each dihedral drawn uniformly from $[-\pi,\,\pi]$; maximally
+             disordered starting state. \\
+3 & RIS-like discrete & Dihedrals assigned with probabilities reflecting the
+                        Rotational Isomeric State model (trans, gauche$^+$,
+                        gauche$^-$). \\
+4 & Spring / helix & Progressive dihedral increment per bond, producing a
+                     helical backbone (proposed by ai-murphy). \\
+5 & Perturbed trans & Small random perturbation applied to the all-trans
+                      geometry; slight out-of-plane deviation while remaining
+                      close to the global minimum. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Configurations 1 and 5 span the near-trans region of phase space, whereas
+configurations 2 and 3 provide disordered starting points. Configuration 4 was
+added to test helical initial geometries. This variety is relevant when the
+simulation is tested at different temperatures: some initial states may lie
+closer to the equilibrated ensemble than others, reducing the effective
+burn-in time.
+
+% ============================================================
+\section{Input/Output Module}
+\label{sec:io}
+% ============================================================
+
+\subsection{Parameter Parsing from \texttt{input.dat}}
+
+All simulation parameters are read from a plain-text file \texttt{input.dat}
+through the \texttt{io} module. The parser applies default values for any
+missing keyword, strips inline comments (lines beginning with \texttt{\#}),
+and performs basic range validation. The following parameters are controlled
+from the input file:
+
+\begin{table}[ht]
+\centering
+\caption{Simulation parameters read from \texttt{input.dat}.}
+\label{tab:input_params}
+\begin{tabular}{lll}
+\toprule
+Parameter & Default & Description \\
+\midrule
+\texttt{n\_carbons}   & 10       & Number of backbone carbon atoms \\
+\texttt{n\_steps}     & 1{,}000{,}000 & Number of MC production steps \\
+\texttt{temperature}  & 300.0    & Simulation temperature (K) \\
+\texttt{conf\_type}   & 1        & Initial configuration mode (see Table~\ref{tab:conf_types}) \\
+\texttt{explicit\_h}  & .false.  & Enable all-atom (explicit hydrogen) mode \\
+\texttt{rng\_seed}    & 42       & Random number generator seed \\
+\texttt{print\_interval} & 1{,}000 & Steps between output writes \\
+\texttt{max\_delta}   & 0.5      & Maximum dihedral rotation per MC step (rad) \\
+\midrule
+\end{tabular}
+\end{table}
+
+Output is written in XYZ format: trajectories to
+\texttt{traj\_\textit{label}.xyz}, energies to
+\texttt{energy\_\textit{label}.dat}, and observables to
+\texttt{observables\_\textit{label}.dat}, where the label encodes the key
+simulation parameters (\texttt{n\_carbons}, \texttt{conf\_type},
+\texttt{n\_steps}, \texttt{temperature}) for unambiguous identification.
+
+% ============================================================
+\section{Serial Driver and Scientific Output}
+\label{sec:serial_driver}
+% ============================================================
+
+\subsection{Two-Phase Simulation Structure}
+
+The serial driver \texttt{main\_serial\_equil.f90} is organised into two
+sequential phases. Phase 1 (equilibration) runs until the Geweke convergence
+diagnostic (see the Monte Carlo Engine section) declares stationarity and phase 2
+(production) that restarts the step counter and accumulates the data used for
+analysis. 
+
+\subsection{Annealing Schedule}
+
+An optional simulated annealing schedule is implemented in Phase 1 to help
+the chain escape local energy minima. The temperature decreases linearly
+from $T_{\text{ini}}$ to $T_{\text{fin}}$ over the first \texttt{n\_steps}
+equilibration steps:
+
+\begin{equation}
+  T(t) = T_{\text{ini}} - \Delta T \cdot (t - 1), \qquad
+  \Delta T = \frac{T_{\text{ini}} - T_{\text{fin}}}{n_{\text{steps}} - 1}
+  \label{eq:annealing}
+\end{equation}
+
+When \texttt{T\_ini = T\_fin}, the schedule reduces to a constant-temperature
+run (the default production setting). The annealing feature was used during
+development to verify that the code produces physically consistent results: as
+$T \to 0\,\text{K}$, the polymer is expected to relax towards the fully
+extended all-trans conformation (\texttt{conf\_type = 1}), which corresponds
+to the global energy minimum for the chosen force-field parameters. This
+behaviour was confirmed in all test runs where the chain did not become
+kinetically trapped in twisted or tangled states.
+
+\subsection{CPU Timing and Performance Reference}
+
+The intrinsic \texttt{cpu\_time} routine has been used to measure the equilibration and production phases independently, separating the associated computational costs. These timings are written as output files, giving a baseline for the serial performance baseline later compared with the parallel implementations.
+
+% ============================================================
+\section{Python Post-Processing and Analysis}
+\label{sec:postproc}
+% ============================================================
+
+\subsection{Automated Equilibration Detection}
+
+Before any observable is plotted, the Python script \texttt{plot\_results.py}
+applies an automated equilibration detector to the energy time series. The
+method follows Chodera's paper \cite{chodera2015}, which selects the discard index $t_0$ that
+maximises the number of effectively independent samples $N_{\text{eff}}$:
+
+\begin{equation}
+  N_{\text{eff}}(t_0) = \frac{N - t_0}{g(t_0)}, \qquad
+  g = 1 + 2\,\tau_{\text{int}}
+  \label{eq:neff}
+\end{equation}
+
+where $g$ is the statistical inefficiency and $\tau_{\text{int}}$ is the
+integrated autocorrelation time, computed via Fast Fourier Transform (FFT):
+
+\begin{lstlisting}[language=Python,
+  caption={Equilibration detector and autocorrelation-time estimator.}]
+def detect_equilibration(x):
+    # Chodera (2015): find t0 that maximises N_eff
+    n = len(x)
+    best_neff, best_t0 = 0.0, 0
+    candidates = np.unique(
+        np.linspace(0, int(n * 0.9), min(200, n)).astype(int))
+    for t0 in candidates:
+        sub = x[t0:]
+        _, g = integrated_autocorr_time(sub)
+        neff = (n - t0) / g
+        if neff > best_neff:
+            best_neff, best_t0 = neff, t0
+    return best_t0
+
+def integrated_autocorr_time(x):
+    # FFT-based normalised autocorrelation function
+    n   = len(x)
+    xc  = x - np.mean(x)
+    f   = np.fft.rfft(xc, n=2*n)
+    acf = np.fft.irfft(f * np.conj(f))[:n]
+    acf /= acf[0]
+    # Truncate at first negative value (Sokal window)
+    cut = next((i for i in range(1, n) if acf[i] < 0.0), n)
+    tau_int = 0.5 + np.sum(acf[1:cut])
+    return tau_int, 1.0 + 2.0 * tau_int   # tau_int, g
+\end{lstlisting}
+
+This approach is better than a fixed burn-in fraction because it adapts to
+the actual autocorrelation structure of each run, maximising statistical
+efficiency and not discarding more data than necessary. Then, Torsion angle histograms are constructed exclusively from data collected after
+$t_0$. The empirical distribution is overlaid with the theoretical Boltzmann
+weight derived from the torsional potential (TraPPE-UA or OPLS-AA effective
+backbone).
+
+
+% ============================================================
+\section{Cluster Compatibility}
+\label{sec:cluster}
+% ============================================================
+
+Portability to shared HPC infrastructure required two targeted modifications.
+First, the \texttt{Makefile} replaces the Fortran 2008 \texttt{open(newunit=u)}
+syntax with explicit unit-number declarations compatible with Fortran 90
+compilers available on the CERQT2 cluster. Second, a submission script
+\texttt{1.run.sh} was created to load the appropriate GCC and OpenMPI modules
+before compilation and execution. The \texttt{parameters.f90} file was adapted
+to restore the \texttt{\#ifdef} preprocessor block controlling the
+\texttt{explicit\_h} compilation flag, and a comment was added to the
+\texttt{Makefile} explaining why the \texttt{-I\$(MPI\_INC\_DIR)} flag is
+conditionally omitted in certain build configurations.
+
+% ============================================================
+\section{MPI Parallelization: Independent Replicas}
+\label{sec:parallel_replicas}
+% ============================================================
+
+\subsection{Justification}
+
+The MPI parallelization implemented here is based on independent replica parallelism as a first step, while the energy evaluation and the Monte Carlo kernel can be parallelized subsequently (see the Energy Evaluation and Monte Carlo sections). First, independent replicas do not require inter-process communication inside the Monte Carlo loop, which keeps synchronization overhead very low. Second, running several initial configurations simultaneously makes it possible to assess how sensitive the final sampled ensemble is to the choice of starting geometry.
+
+\subsection{Implementation: \texttt{main\_parallel\_replicas.f90}}
+
+Starting from \texttt{main\_serial.f90}, three MPI ranks are launched
+simultaneously. Each rank runs the identical Monte Carlo protocol (same
+thermodynamic parameters, same number of steps) but is assigned a distinct
+initial configuration and a perturbed random seed:
+
+\begin{lstlisting}[caption={Rank-dependent configuration and seed assignment.}]
+! MPI initialization
+call MPI_Init(ierr)
+call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
+
+! Assign initial configuration based on rank
+select case (rank)
+  case (0); conf_type = 1   ! all-trans (extended)
+  case (1); conf_type = 4   ! helix / spring
+  case (2); conf_type = 5   ! perturbed trans
+end select
+
+! Perturb the RNG seed so trajectories immediately diverge
+rng_seed = rng_seed + rank * 104729
+
+! Build the initial configuration and run the full MC protocol
+call build_initial_conf(n_carbons, conf_type, explicit_h, coords, symbols)
+call mc_run(...)
+
+! Rank-labelled output so files do not overwrite each other
+write(label, '(A,I1)') trim(base_label)//'_rank', rank
+call write_trajectory(label, coords, symbols, n_atoms)
+\end{lstlisting}
+
+The three configurations chosen (\texttt{conf\_type} 1, 4, and 5) cover the
+near-trans region from three distinct but close starting points: fully
+extended, helical, and slightly perturbed extended. This choice maximises the
+geometric diversity of the initial ensemble while keeping all replicas in
+a physically reasonable region of conformational space.
+
+A serial counterpart, \texttt{main\_serial\_replicas.f90}, runs the same
+three configurations sequentially to provide a controlled performance
+reference. Both versions employ wall-clock timing: \texttt{MPI\_Wtime} in the
+parallel driver and an equivalent system-clock call in the serial one,
+ensuring that the speedup ratios reported in Section~\ref{sec:scaling} reflect
+actual elapsed time rather than CPU time.
+
+\subsection{Discarded Parallelization: XYZ Trajectory Writing}
+
+A second parallelization direction was explored: distributing the XYZ
+trajectory write step across ranks, so that each rank writes its own frame
+independently. The resulting wall-clock improvement was marginal (less than
+2\% of total runtime), confirming that trajectory I/O is not the computational
+bottleneck. The dominant cost lies in the energy evaluation and
+Metropolis acceptance/rejection logic, as expected from the
+$\mathcal{O}(N^2)$ Lennard-Jones loop. This branch was therefore discarded
+and the simpler rank-labelled sequential write was kept.
+
+% ============================================================
+\section{MPI Parallelization: Observable Post-Processing}
+\label{sec:parallel_observables}
+% ============================================================
+
+\subsection{Design and Implementation}
+
+Post-processing of the trajectory data has been parallelized in
+\texttt{main\_parallel\_observables.f90}. Rather than decomposing a single
+trajectory into contiguous frame blocks, the implementation operates at the
+file level: all trajectory files are first enumerated in a manifest, rank 0
+reads this manifest, and the complete file list is broadcast to all MPI ranks.
+Each rank then processes a round-robin subset of trajectory files,
+independently computing the radius of gyration \(R_g\), the end-to-end
+distance \(R_{ee}\), and the torsional statistics for the configurations
+assigned to it.
+
+This design was chosen because the available data are naturally distributed
+across multiple trajectory files, corresponding to different configuration
+types and simulation phases (\texttt{equil} and \texttt{prod}). A file-level
+distribution avoids repeated file seeks inside large XYZ trajectories, keeps
+the implementation simple, and preserves a fully embarrassingly parallel local
+workload. At the same time, it remains fully compatible with collective MPI
+communication for global aggregation.
+
+A first collective step is performed through \texttt{MPI\_Bcast}, which is used
+to distribute the manifest and the maximum number of torsional degrees of
+freedom to all ranks. After each rank has completed its local file subset, a
+mid-run checkpoint is evaluated by means of \texttt{MPI\_Allreduce}. In this
+step, the partial frame counts and partial \(R_g\) sums are synchronised across
+all processes, so that the global partial mean can be computed before the final
+aggregation stage. This checkpoint was introduced as a lightweight example of
+active communication during the computation phase, beyond the final collection
+of results.
+
+\begin{lstlisting}[caption={Round-robin file distribution and MPI checkpoint in \texttt{main\_parallel\_observables.f90}.}]
+! Each rank processes a round-robin subset of trajectory files
+do ifile = rank + 1, nfiles, num_procs
+  call process_trajectory(trim(files(ifile)), max_phi, &
+       local_file_count, local_frame_count, &
+       local_sum_rg, local_sum_rg2, local_sum_ree, local_sum_ree2, &
+       local_nphi, local_sum_phi, local_sum_phi2)
+enddo
+
+! Mid-run checkpoint: all ranks obtain the global partial mean of Rg
+call MPI_Allreduce(local_frame_count, ckpt_frame_count, n_conf*n_phase, &
+                   MPI_INTEGER, MPI_SUM, MPI_COMM_WORLD, ierr)
+call MPI_Allreduce(local_sum_rg, ckpt_sum_rg, n_conf*n_phase, &
+                   MPI_DOUBLE_PRECISION, MPI_SUM, MPI_COMM_WORLD, ierr)
+
+! Final aggregation on rank 0
+call MPI_Reduce(local_sum_rg, global_sum_rg, n_conf*n_phase, &
+                MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+\end{lstlisting}
+
+The final global statistics are obtained on rank 0 through a series of
+\texttt{MPI\_Reduce} operations, which combine the local sums, squared sums,
+frame counts, and torsional accumulators into global averages and standard
+deviations. The corresponding summary files
+(\texttt{summary\_global\_np1.dat}, \texttt{summary\_global\_np2.dat},
+\texttt{summary\_global\_np4.dat}, and \texttt{summary\_global\_np8.dat}) show
+that the numerical results are identical for all tested values of \(n_p\),
+confirming that the parallelization preserves the observable averages exactly.
+
+The benchmark driver is invoked from the cluster submission script
+\texttt{3.run\_parallel\_observables\_np.sh}, which executes the same
+post-processing workflow for \(n_p \in \{1,2,4,8\}\), records both MPI and
+shell wall-clock times, and writes per-process summary files for subsequent
+comparison.
+
+% ============================================================
+\section{Scaling Analysis}
+\label{sec:scaling}
+% ============================================================
+
+\subsection{Replica Parallelism: Speedup vs.\ System Size and Run Length}
+
+The independent-replica driver (\texttt{main\_parallel\_replicas.f90}) was
+benchmarked against its serial counterpart
+(\texttt{main\_serial\_replicas.f90}) across a range of chain lengths
+(\(N_C \in \{20, 50, 100, 200, 500\}\)) at fixed \(n_{\text{steps}} = 10^6\),
+and across a range of run lengths
+(\(n_{\text{steps}} \in \{10^5, 10^6, 10^7\}\)) at fixed \(N_C = 100\). All
+runs used \(N_{\text{ranks}} = 3\) MPI processes.
+
+\begin{table}[ht]
+\centering
+\caption{Replica speedup as a function of chain length (\(n_{\text{steps}} = 10^6\),
+         3 MPI ranks vs.\ 3 sequential serial runs).}
+\label{tab:speedup_natoms}
+\begin{tabular}{rrrrrr}
+\toprule
+$N_C$ & $N_{\text{atoms}}$ & $n_{\text{ranks}}$ & $t_{\text{serial}}$ (s) &
+$t_{\text{parallel}}$ (s) & Speedup \\
+\midrule
+ 20  &   42  & 3 &    42.71 &    15.22 & 2.81 \\
+ 50  &  102  & 3 &   239.32 &    88.33 & 2.71 \\
+100  &  202  & 3 &   790.35 &   276.21 & 2.86 \\
+200  &  402  & 3 & 3{,}418.03 &   984.09 & 3.47 \\
+500  & 1002  & 3 & 17{,}755.64 & 6{,}113.38 & 2.90 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\caption{Replica speedup as a function of run length (\(N_C = 100\),
+         3 MPI ranks vs.\ 3 sequential serial runs).}
+\label{tab:speedup_nsteps}
+\begin{tabular}{rrrrrr}
+\toprule
+$n_{\text{steps}}$ & $n_{\text{ranks}}$ & $n_{\text{serial runs}}$ &
+$t_{\text{serial}}$ (s) & $t_{\text{parallel}}$ (s) & Speedup \\
+\midrule
+$10^5$  & 3 & 3 &     76.29 &    26.11 & 2.92 \\
+$10^6$  & 3 & 3 &    790.35 &   276.21 & 2.86 \\
+$10^7$  & 3 & 3 & 8{,}112.94 & 2{,}883.55 & 2.81 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{speedup_vs_natoms.pdf}
+  \caption{Speedup of independent-replica parallelization: speedup as a function of chain length
+           (\(N_C \in \{20,50,100,200,500\}\), \(n_{\text{steps}} = 10^6\)).
+           All runs use 3 MPI ranks. The dashed line indicates ideal
+           linear scaling (\(S = 3\)).}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{speedup_vs_nsteps.pdf}
+  \caption{Speedup of independent-replica parallelization: speedup as a function of run length
+           (\(n_{\text{steps}} \in \{10^5, 10^6, 10^7\}\), \(N_C = 100\)).
+           All runs use 3 MPI ranks. The dashed line indicates ideal
+           linear scaling (\(S = 3\)).}
+\end{figure}
+
+The speedup remains consistently close to the ideal value of 3 across the
+majority of chain lengths and run lengths. Since the replicas are fully
+independent, no communication is required inside the Monte Carlo loop itself,
+and the only parallel overhead originates from MPI initialization, process
+launch, and final output management. The slightly sub-linear values
+(\(S \approx 2.8\)--\(2.9\)) are therefore interpreted as the expected effect
+of this fixed overhead. The isolated value \(S = 3.47\) at \(N_C = 200\) is
+best understood as a small timing fluctuation of the serial reference rather
+than as a systematic superlinear scaling effect.
+
+\subsection{Observable Post-Processing: Strong Scaling}
+
+The observable post-processing driver was benchmarked on a fixed dataset for
+\(n_p \in \{1,2,4,8\}\). The resulting MPI wall times are 19.35 s, 9.33 s,
+4.97 s, and 3.06 s, respectively. From these values, the measured speedups are
+1.000, 2.074, 3.894, and 6.318, corresponding to efficiencies of 1.000, 1.037,
+0.974, and 0.790.
+
+\begin{table}[ht]
+\centering
+\caption{Strong scaling of \texttt{main\_parallel\_observables.f90}.}
+\label{tab:scaling_observables}
+\begin{tabular}{rrrrc}
+\toprule
+$n_p$ & $t_{\text{MPI}}$ (s) & $t_{\text{shell}}$ (s) & Speedup & Efficiency \\
+\midrule
+1 & 19.35 & 19.70 & 1.000 & 1.000 \\
+2 &  9.33 &  9.53 & 2.074 & 1.037 \\
+4 &  4.97 &  5.31 & 3.894 & 0.974 \\
+8 &  3.06 &  3.29 & 6.318 & 0.790 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{benchmark_vs_np.pdf}
+  \caption{Strong scaling of the observable post-processing kernel.
+           MPI wall-clock time (solid circles) and shell-measured
+           elapsed time (dashed squares) as a function of the number of
+           MPI processes \(n_p\).}
+  \label{fig:scaling_observables}
+\end{figure}
+
+A near-ideal strong-scaling regime is observed up to \(n_p = 4\). The slight
+superlinear efficiency at \(n_p = 2\) (\(E = 1.037\)) is attributed to normal
+timing variability and low-level runtime effects in the serial baseline, rather
+than to a genuine algorithmic gain. For this reason, the result is interpreted
+as essentially ideal scaling within the uncertainty of the benchmark. At
+\(n_p = 8\), the efficiency decreases to 0.790, indicating the expected onset
+of diminishing returns once the local workload per rank becomes too small and
+the relative cost of collective communication, process startup, and file I/O
+becomes non-negligible.
+
+The correctness of the parallel implementation is further supported by the fact
+that all per-\(n_p\) summary files produce identical values of \(R_g\) and
+\(R_{ee}\) for every configuration and phase. The MPI decomposition therefore
+changes the execution time, but not the final numerical averages.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{observables_vs_np.pdf}
+  \caption{Mean radius of gyration \(R_g\) and mean end-to-end distance
+           \(R_{ee}\) as a function of the number of MPI processes \(n_p\).
+           The overlap of all curves confirms that the observable averages are
+           preserved exactly across the tested parallel decompositions.}
+  \label{fig:observables_vs_np}
+\end{figure}
+
+\subsection{Discussion}
+
+Both parallelization strategies achieve their intended objectives within their
+respective scopes. The independent-replica implementation provides a clean MPI
+layer for running several trajectories simultaneously, while the observable
+post-processing kernel demonstrates that the analysis stage can also be
+distributed efficiently across ranks.
+
+For the post-processing code, the benchmark indicates near-ideal scaling up to
+four MPI processes, with only a moderate efficiency loss at eight processes.
+This behaviour is fully consistent with the structure of the algorithm: local
+trajectory analysis is embarrassingly parallel, whereas the final collective
+steps (\texttt{MPI\_Allreduce}, \texttt{MPI\_Barrier}, and
+\texttt{MPI\_Reduce}) introduce a fixed communication cost that becomes visible
+only when the amount of work per rank is sufficiently small.
+
+Taken together, these results establish that the MPI layer developed for the
+project is not limited to trajectory generation alone, but also extends
+naturally to post-processing and benchmarking. The observable kernel therefore
+provides a useful and technically distinct contribution to the overall parallel
+workflow, complementing the independent-replica and collaborative-equilibration
+strategies implemented in the simulation stage.
+
+
+% ============================================================
+\section*{References}
+% ============================================================
+\begin{itemize}
+  \item Chodera, J.D. (2016). A simple method for automated equilibration
+        detection in molecular simulations.
+        \textit{J.\ Chem.\ Theory Comput.}, 12(4), 1799--1805.
+        \doi{10.1021/acs.jctc.5b00784}
+\end{itemize}
+
+\end{document}

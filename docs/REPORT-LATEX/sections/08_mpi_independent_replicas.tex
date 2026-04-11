@@ -1,0 +1,69 @@
+% Source ownership:
+% - Itxaso
+
+% ============================================================
+\section{MPI Parallelization: Independent Replicas}
+\label{sec:parallel_replicas}
+% ============================================================
+
+\subsection{Justification}
+
+The MPI parallelization implemented here is based on independent replica parallelism as a first step, while the energy evaluation and the Monte Carlo kernel can be parallelized subsequently (see the Energy Evaluation and Monte Carlo sections). First, independent replicas do not require inter-process communication inside the Monte Carlo loop, which keeps synchronization overhead very low. Second, running several initial configurations simultaneously makes it possible to assess how sensitive the final sampled ensemble is to the choice of starting geometry.
+
+\subsection{Implementation: \texttt{main\_parallel\_replicas.f90}}
+
+Starting from \texttt{main\_serial.f90}, three MPI ranks are launched
+simultaneously. Each rank runs the identical Monte Carlo protocol (same
+thermodynamic parameters, same number of steps) but is assigned a distinct
+initial configuration and a perturbed random seed:
+
+\begin{lstlisting}[caption={Rank-dependent configuration and seed assignment.}]
+! MPI initialization
+call MPI_Init(ierr)
+call MPI_Comm_rank(MPI_COMM_WORLD, rank, ierr)
+call MPI_Comm_size(MPI_COMM_WORLD, n_ranks, ierr)
+
+! Assign initial configuration based on rank
+select case (rank)
+  case (0); conf_type = 1   ! all-trans (extended)
+  case (1); conf_type = 4   ! helix / spring
+  case (2); conf_type = 5   ! perturbed trans
+end select
+
+! Perturb the RNG seed so trajectories immediately diverge
+rng_seed = rng_seed + rank * 104729
+
+! Build the initial configuration and run the full MC protocol
+call build_initial_conf(n_carbons, conf_type, explicit_h, coords, symbols)
+call mc_run(...)
+
+! Rank-labelled output so files do not overwrite each other
+write(label, '(A,I1)') trim(base_label)//'_rank', rank
+call write_trajectory(label, coords, symbols, n_atoms)
+\end{lstlisting}
+
+The three configurations chosen (\texttt{conf\_type} 1, 4, and 5) cover the
+near-trans region from three distinct but close starting points: fully
+extended, helical, and slightly perturbed extended. This choice maximises the
+geometric diversity of the initial ensemble while keeping all replicas in
+a physically reasonable region of conformational space.
+
+A serial counterpart, \texttt{main\_serial\_replicas.f90}, runs the same
+three configurations sequentially to provide a controlled performance
+reference. Both versions employ wall-clock timing: \texttt{MPI\_Wtime} in the
+parallel driver and an equivalent system-clock call in the serial one,
+ensuring that the speedup ratios reported in Section~\ref{sec:scaling} reflect
+actual elapsed time rather than CPU time.
+
+\subsection{Discarded Parallelization: XYZ Trajectory Writing}
+
+A second parallelization direction was explored: distributing the XYZ
+trajectory write step across ranks, so that each rank writes its own frame
+independently. The resulting wall-clock improvement was marginal (less than
+2\% of total runtime), confirming that trajectory I/O is not the computational
+bottleneck. The dominant cost lies in the energy evaluation and
+Metropolis acceptance/rejection logic, as expected from the
+$\mathcal{O}(N^2)$ Lennard-Jones loop. This branch was therefore discarded
+and the simpler rank-labelled sequential write was kept.
+
+% ============================================================

@@ -1,0 +1,74 @@
+% Source ownership:
+% - Itxaso
+
+% ============================================================
+\section{MPI Parallelization: Observable Post-Processing}
+\label{sec:parallel_observables}
+% ============================================================
+
+\subsection{Design and Implementation}
+
+Post-processing of the trajectory data has been parallelized in
+\texttt{main\_parallel\_observables.f90}. Rather than decomposing a single
+trajectory into contiguous frame blocks, the implementation operates at the
+file level: all trajectory files are first enumerated in a manifest, rank 0
+reads this manifest, and the complete file list is broadcast to all MPI ranks.
+Each rank then processes a round-robin subset of trajectory files,
+independently computing the radius of gyration \(R_g\), the end-to-end
+distance \(R_{ee}\), and the torsional statistics for the configurations
+assigned to it.
+
+This design was chosen because the available data are naturally distributed
+across multiple trajectory files, corresponding to different configuration
+types and simulation phases (\texttt{equil} and \texttt{prod}). A file-level
+distribution avoids repeated file seeks inside large XYZ trajectories, keeps
+the implementation simple, and preserves a fully embarrassingly parallel local
+workload. At the same time, it remains fully compatible with collective MPI
+communication for global aggregation.
+
+A first collective step is performed through \texttt{MPI\_Bcast}, which is used
+to distribute the manifest and the maximum number of torsional degrees of
+freedom to all ranks. After each rank has completed its local file subset, a
+mid-run checkpoint is evaluated by means of \texttt{MPI\_Allreduce}. In this
+step, the partial frame counts and partial \(R_g\) sums are synchronised across
+all processes, so that the global partial mean can be computed before the final
+aggregation stage. This checkpoint was introduced as a lightweight example of
+active communication during the computation phase, beyond the final collection
+of results.
+
+\begin{lstlisting}[caption={Round-robin file distribution and MPI checkpoint in \texttt{main\_parallel\_observables.f90}.}]
+! Each rank processes a round-robin subset of trajectory files
+do ifile = rank + 1, nfiles, num_procs
+  call process_trajectory(trim(files(ifile)), max_phi, &
+       local_file_count, local_frame_count, &
+       local_sum_rg, local_sum_rg2, local_sum_ree, local_sum_ree2, &
+       local_nphi, local_sum_phi, local_sum_phi2)
+enddo
+
+! Mid-run checkpoint: all ranks obtain the global partial mean of Rg
+call MPI_Allreduce(local_frame_count, ckpt_frame_count, n_conf*n_phase, &
+                   MPI_INTEGER, MPI_SUM, MPI_COMM_WORLD, ierr)
+call MPI_Allreduce(local_sum_rg, ckpt_sum_rg, n_conf*n_phase, &
+                   MPI_DOUBLE_PRECISION, MPI_SUM, MPI_COMM_WORLD, ierr)
+
+! Final aggregation on rank 0
+call MPI_Reduce(local_sum_rg, global_sum_rg, n_conf*n_phase, &
+                MPI_DOUBLE_PRECISION, MPI_SUM, 0, MPI_COMM_WORLD, ierr)
+\end{lstlisting}
+
+The final global statistics are obtained on rank 0 through a series of
+\texttt{MPI\_Reduce} operations, which combine the local sums, squared sums,
+frame counts, and torsional accumulators into global averages and standard
+deviations. The corresponding summary files
+(\texttt{summary\_global\_np1.dat}, \texttt{summary\_global\_np2.dat},
+\texttt{summary\_global\_np4.dat}, and \texttt{summary\_global\_np8.dat}) show
+that the numerical results are identical for all tested values of \(n_p\),
+confirming that the parallelization preserves the observable averages exactly.
+
+The benchmark driver is invoked from the cluster submission script
+\texttt{3.run\_parallel\_observables\_np.sh}, which executes the same
+post-processing workflow for \(n_p \in \{1,2,4,8\}\), records both MPI and
+shell wall-clock times, and writes per-process summary files for subsequent
+comparison.
+
+% ============================================================

@@ -1,0 +1,118 @@
+% Source ownership:
+% - Mainly Arthur/Manel/Oliwier
+% - pending final benchmark figures / commentary
+
+\section{OpenMP Parallelization}
+\label{sec:openmp}
+
+\subsection{\texttt{compute\_total\_energy}}
+
+The dominant cost in \texttt{compute\_total\_energy} is the
+\(O(N^2)\) double loop over non-bonded Lennard-Jones pairs. Each
+iteration is independent --- it reads a pair of coordinates, evaluates
+\texttt{ljpairenergy}, and adds to a running sum --- which makes it a
+natural fit for OpenMP worksharing.
+
+The outer loop is distributed across threads with
+\texttt{!\$omp parallel do}, with the inner index, the squared
+distance \(r^2\), and the dihedral cosine \texttt{cosphi} declared
+\texttt{private} to prevent cross-thread interference. The global
+accumulators \texttt{elj} and \texttt{etors} are aggregated safely
+using a \texttt{reduction(+:...)} clause.
+
+The two loops inside the subroutine have different iteration structures
+and were scheduled accordingly. The LJ pair loop has a triangular
+iteration space because the inner bound depends on the outer index, so
+\texttt{schedule(dynamic,10)} is used to prevent faster threads from
+sitting idle while slower ones finish larger chunks of work. The
+torsional loop over the carbon backbone is uniform in length and uses
+the default static scheduling, which has lower overhead when the
+workload is balanced.
+
+Both parallel regions are wrapped in an \texttt{if(omp\_totalenergy)}
+runtime guard, which is set from the input file. This allows the same
+binary to run in purely serial mode during development or lightweight
+tests without any code changes.
+
+\subsection{\texttt{delta\_energy}}
+
+The \texttt{delta\_energy} subroutine is the true bottleneck of the MC
+loop --- it is called once per accepted or rejected move, millions of
+times per simulation. The key algorithmic feature here is the dynamic
+partitioning of atoms into \texttt{fixedlist} and \texttt{movedlist} at
+the start of each call.
+
+Only cross-interactions between fixed and moved atoms can have changed
+during a pivot, so the LJ loop processes exclusively those pairs rather
+than the full \(O(N^2)\) set. This drastically reduces the amount of
+work required for a local move and makes the subroutine much more
+sensitive to efficient parallelization.
+
+The two nested loops over fixed and moved form a perfectly rectangular
+iteration space, which makes \texttt{collapse(2)} effective: it merges
+both loops into a single flat range of \(n_{\mathrm{fixed}}
+n_{\mathrm{moved}}\) iterations and distributes them evenly across
+threads.
+
+Since pivot moves near the ends of the chain move very few atoms,
+spawning threads for only a small number of pairs would cost more than
+it saves. The parallel block is therefore gated by
+\texttt{if(omp\_deltaenergy .and. nfixed*nmoved > 1000)}, ensuring that
+OpenMP is only activated when the workload genuinely justifies the
+threading overhead.
+
+\subsection{Benchmarking Methodology}
+
+To quantify the effect of thread count on both energy routines, a
+dedicated benchmark program \texttt{mainbenchtotal.f90} was written. It
+performs 10,000 back-to-back calls to
+\texttt{compute\_total\_energy} for a given chain size and reports the
+wall time via \texttt{MPI\_Wtime}.
+
+Two shell scripts automate the full benchmark sweeps.
+\texttt{4.runomptotaltest.sh} compiles and runs the benchmark binary
+across thread counts of 1, 2, 3, and 4 for chain sizes of 20, 50, 100,
+and 500 carbons, writing the results to a CSV file in the benchmark
+results folder.
+
+\texttt{5.runompdeltatest.sh} follows the same structure but targets
+\texttt{delta\_energy} by running full 1M-step MC simulations via
+\texttt{mainparallelreplicas.x} and extracting wall time from the CPU
+output files. Both scripts are written for the cluster queue and load
+the appropriate MPI module.
+
+The results are plotted by \texttt{plotbenchmarks.py}, which reads both
+CSV files and produces per-chain-size scaling plots as PDF figures.
+
+A note must be made regarding the \texttt{delta\_energy} benchmark:
+because it is measured inside full Monte Carlo production runs, the
+timings are affected by randomness. Different random trajectories lead
+to different accepted moves and different moved/fixed partitions, so the
+workload is not bitwise identical between runs. For that reason, the
+\texttt{delta\_energy} benchmark should be interpreted as a practical
+end-to-end timing measurement rather than as a perfectly controlled
+microbenchmark.
+
+% Oliwier to add images / results / analysis
+
+\subsection{SIMD Exploration}
+
+An attempt was made to additionally exploit single-core SIMD
+vectorization on the \texttt{ljpairenergy} function using the
+\texttt{!\$omp declare simd} directive. The idea was to generate a
+vectorized variant of the function callable from an
+\texttt{!\$omp simd}-annotated inner loop, allowing each thread to
+process multiple atom pairs simultaneously using AVX registers.
+
+In practice, activating this required structural changes to
+\texttt{delta\_energy} that conflicted with the existing threading
+design. The \texttt{collapse(2)} clause and the inner-loop
+\texttt{cycle} on \texttt{isexcluded} are not naturally compatible with
+SIMD regions, and removing them in order to support vectorization
+degraded the thread load balancing that \texttt{collapse(2)} provides.
+
+Given that OpenMP threading was the primary parallelization goal, the
+SIMD experiment was abandoned and the directive was removed from the
+code. It remains a direction worth revisiting, particularly if the pair
+loops are later refactored to use pre-filtered pair lists that eliminate
+the exclusion branch entirely.

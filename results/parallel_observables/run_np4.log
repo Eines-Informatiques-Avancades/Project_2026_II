@@ -1,9 +1,19 @@
 [read_file_list] manifest = /home/cmm11/EIA/Copy/results/parallel_observables/filelist_explicit.txt
 [read_file_list] nfiles   = 42
 ------------------------------------------------------------
+[checkpoint] Global partial Rg means after all 4 ranks finished local processing:
+  conf1 / equil: mean Rg =    76.7525 Ang  (1844 frames)
+  conf1 / prod: mean Rg =    76.1147 Ang  (1010 frames)
+  conf4 / equil: mean Rg =    72.1065 Ang  (1524 frames)
+  conf4 / prod: mean Rg =    73.1273 Ang  (1010 frames)
+  conf5 / equil: mean Rg =    52.6741 Ang  (1284 frames)
+  conf5 / prod: mean Rg =    51.6298 Ang  (1010 frames)
+[checkpoint] Proceeding to final MPI_Reduce and write step.
+------------------------------------------------------------
+------------------------------------------------------------
  [parallel_observables] files processed: 42
  [parallel_observables] MPI ranks:       4
- [parallel_observables] wall time:          3.861426 s
-BENCHMARK_MPI_WALL     3.861426
+ [parallel_observables] wall time:          4.969692 s
+BENCHMARK_MPI_WALL     4.969692
  [parallel_observables] manifest used: /home/cmm11/EIA/Copy/results/parallel_observables/filelist_explicit.txt
  [parallel_observables] results written to: /home/cmm11/EIA/Copy/results/parallel_observables

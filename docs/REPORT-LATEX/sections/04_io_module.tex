@@ -1,0 +1,44 @@
+% Source ownership:
+% - Itxaso
+
+% ============================================================
+\section{Input/Output Module}
+\label{sec:io}
+% ============================================================
+
+\subsection{Parameter Parsing from \texttt{input.dat}}
+
+All simulation parameters are read from a plain-text file \texttt{input.dat}
+through the \texttt{io} module. The parser applies default values for any
+missing keyword, strips inline comments (lines beginning with \texttt{\#}),
+and performs basic range validation. The following parameters are controlled
+from the input file:
+
+\begin{table}[ht]
+\centering
+\caption{Simulation parameters read from \texttt{input.dat}.}
+\label{tab:input_params}
+\begin{tabular}{lll}
+\toprule
+Parameter & Default & Description \\
+\midrule
+\texttt{n\_carbons}   & 10       & Number of backbone carbon atoms \\
+\texttt{n\_steps}     & 1{,}000{,}000 & Number of MC production steps \\
+\texttt{temperature}  & 300.0    & Simulation temperature (K) \\
+\texttt{conf\_type}   & 1        & Initial configuration mode (see Table~\ref{tab:conf_types}) \\
+\texttt{explicit\_h}  & .false.  & Enable all-atom (explicit hydrogen) mode \\
+\texttt{rng\_seed}    & 42       & Random number generator seed \\
+\texttt{print\_interval} & 1{,}000 & Steps between output writes \\
+\texttt{max\_delta}   & 0.5      & Maximum dihedral rotation per MC step (rad) \\
+\midrule
+\end{tabular}
+\end{table}
+
+Output is written in XYZ format: trajectories to
+\texttt{traj\_\textit{label}.xyz}, energies to
+\texttt{energy\_\textit{label}.dat}, and observables to
+\texttt{observables\_\textit{label}.dat}, where the label encodes the key
+simulation parameters (\texttt{n\_carbons}, \texttt{conf\_type},
+\texttt{n\_steps}, \texttt{temperature}) for unambiguous identification.
+
+% ============================================================

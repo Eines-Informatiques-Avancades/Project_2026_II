@@ -1,0 +1,214 @@
+% Source ownership:
+% - Itxaso: Serial Driver and Scientific Output
+% - Itxaso: Python Post-Processing and Analysis
+% - Arthur/Manel: cleaned serial-results narrative and figure placement
+
+\section{Serial Driver, Results and Post-Processing}
+\label{sec:serial_post}
+
+\subsection{Two-Phase Simulation Structure}
+
+The updated serial workflow is built around a two-phase execution model:
+an adaptive equilibration stage followed by a fixed-length production
+stage. This is implemented in \texttt{main\_serial\_equil.f90}, where the
+program first reads \texttt{input.dat}, constructs the initial polymer
+geometry, and then decides whether equilibration should be performed
+from scratch or bypassed through a previously saved equilibrated
+configuration.
+
+During Phase 1, the simulation performs Monte Carlo trial moves until
+the Geweke convergence diagnostic declares that the energy time series
+has reached a stationary regime. This replaces the old practice of
+assigning an arbitrary burn-in length in advance. Once equilibration is
+detected, the corresponding geometry is written to disk and becomes the
+starting point for Phase 2.
+
+Phase 2 is the production run proper. Here, the serial driver resets the
+step counter and performs the requested number of Monte Carlo steps
+starting from the equilibrated geometry. In the serial reference case
+used throughout the report, this corresponds to a \(10{,}000{,}000\)-step
+production simulation for a 500-carbon polyethylene chain with explicit
+hydrogens at 300 K.
+
+The driver records its scientific output periodically through the
+\texttt{print\_interval} mechanism. At each output checkpoint, the code
+writes the total, Lennard-Jones, and torsional energies together with
+the main structural observables, especially the radius of gyration
+\(R_g\) and the end-to-end distance \(R_{ee}\). Torsion-angle data and
+trajectory snapshots are also written so that the structural evolution
+can be visualised afterwards.
+
+An annealing schedule is still retained in the serial code in the form
+of a generic \(T_{\mathrm{ini}}\rightarrow T_{\mathrm{fin}}\) update.
+For the simulations discussed here, however, the temperature is held
+fixed at 300 K, so this block acts mainly as a configurable extension
+point rather than a physically active part of the production protocol.
+
+As a performance reference, the serial code was run on a single core of
+an Intel Core i7-11800H processor. In the benchmark comparison used in
+the report, one full serial production run required 8 hours, 18
+minutes, and 31.91 seconds. This timing serves as the baseline against
+which the parallel implementations were later compared.
+
+\subsection{Automated Equilibration Detection}
+
+The serial results are post-processed through \texttt{plot\_results.py}.
+This script begins by parsing \texttt{input.dat} so it can detect
+whether the run used explicit hydrogens and therefore decide which
+theoretical torsional potential should be overlaid in the final
+histogram plots. It then reads the separate equilibration and production
+outputs and stitches them together into a single coherent visual
+timeline.
+
+For the energy and observable plots, the script concatenates the two
+phases and marks the transition with a vertical dashed line. This makes
+the time-demarcation between equilibration and production explicit and
+allows the reader to assess whether the dynamics truly become stationary
+after the detected equilibration point. By contrast, the torsional
+distribution is generated using only the production portion, since that
+is the only phase intended to represent equilibrium sampling.
+
+The plotting layer is organized around three main functions:
+\texttt{plot\_energies}, \texttt{plot\_observables}, and
+\texttt{plot\_torsions}. The first plots the total, Lennard-Jones, and
+torsional energies as functions of Monte Carlo step. The second plots
+\(R_g\) and \(R_{ee}\). The third constructs the torsional histogram and
+superposes the corresponding theoretical torsional potential using the
+appropriate coefficient set for either the TraPPE-UA or OPLS-AA
+effective model.
+
+Before the runtime Geweke detector was introduced, a post-processing
+equilibration analysis was also used as a diagnostic layer. In that
+approach, the Python workflow estimated the integrated autocorrelation
+time \(\tau_{\mathrm{int}}\) from the energy series by computing the
+autocorrelation function through an FFT-based convolution. This
+provides a fast way to estimate correlation lengths and effective sample
+sizes even for long trajectories.
+
+That legacy Python analysis remains useful as a cross-check because it
+gives a purely post hoc view of correlation decay, burn-in length, and
+statistical inefficiency. However, it was not always robust enough to
+control the simulation by itself. In practice, long correlated plateaus
+could distort the variance estimates and lead to pathological
+truncations, including cases where the inferred production segment
+became unreasonably short. This limitation was one of the main reasons
+for moving equilibration detection into the Fortran runtime loop via the
+Geweke criterion.
+
+The final post-processing pipeline therefore combines two roles. The
+Fortran code performs the actual online equilibration detection and
+separates the simulation cleanly into equilibration and production, and
+the Python code acts as the analysis and visualization layer that
+verifies, displays, and interprets the resulting time series and
+distributions.
+
+\subsection{Serial Version Simulation Results}
+
+The serial reference simulation considered here consists of an
+equilibration run followed by a \(10{,}000{,}000\)-step production run
+for a 500-carbon polyethylene chain with explicit hydrogens at 300 K.
+The initial geometry starts from a highly extended chain with a fixed
+dihedral construction, after which the Monte Carlo engine samples
+torsional rotations across the full \(-\pi\) to \(\pi\) range.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=0.48\textwidth]{figs/serial_geweke/VMD_serial_geweke_initial_geometry.png}
+  \hfill
+  \includegraphics[width=0.48\textwidth]{figs/serial_geweke/VMD_serial_geweke_final_geometry.png}
+  \caption{Initial and final configurations for the serial equilibration/production test.}
+\end{figure}
+
+The initial and final structures show the large-scale conformational
+reorganization produced by the Monte Carlo dynamics. The simulation
+starts from an almost fully extended configuration and evolves toward a
+much more compact and disordered polymer conformation, consistent with a
+random-coil-like state after equilibration.
+
+The observables plot gives the clearest structural signature of this
+relaxation. Initially, both \(R_g\) and \(R_{ee}\) are very large
+because the chain is nearly stretched out. As trial rotations accumulate,
+the chain rapidly folds and collapses. In the data used for the report,
+the Geweke criterion identifies the transition to equilibrium at roughly
+3.9 million steps, after which both observables fluctuate within
+comparatively stable bounds characteristic of the production regime.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf}
+  \caption{Evolution of the radius of gyration and end-to-end distance across equilibration and production.}
+\end{figure}
+
+The energy evolution shows an analogous story. At early times, the
+Lennard-Jones contribution drops sharply as the artificially regular
+starting configuration relaxes and resolves its initial steric
+unfavourability. After the equilibration boundary, the total energy
+fluctuates around a much more stable mean value, indicating that the
+chain has reached a stationary conformational ensemble rather than
+continuing to drift systematically.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf}
+  \caption{Energy evolution across equilibration and production.}
+\end{figure}
+
+The production-only torsional histogram reveals the angular regions most
+frequently explored once the chain has equilibrated. In our runs, the
+distribution is strongly concentrated near values close to \(0\) rad.
+This differs from what one might expect from the raw standalone
+torsional potential alone, but it is consistent with a total-energy
+landscape in which compact states are heavily rewarded by non-bonded
+packing.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf}
+  \caption{Production-only torsional distribution.}
+\end{figure}
+
+\subsection{Interpretation}
+
+A useful way to interpret the serial results is to view the simulation
+as a balance between energetic stabilization and configurational
+entropy. At 300 K, the polymer is not searching only for a single
+minimum-energy geometry. Instead, it samples according to the Boltzmann
+distribution, so many structurally distinct compact states can be
+favoured collectively over one perfectly extended low-energy idealized
+state. This is why the chain coils rather than remaining elongated.
+
+The torsional histogram also should not be interpreted as a direct copy
+of the bare analytical torsional potential. The Monte Carlo acceptance
+criterion is based on the \emph{total} energy,
+\[
+E_{\mathrm{tot}} = E_{\mathrm{LJ}} + E_{\mathrm{tors}},
+\]
+not on the torsional term in isolation. A conformation with a locally
+unfavourable torsion can still be accepted if that penalty is more than
+compensated by favourable packing elsewhere in the chain.
+
+In the present all-atom implementation, there is also a specific
+topology-related reason why the torsional distribution can become biased
+toward compact cis-like states. Short-range Lennard-Jones interactions
+between atoms mapped as separated by fewer than four backbone bonds are
+excluded in order to avoid double-counting interactions already encoded
+in bonded terms. This is standard in force-field implementations, but
+when explicit hydrogens are present it can suppress a strong steric
+repulsion that would otherwise penalize very tight local curling across
+the bond.
+
+At the same time, longer-range contacts such as 1--5, 1--6, and higher
+hydrogen-hydrogen interactions are still retained. Once the chain folds
+into a dense globule, many of these pairs can sit near the attractive
+region of the Lennard-Jones well simultaneously. The net result is that
+compact structures can gain a substantial favourable \(E_{\mathrm{LJ}}\)
+contribution, enough to outweigh the local torsional penalty associated
+with angles near \(0\) rad.
+
+For this reason, the observed torsional distribution should be read as a
+property of the implemented total-energy model rather than as a direct
+validation of the isolated OPLS-AA or TraPPE torsional curve. A future
+refinement would be to replace absolute short-range exclusion by a more
+standard scaled treatment of selected short-range interactions, which
+would likely rebalance the competition between local steric repulsion
+and longer-range packing.

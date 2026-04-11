@@ -1,0 +1,20 @@
+% Source ownership:
+% - Itxaso
+
+% ============================================================
+\section{Cluster Compatibility}
+\label{sec:cluster}
+% ============================================================
+
+Portability to shared HPC infrastructure required two targeted modifications.
+First, the \texttt{Makefile} replaces the Fortran 2008 \texttt{open(newunit=u)}
+syntax with explicit unit-number declarations compatible with Fortran 90
+compilers available on the CERQT2 cluster. Second, a submission script
+\texttt{1.run.sh} was created to load the appropriate GCC and OpenMPI modules
+before compilation and execution. The \texttt{parameters.f90} file was adapted
+to restore the \texttt{\#ifdef} preprocessor block controlling the
+\texttt{explicit\_h} compilation flag, and a comment was added to the
+\texttt{Makefile} explaining why the \texttt{-I\$(MPI\_INC\_DIR)} flag is
+conditionally omitted in certain build configurations.
+
+% ============================================================
