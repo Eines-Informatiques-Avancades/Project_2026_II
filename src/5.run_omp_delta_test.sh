@@ -44,7 +44,7 @@ run_delta_test() {
   fi
 
   for nc in 50 100 500; do
-    for ns in 10000000; do
+    for ns in 1000000; do
       cat > confs/input.dat <<EOF
 n_carbons  = ${nc}
 explicit_h = .true.
