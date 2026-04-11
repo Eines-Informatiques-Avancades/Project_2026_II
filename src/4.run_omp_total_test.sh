@@ -9,8 +9,7 @@
 
 . /etc/profile
 
-# Module for OpenMP is suited for cerqt01.q. 
-# Adjust as needed for other queues or environments.
+module load gcc/8.3.0
 module load openmpi/3.1.3_ics-2015.0
 
 export MPLBACKEND=Agg
@@ -22,10 +21,10 @@ echo "OMP_THREADS,N_CARBONS,TIME_S" > $OUT_CSV
 
 run_total_test() {
   local thr=$1
-  make clean
-  make bench_total OMP_THREADS=$thr
+  make -f Makefile_bench clean
+  make -f Makefile_bench bench_total OMP_THREADS=$thr
   if [ ! -x ../bin/main_bench_total.x ]; then
-    echo "ERROR: build failed for OMP_THREADS=$thr â€” skipping" >&2
+    echo "ERROR: build failed for OMP_THREADS=$thr — skipping" >&2
     return 1
   fi
 
@@ -54,5 +53,5 @@ for threads in 1 2 3 4; do
   run_total_test $threads
 done
 
-make clean
+make -f Makefile_bench clean
 echo "All omp_total_energy benchmark runs complete."
