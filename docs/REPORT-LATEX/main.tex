@@ -1,0 +1,91 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{calc}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{etoolbox}
+\usepackage{float}
+
+\graphicspath{{figs/}}
+
+\newcommand{\doi}[1]{\href{https://doi.org/#1}{doi:#1}}
+
+% ── Fortran listings style ───────────────────────────────────
+\definecolor{codebg}{RGB}{248,248,248}
+\definecolor{codecomment}{RGB}{100,100,100}
+\definecolor{codekw}{RGB}{0,80,160}
+\definecolor{codestr}{RGB}{160,0,0}
+
+\lstdefinelanguage{Fortran90}{
+  morekeywords={program,end,use,implicit,none,integer,double,precision,
+                logical,character,allocatable,parameter,real,if,then,else,
+                do,while,call,subroutine,function,return,exit,allocate,
+                deallocate,write,read,open,close,len,size,max,min,abs,
+                sum,sqrt,mod,int,dble,any,trim,type},
+  sensitive=false,
+  morecomment=[l]{!},
+  morestring=[b]",
+  morestring=[b]'
+}
+
+\lstdefinelanguage{Python}{
+  morekeywords={def,return,for,if,else,elif,import,from,as,in,not,and,or,
+                True,False,None,class,with,lambda,yield,pass,break,continue},
+  sensitive=true,
+  morecomment=[l]{\#},
+  morestring=[b]",
+  morestring=[b]'
+}
+
+\lstset{
+  language=Fortran90,
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{codebg},
+  commentstyle=\color{codecomment}\itshape,
+  keywordstyle=\color{codekw}\bfseries,
+  stringstyle=\color{codestr},
+  frame=single,
+  framesep=4pt,
+  rulecolor=\color{gray!40},
+  breaklines=true,
+  numbers=none,
+  captionpos=b,
+  xleftmargin=6pt,
+  xrightmargin=6pt,
+}
+
+\begin{document}
+
+\title{\textbf{Monte Carlo Simulation of a Simple Polymer Chain}\\
+       \large Implementation Report}
+\author{Project\_2026\_II}
+\date{12 April 2026}
+\maketitle
+\tableofcontents
+\newpage
+
+\input{sections/01_intro_overview}
+\input{sections/02_repository_build}
+\input{sections/03_initial_configuration}
+\input{sections/04_io_module}
+\input{sections/05_energy_montecarlo}
+\input{sections/06_serial_postprocessing}
+\input{sections/07_cluster_compatibility}
+\input{sections/08_mpi_independent_replicas}
+\input{sections/09_mpi_observables}
+\input{sections/10_mpi_collaborative_equilibration}
+\input{sections/11_openmp_parallelization}
+\input{sections/12_scaling_discussion}
+\input{sections/13_references}
+
+\end{document}
