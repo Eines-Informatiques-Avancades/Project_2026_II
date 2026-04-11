@@ -1,0 +1,49 @@
+#!/bin/csh
+#
+# SGE submission script for parallel execution
+# Cluster: cerqt02
+# Author: Manel Diaz
+#
+# ── Adjust these three lines before submitting ────────────────────────────────
+# NP          : total MPI ranks  (1 master + NP-1 workers)
+# OMP_THREADS : OpenMP threads per MPI rank (for energy calculations)
+set NP          = 7
+set OMP_THREADS = 2
+@ TOTAL_CORES   = $NP * $OMP_THREADS
+# ─────────────────────────────────────────────────────────────────────────────
+
+# ── SGE directives ────────────────────────────────────────────────────────────
+#$ -N final_parallel
+#$ -pe ompi 13
+#$ -q cerqt02.q
+#$ -S /bin/csh
+#$ -cwd
+#$ -o final_parallel.out
+#$ -e final_parallel.err
+
+# ── Environment setup ─────────────────────────────────────────────────────────
+source /etc/profile.d/modules.csh
+module load openmpi/4.1.6_gcc-13.3.0
+
+# ── Set OpenMP threads per MPI rank ───────────────────────────────────────────
+setenv OMP_NUM_THREADS $OMP_THREADS
+
+# ── Initial echos ───────────────────────────────────────────────────────────
+echo "=========================================================="
+echo "Job started at: `date`"
+echo "Running on node: `hostname`"
+echo "=========================================================="
+
+# ── Compile and run ───────────────────────────────────────────────────────────
+mkdir -p ../results
+make clean
+
+
+make parallel_combined NP=$NP OMP_THREADS=$OMP_THREADS
+
+mpirun -np $NP ../bin/main_parallel.x
+
+# ── Final echos ──────────────────────────────────────────────────────────────
+echo "=========================================================="
+echo "Job finished at: `date`"
+echo "=========================================================="
