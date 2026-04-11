@@ -188,7 +188,7 @@ def add_np1_deltas(rows):
 # ── Plotting ─────────────────────────────────────────────────────────────────
 
 def plot_benchmark(np_vals, mpi_times, shell_times, speedup, efficiency, valid, outdir):
-    fig, axes = plt.subplots(1, 3, figsize=(12, 3.4))
+    fig, axes = plt.subplots(1, 3, figsize=(9, 3))
     ax0, ax1, ax2 = axes
 
     ax0.plot(np_vals, mpi_times, 'o-', label='MPI wall time')
@@ -233,7 +233,7 @@ def plot_observables(rows, outdir):
         key = (r['conf'], r['phase'])
         groups.setdefault(key, []).append(r)
 
-    fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3))
     ax_rg, ax_ree = axes
 
     for (conf, phase), vals in sorted(groups.items()):

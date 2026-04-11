@@ -1,0 +1,44 @@
+\contentsline {subsection}{\numberline {0.1}Project Overview}{3}{subsection.0.1}%
+\contentsline {subsection}{\numberline {0.2}Repository Structure}{3}{subsection.0.2}%
+\contentsline {subsection}{\numberline {0.3}Code Management via Github}{4}{subsection.0.3}%
+\contentsline {subsection}{\numberline {0.4}Makefile}{4}{subsection.0.4}%
+\contentsline {subsection}{\numberline {0.5}Shell Scripting}{6}{subsection.0.5}%
+\contentsline {section}{\numberline {1}Initial Configuration Generation}{6}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Internal-Coordinate Builder}{6}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Configuration Modes}{7}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Input/Output Module}{7}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Parameter Parsing from \texttt {input.dat}}{7}{subsection.2.1}%
+\contentsline {section}{\numberline {3}Energy Evaluation and Monte Carlo Engine}{8}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Energy Calculations}{8}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Pivot Move and Monte Carlo Step}{9}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Geweke Convergence Detection}{10}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Main Program Workflow Notes}{11}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Serial Driver, Results and Post-Processing}{12}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Two-Phase Simulation Structure}{12}{subsection.4.1}%
+\contentsline {subsection}{\numberline {4.2}Automated Equilibration Detection}{12}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Serial Version Simulation Results}{13}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Interpretation}{14}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Cluster Compatibility}{16}{section.5}%
+\contentsline {section}{\numberline {6}MPI Parallelization: Independent Replicas}{16}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Justification}{16}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Implementation: \texttt {main\_parallel\_replicas.f90}}{17}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Discarded Parallelization: XYZ Trajectory Writing}{17}{subsection.6.3}%
+\contentsline {section}{\numberline {7}MPI Parallelization: Observable Post-Processing}{18}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Design and Implementation}{18}{subsection.7.1}%
+\contentsline {section}{\numberline {8}MPI Parallelization: Collaborative Equilibration}{19}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Orchestrator Initial Configuration Read and Broadcast}{19}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Equilibration Optimization}{19}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}Replica Selection: Boltzmann Roulette Wheel}{19}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}MPI Communication Protocol}{20}{subsection.8.4}%
+\contentsline {subsection}{\numberline {8.5}Metrics and Methodology}{20}{subsection.8.5}%
+\contentsline {subsection}{\numberline {8.6}Ensemble Averaging and Star Topology}{21}{subsection.8.6}%
+\contentsline {section}{\numberline {9}OpenMP Parallelization}{22}{section.9}%
+\contentsline {subsection}{\numberline {9.1}\texttt {compute\_total\_energy}}{22}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}\texttt {delta\_energy}}{23}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}Benchmarking Methodology}{23}{subsection.9.3}%
+\contentsline {subsection}{\numberline {9.4}SIMD Exploration}{24}{subsection.9.4}%
+\contentsline {section}{\numberline {10}Scaling Analysis and Discussion}{24}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Replica Parallelism: Speedup vs. System Size and Run Length}{24}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Observable Post-Processing: Strong Scaling}{24}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Discussion}{26}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Combined Parallel Workflow}{27}{subsection.10.4}%

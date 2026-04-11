@@ -35,10 +35,20 @@ is always reserved for orchestration rather than direct numerical work.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=0.49\textwidth]{speedup_vs_natoms.pdf}
-  \hfill
-  \includegraphics[width=0.49\textwidth]{speedup_vs_nsteps.pdf}
-  \caption{Speedup of independent-replica parallelization.}
+  \includegraphics[width=\textwidth]{speedup_vs_natoms.pdf}
+  \caption{Speedup of independent-replica parallelization: speedup as a function of chain length
+           (\(N_C \in \{20,50,100,200,500\}\), \(n_{\text{steps}} = 10^6\)).
+           All runs use 3 MPI ranks. The dashed line indicates ideal
+           linear scaling (\(S = 3\)).}
+\end{figure}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{speedup_vs_nsteps.pdf}
+  \caption{Speedup of independent-replica parallelization: speedup as a function of run length
+           (\(n_{\text{steps}} \in \{10^5, 10^6, 10^7\}\), \(N_C = 100\)).
+           All runs use 3 MPI ranks. The dashed line indicates ideal
+           linear scaling (\(S = 3\)).}
 \end{figure}
 
 \subsection{Observable Post-Processing: Strong Scaling}
@@ -71,14 +81,20 @@ file I/O, and final reductions become more visible.
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=\textwidth]{benchmark_vs_np.jpg}
-  \caption{Strong scaling of the observable post-processing kernel.}
+  \includegraphics[width=\textwidth]{benchmark_vs_np.pdf}
+  \caption{Strong scaling of the observable post-processing kernel.
+           MPI wall-clock time (solid circles) and shell-measured
+           elapsed time (dashed squares) as a function of the number of
+           MPI processes \(n_p\).}
 \end{figure}
 
 \begin{figure}[h!]
   \centering
-  \includegraphics[width=\textwidth]{observables_vs_np.jpg}
-  \caption{Mean radius of gyration and end-to-end distance versus MPI process count.}
+  \includegraphics[width=\textwidth]{observables_vs_np.pdf}
+  \caption{Mean radius of gyration \(R_g\) and mean end-to-end distance
+           \(R_{ee}\) as a function of the number of MPI processes \(n_p\).
+           The overlap of all curves confirms that the observable averages are
+           preserved exactly across the tested parallel decompositions.}
 \end{figure}
 
 \subsection{Discussion}

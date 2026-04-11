@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.2.22)  11 APR 2026 20:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.2.22)  11 APR 2026 22:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -444,4 +444,3863 @@ LaTeX Font Info:    ... okay on input line 67.
 * driver: pdftex
 * paper: a4paper
 * layout: <same size as paper>
-* layoutoffset:(h
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(71.13188pt, 455.24411pt, 71.13188pt)
+* v-part:(T,H,B)=(71.13188pt, 702.78308pt, 71.13188pt)
+* \paperwidth=597.50787pt
+* \paperheight=845.04684pt
+* \textwidth=455.24411pt
+* \textheight=702.78308pt
+* \oddsidemargin=-1.1381pt
+* \evensidemargin=-1.1381pt
+* \topmargin=-38.1381pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=11.0pt
+* \footskip=30.0pt
+* \marginparwidth=50.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.0pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+(/usr/local/texlive/2025/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count319
+\scratchdimen=\dimen187
+\scratchbox=\box66
+\nofMPsegments=\count320
+\nofMParguments=\count321
+\everyMPshowfont=\toks31
+\MPscratchCnt=\count322
+\MPscratchDim=\dimen188
+\MPnumerator=\count323
+\makeMPintoPDFobject=\count324
+\everyMPtoPDFconversion=\toks32
+) (/usr/local/texlive/2025/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+85.
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
+e
+))
+\c@lstlisting=\count325
+Package hyperref Info: Link coloring OFF on input line 67.
+
+(./main.out) (./main.out)
+\@outlinefile=\write3
+\openout3 = `main.out'.
+
+LaTeX Font Info:    Trying to load font information for U+msa on input line 74.
+
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 74.
+
+
+(/usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) (./main.toc
+
+[1
+
+{/usr/local/texlive/2025/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/loc
+al/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}])
+\tf@toc=\write4
+\openout4 = `main.toc'.
+
+
+
+[2] (./sections/01_intro_overview.tex) (./sections/02_repository_build.tex
+! Undefined control sequence.
+l.10 \tightlist
+               
+? q
+OK, entering \batchmode...
+! Undefined control sequence.
+l.15   \tightlist
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+
+ [3{/usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/cm-super/cm-super-ts1.en
+c}]
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.82 \begin{Shaded}
+                   
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.83 \begin{Highlighting}
+                         []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.84    \FunctionTok
+                    {git}\NormalTok{ stash}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.84    \FunctionTok{git}\NormalTok
+                                   { stash}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.85 \end{Highlighting}
+                       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.86 \end{Shaded}
+                 
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.90 \begin{Shaded}
+                   
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.91 \begin{Highlighting}
+                         []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.92    \FunctionTok
+                    {git}\NormalTok{ checkout master}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.92    \FunctionTok{git}\NormalTok
+                                   { checkout master}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.93    \FunctionTok
+                    {git}\NormalTok{ pull main master}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.93    \FunctionTok{git}\NormalTok
+                                   { pull main master}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.94 \end{Highlighting}
+                       
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.95 \end{Shaded}
+                 
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.100 \begin{Shaded}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.101 \begin{Highlighting}
+                          []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.102    \FunctionTok
+                     {git}\NormalTok{ checkout }\OperatorTok{\textless{}}\No...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.102    \FunctionTok{git}\NormalTok
+                                    { checkout }\OperatorTok{\textless{}}\No...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.102 ...ok{git}\NormalTok{ checkout }\OperatorTok
+                                                  {\textless{}}\NormalTok{fo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.102 ...kout }\OperatorTok{\textless{}}\NormalTok
+                                                  {fork{-}feature}\OperatorT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.102 ...{}}\NormalTok{fork{-}feature}\OperatorTok
+                                                  {\textgreater{}}\NormalTok...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.102 ...re}\OperatorTok{\textgreater{}}\NormalTok
+                                                  {/}\OperatorTok{\textless{...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.102 ...{\textgreater{}}\NormalTok{/}\OperatorTok
+                                                  {\textless{}}\NormalTok{fo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.102 ...Tok{/}\OperatorTok{\textless{}}\NormalTok
+                                                  {fork{-}branch}\OperatorTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.102 ...s{}}\NormalTok{fork{-}branch}\OperatorTok
+                                                  {\textgreater{}}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.103    \FunctionTok
+                     {git}\NormalTok{ rebase master}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.103    \FunctionTok{git}\NormalTok
+                                    { rebase master}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.104 \end{Highlighting}
+                        
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.105 \end{Shaded}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.109 \begin{Shaded}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.110 \begin{Highlighting}
+                          []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.111    \FunctionTok
+                     {git}\NormalTok{ stash pop}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.111    \FunctionTok{git}\NormalTok
+                                    { stash pop}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.112 \end{Highlighting}
+                        
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.113 \end{Shaded}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.117 \begin{Shaded}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.118 \begin{Highlighting}
+                          []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.119    \FunctionTok
+                     {git}\NormalTok{ push }\OperatorTok{\textless{}}\Normal...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119    \FunctionTok{git}\NormalTok
+                                    { push }\OperatorTok{\textless{}}\Normal...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119 ...ionTok{git}\NormalTok{ push }\OperatorTok
+                                                  {\textless{}}\NormalTok{fo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119 ...push }\OperatorTok{\textless{}}\NormalTok
+                                                  {fork{-}remote}\OperatorTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119 ...s{}}\NormalTok{fork{-}remote}\OperatorTok
+                                                  {\textgreater{}} \Operator...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119 ...\OperatorTok{\textgreater{}} \OperatorTok
+                                                  {\textless{}}\NormalTok{fo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119 ...er{}} \OperatorTok{\textless{}}\NormalTok
+                                                  {fork{-}branch}\OperatorTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119 ...s{}}\NormalTok{fork{-}branch}\OperatorTok
+                                                  {\textgreater{}}\NormalTok...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.119 ...ch}\OperatorTok{\textgreater{}}\NormalTok
+                                                  { {-}{-}force}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.120 \end{Highlighting}
+                        
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{enumerate} on input line 77 ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.121 \end{Shaded}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.130 process.... \begin{Shaded}
+                                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.131 \begin{Highlighting}
+                          []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.132 \DataTypeTok
+                  {FC}       \CharTok{=}\StringTok{ gfortran}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.132 \DataTypeTok{FC}       \CharTok
+                                     {=}\StringTok{ gfortran}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.132 \DataTypeTok{FC}       \CharTok{=}\StringTok
+                                                  { gfortran}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.133 \DataTypeTok
+                  {FFLAGS}   \CharTok{=}\StringTok{ {-}O2 {-}Wall {-}Wextra}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.133 \DataTypeTok{FFLAGS}   \CharTok
+                                     {=}\StringTok{ {-}O2 {-}Wall {-}Wextra}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.133 \DataTypeTok{FFLAGS}   \CharTok{=}\StringTok
+                                                  { {-}O2 {-}Wall {-}Wextra}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.134 \DataTypeTok
+                  {OBJ\_DIR}  \CharTok{=}\StringTok{ ../bin}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.134 \DataTypeTok{OBJ\_DIR}  \CharTok
+                                      {=}\StringTok{ ../bin}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.134 ...aTypeTok{OBJ\_DIR}  \CharTok{=}\StringTok
+                                                  { ../bin}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.135 \DataTypeTok
+                  {EXE}      \CharTok{=}\StringTok{ }\CharTok{$(}\DataTypeTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.135 \DataTypeTok{EXE}      \CharTok
+                                     {=}\StringTok{ }\CharTok{$(}\DataTypeTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.135 \DataTypeTok{EXE}      \CharTok{=}\StringTok
+                                                  { }\CharTok{$(}\DataTypeTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.135 ...XE}      \CharTok{=}\StringTok{ }\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.135 ...     \CharTok{=}\StringTok{ }\CharTok{$(}
+                                                  \DataTypeTok{OBJ\_DIR}\Cha...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.135 ...k{=}\StringTok{ }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Stri...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.135 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\StringTok{/main\_seria...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.135 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\StringTok
+                                                  {/main\_serial.x}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.136 \DataTypeTok
+                  {LIB\_OBJ}  \CharTok{=}\StringTok{ }\CharTok{$(}\DataTypeT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.136 \DataTypeTok{LIB\_OBJ}  \CharTok
+                                      {=}\StringTok{ }\CharTok{$(}\DataTypeT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.136 ...aTypeTok{LIB\_OBJ}  \CharTok{=}\StringTok
+                                                  { }\CharTok{$(}\DataTypeTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.136 ...B\_OBJ}  \CharTok{=}\StringTok{ }\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.136 ..._OBJ}  \CharTok{=}\StringTok{ }\CharTok{$
+                                                  (}\DataTypeTok{OBJ\_DIR}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.136 ...k{=}\StringTok{ }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Stri...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.136 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\StringTok{/parameters....
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.136 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\StringTok
+                                                  {/parameters.o }\CharTok{\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.136 ...rTok{)}\StringTok{/parameters.o }\CharTok
+                                                  {\textbackslash{}}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.137 \StringTok
+                {           }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\S...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.137 \StringTok{           }\CharTok
+                                     {$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\S...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.137 \StringTok{           }\CharTok{$(}
+                                         \DataTypeTok{OBJ\_DIR}\CharTok{)}\S...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.137 ...gTok{           }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Stri...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.137 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\StringTok{/io.o }\Char...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.137 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\StringTok
+                                                  {/io.o }\CharTok{\textback...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.137 ...DIR}\CharTok{)}\StringTok{/io.o }\CharTok
+                                                  {\textbackslash{}}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+LaTeX Warning: Command \textbackslash invalid in math mode on input line 137.
+
+! Undefined control sequence.
+l.138 \StringTok
+                {           ...}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.139 \DataTypeTok
+                  {MAIN\_OBJ} \CharTok{=}\StringTok{ }\CharTok{$(}\DataTypeT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.139 \DataTypeTok{MAIN\_OBJ} \CharTok
+                                      {=}\StringTok{ }\CharTok{$(}\DataTypeT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.139 ...aTypeTok{MAIN\_OBJ} \CharTok{=}\StringTok
+                                                  { }\CharTok{$(}\DataTypeTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.139 ...IN\_OBJ} \CharTok{=}\StringTok{ }\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.139 ...\_OBJ} \CharTok{=}\StringTok{ }\CharTok{$
+                                                  (}\DataTypeTok{OBJ\_DIR}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.139 ...k{=}\StringTok{ }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Stri...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.139 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\StringTok{/main\_seria...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.139 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\StringTok
+                                                  {/main\_serial.o}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+Overfull \hbox (150.99034pt too wide) in paragraph at lines 129--140
+\T1/cmr/m/n/10.95 FFLAGS = -O2 -Wall -Wextra OBJ_DIR = ../bin EXE = $\OT1/cmr/m
+/n/10.95 ([][][][][][][]$\T1/cmr/m/n/10.95 (OBJ_DIR)/parameters.o
+ []
+
+! Undefined control sequence.
+l.141 \DataTypeTok
+                  {NP}          \CharTok{?=}\StringTok{ 4}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.141 \DataTypeTok{NP}          \CharTok
+                                        {?=}\StringTok{ 4}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.141 ...peTok{NP}          \CharTok{?=}\StringTok
+                                                  { 4}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.142 \DataTypeTok
+                  {OMP\_THREADS} \CharTok{?=}\StringTok{ 2}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.142 \DataTypeTok{OMP\_THREADS} \CharTok
+                                         {?=}\StringTok{ 2}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.142 ...eTok{OMP\_THREADS} \CharTok{?=}\StringTok
+                                                  { 2}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{document} ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.143 \end{Highlighting}
+                        
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{document} ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.144 \end{Shaded}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.147 \tightlist
+                
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.177 \begin{Shaded}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.178 \begin{Highlighting}
+                          []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+
+ [4]
+! Undefined control sequence.
+l.179 \ControlFlowTok
+                     {ifneq}\NormalTok{ (,}\CharTok{$(}\KeywordTok{findstrin...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.179 \ControlFlowTok{ifneq}\NormalTok
+                                      { (,}\CharTok{$(}\KeywordTok{findstrin...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.179 ...trolFlowTok{ifneq}\NormalTok{ (,}\CharTok
+                                                  {$(}\KeywordTok{findstring...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.179 ...FlowTok{ifneq}\NormalTok{ (,}\CharTok{$(}
+                                                  \KeywordTok{findstring}\St...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.179 ...eq}\NormalTok{ (,}\CharTok{$(}\KeywordTok
+                                                  {findstring}\StringTok{ pa...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.179 ...rTok{$(}\KeywordTok{findstring}\StringTok
+                                                  { parallel}\KeywordTok{,}\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.179 ...ndstring}\StringTok{ parallel}\KeywordTok
+                                                  {,}\CharTok{$(}\DataTypeTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.179 ...tringTok{ parallel}\KeywordTok{,}\CharTok
+                                                  {$(}\DataTypeTok{MAKECMDGO...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.179 ...ingTok{ parallel}\KeywordTok{,}\CharTok{$
+                                                  (}\DataTypeTok{MAKECMDGOAL...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.179 ...el}\KeywordTok{,}\CharTok{$(}\DataTypeTok
+                                                  {MAKECMDGOALS}\CharTok{))}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.179 ...Tok{$(}\DataTypeTok{MAKECMDGOALS}\CharTok
+                                                  {))}\NormalTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.179 ...peTok{MAKECMDGOALS}\CharTok{))}\NormalTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.180   \CommentTok
+                   {\# MPI Compiler Wrapper Verification}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.181   \DataTypeTok
+                    {MPI\_BIN} \CharTok{:=}\StringTok{ }\CharTok{$(}\Keyword...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.181   \DataTypeTok{MPI\_BIN} \CharTok
+                                       {:=}\StringTok{ }\CharTok{$(}\Keyword...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.181 ...aTypeTok{MPI\_BIN} \CharTok{:=}\StringTok
+                                                  { }\CharTok{$(}\KeywordTok...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.181 ...I\_BIN} \CharTok{:=}\StringTok{ }\CharTok
+                                                  {$(}\KeywordTok{shell}\Str...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.181 ...IN} \CharTok{:=}\StringTok{ }\CharTok{$(}
+                                                  \KeywordTok{shell}\StringT...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.181 ...k{:=}\StringTok{ }\CharTok{$(}\KeywordTok
+                                                  {shell}\StringTok{ command...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.181 ...}\CharTok{$(}\KeywordTok{shell}\StringTok
+                                                  { command {-}v mpif90 2\te...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+LaTeX Warning: Command \textgreater invalid in math mode on input line 181.
+
+! Undefined control sequence.
+l.181 ... mpif90 2\textgreater{}/dev/null}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.182   \ControlFlowTok
+                       {ifeq}\NormalTok{ (}\CharTok{$(}\KeywordTok{strip}\St...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.182   \ControlFlowTok{ifeq}\NormalTok
+                                       { (}\CharTok{$(}\KeywordTok{strip}\St...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.182 ...ontrolFlowTok{ifeq}\NormalTok{ (}\CharTok
+                                                  {$(}\KeywordTok{strip}\Str...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.182 ...trolFlowTok{ifeq}\NormalTok{ (}\CharTok{$
+                                                  (}\KeywordTok{strip}\Strin...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.182 ...feq}\NormalTok{ (}\CharTok{$(}\KeywordTok
+                                                  {strip}\StringTok{ }\CharT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.182 ...}\CharTok{$(}\KeywordTok{strip}\StringTok
+                                                  { }\CharTok{$(}\DataTypeTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.182 ...(}\KeywordTok{strip}\StringTok{ }\CharTok
+                                                  {$(}\DataTypeTok{MPI\_BIN}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.182 ...eywordTok{strip}\StringTok{ }\CharTok{$(}
+                                                  \DataTypeTok{MPI\_BIN}\Cha...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.182 ...rip}\StringTok{ }\CharTok{$(}\DataTypeTok
+                                                  {MPI\_BIN}\CharTok{))}\Nor...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.182 ...CharTok{$(}\DataTypeTok{MPI\_BIN}\CharTok
+                                                  {))}\NormalTok{,)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.182 ...taTypeTok{MPI\_BIN}\CharTok{))}\NormalTok
+                                                  {,)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.183     \CharTok
+                  {$(}\KeywordTok{error}\StringTok{ "MPI Compiler is require...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.183     \CharTok{$
+                    (}\KeywordTok{error}\StringTok{ "MPI Compiler is require...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.183     \CharTok{$(}\KeywordTok
+                                 {error}\StringTok{ "MPI Compiler is require...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.183     \CharTok{$(}\KeywordTok{error}\StringTok
+                                                  { "MPI Compiler is require...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.183 ...penmpi{-}bin\textquotesingle{})"}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.184   \ControlFlowTok
+                       {endif}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.185   \CommentTok
+                   {\# Overwrite Compiler for MPI parallelization flag linking}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.186   \DataTypeTok
+                    {FC} \CharTok{=}\StringTok{ mpif90}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.186   \DataTypeTok{FC} \CharTok
+                                 {=}\StringTok{ mpif90}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.186   \DataTypeTok{FC} \CharTok{=}\StringTok
+                                              { mpif90}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.187 \NormalTok
+                {  ...}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{document} ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.188 \end{Highlighting}
+                        
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{document} ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.189 \end{Shaded}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.194 \begin{Shaded}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.195 \begin{Highlighting}
+                          []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.196 \DecValTok
+                {$(OBJ\_DIR)/\%.o:}\DataTypeTok{ lib/\%.f90}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.196 \DecValTok{$(OBJ\_DIR)/\%.o:}
+                                   \DataTypeTok{ lib/\%.f90}
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.196 \DecValTok{$(OBJ\_DIR)/\%.o:}\DataTypeTok
+                                               { lib/\%.f90}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.197 \ErrorTok
+               {    }\CharTok{@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.197 \ErrorTok{    }\CharTok
+                             {@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.197 \ErrorTok{    }\CharTok{@}\FunctionTok
+                                            {mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.197 ...arTok{@}\FunctionTok{mkdir {-}p }\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.197 ...Tok{@}\FunctionTok{mkdir {-}p }\CharTok{$
+                                                  (}\DataTypeTok{OBJ\_DIR}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.197 ...nTok{mkdir {-}p }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.197 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198     \CharTok
+                  {$(}\DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.198     \CharTok{$(}
+                      \DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.198     \CharTok{$(}\DataTypeTok
+                                  {FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198     \CharTok{$(}\DataTypeTok{FC}\CharTok
+                                              {)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...k{$(}\DataTypeTok{FC}\CharTok{)} \CharTok
+                                                  {$(}\DataTypeTok{FFLAGS}\C...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.198 ...$(}\DataTypeTok{FC}\CharTok{)} \CharTok{$
+                                                  (}\DataTypeTok{FFLAGS}\Cha...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.198 ...k{FC}\CharTok{)} \CharTok{$(}\DataTypeTok
+                                                  {FFLAGS}\CharTok{)}\Normal...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ... \CharTok{$(}\DataTypeTok{FFLAGS}\CharTok
+                                                  {)}\NormalTok{ {-}J}\CharT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...\DataTypeTok{FFLAGS}\CharTok{)}\NormalTok
+                                                  { {-}J}\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...LAGS}\CharTok{)}\NormalTok{ {-}J}\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.198 ...}\CharTok{)}\NormalTok{ {-}J}\CharTok{$(}
+                                                  \DataTypeTok{OBJ\_DIR}\Cha...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.198 ...\NormalTok{ {-}J}\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Norm...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\NormalTok{ {-}I}\CharT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok
+                                                  { {-}I}\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ..._DIR}\CharTok{)}\NormalTok{ {-}I}\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.198 ...IR}\CharTok{)}\NormalTok{ {-}I}\CharTok{$
+                                                  (}\DataTypeTok{OBJ\_DIR}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.198 ...\NormalTok{ {-}I}\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Norm...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\NormalTok{ {-}c }\Char...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok
+                                                  { {-}c }\CharTok{$\textles...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...DIR}\CharTok{)}\NormalTok{ {-}c }\CharTok
+                                                  {$\textless{}}\NormalTok{ ...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+LaTeX Warning: Command \textless invalid in math mode on input line 198.
+
+! Extra }, or forgotten $.
+l.198 ...}\NormalTok{ {-}c }\CharTok{$\textless{}}
+                                                  \NormalTok{ {-}o }\CharTok...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.198 ...k{ {-}c }\CharTok{$\textless{}}\NormalTok
+                                                  { {-}o }\CharTok{$@}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.198 ...k{$\textless{}}\NormalTok{ {-}o }\CharTok
+                                                  {$@}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.198 ...$\textless{}}\NormalTok{ {-}o }\CharTok{$
+                                                  @}
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+
+! LaTeX Error: \begin{document} ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.199 \end{Highlighting}
+                        
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: \begin{document} ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.200 \end{Shaded}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+Overfull \hbox (39.223pt too wide) in paragraph at lines 195--201
+[]\T1/cmr/m/n/10.95 [] $\OT1/cmr/m/n/10.95 (\OML/cmm/m/it/10.95 OBJ[]DIR\OT1/cm
+r/m/n/10.95 )\OML/cmm/m/it/10.95 =\OT1/cmr/m/n/10.95 %\OML/cmm/m/it/10.95 :o \O
+T1/cmr/m/n/10.95 : [][]@[][]$\T1/cmr/m/n/10.95 (OBJ_DIR) $\OT1/cmr/m/n/10.95 ([
+][][]$\T1/cmr/m/n/10.95 (FFLAGS) -J$\OT1/cmr/m/n/10.95 ([][][][]$\T1/cmr/m/n/10
+.95 (OBJ_DIR)
+ []
+
+! Undefined control sequence.
+l.203 \tightlist
+                
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.222 \begin{Shaded}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.223 \begin{Highlighting}
+                          []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.224 \DecValTok
+                {all:}\DataTypeTok{ }\CharTok{$(}\DataTypeTok{EXE}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.224 \DecValTok{all:}\DataTypeTok
+                                  { }\CharTok{$(}\DataTypeTok{EXE}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.224 \DecValTok{all:}\DataTypeTok{ }\CharTok
+                                             {$(}\DataTypeTok{EXE}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.224 \DecValTok{all:}\DataTypeTok{ }\CharTok{$(}
+                                                 \DataTypeTok{EXE}\CharTok{)}
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.224 ...:}\DataTypeTok{ }\CharTok{$(}\DataTypeTok
+                                                  {EXE}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.224 ...k{ }\CharTok{$(}\DataTypeTok{EXE}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.225 
+      
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Undefined control sequence.
+l.226 \DecValTok
+                {$(EXE):}\DataTypeTok{ }\CharTok{$(}\DataTypeTok{LIB\_OBJ}\C...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.226 \DecValTok{$(EXE):}
+                         \DataTypeTok{ }\CharTok{$(}\DataTypeTok{LIB\_OBJ}\C...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.226 \DecValTok{$(EXE):}\DataTypeTok
+                                     { }\CharTok{$(}\DataTypeTok{LIB\_OBJ}\C...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.226 \DecValTok{$(EXE):}\DataTypeTok{ }\CharTok
+                                                {$(}\DataTypeTok{LIB\_OBJ}\C...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.226 \DecValTok{$(EXE):}\DataTypeTok{ }\CharTok{$
+                                                  (}\DataTypeTok{LIB\_OBJ}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.226 ...:}\DataTypeTok{ }\CharTok{$(}\DataTypeTok
+                                                  {LIB\_OBJ}\CharTok{)}\Data...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.226 ...CharTok{$(}\DataTypeTok{LIB\_OBJ}\CharTok
+                                                  {)}\DataTypeTok{ }\CharTok...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.226 ...aTypeTok{LIB\_OBJ}\CharTok{)}\DataTypeTok
+                                                  { }\CharTok{$(}\DataTypeTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.226 ...B\_OBJ}\CharTok{)}\DataTypeTok{ }\CharTok
+                                                  {$(}\DataTypeTok{MAIN\_OBJ...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.226 ...BJ}\CharTok{)}\DataTypeTok{ }\CharTok{$(}
+                                                  \DataTypeTok{MAIN\_OBJ}\Ch...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.226 ...)}\DataTypeTok{ }\CharTok{$(}\DataTypeTok
+                                                  {MAIN\_OBJ}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.226 ...harTok{$(}\DataTypeTok{MAIN\_OBJ}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.227 \ErrorTok
+               {    }\CharTok{@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.227 \ErrorTok{    }\CharTok
+                             {@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.227 \ErrorTok{    }\CharTok{@}\FunctionTok
+                                            {mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.227 ...arTok{@}\FunctionTok{mkdir {-}p }\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.227 ...Tok{@}\FunctionTok{mkdir {-}p }\CharTok{$
+                                                  (}\DataTypeTok{OBJ\_DIR}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.227 ...nTok{mkdir {-}p }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.227 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228     \CharTok
+                  {$(}\DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.228     \CharTok{$(}
+                      \DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.228     \CharTok{$(}\DataTypeTok
+                                  {FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228     \CharTok{$(}\DataTypeTok{FC}\CharTok
+                                              {)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228 ...k{$(}\DataTypeTok{FC}\CharTok{)} \CharTok
+                                                  {$(}\DataTypeTok{FFLAGS}\C...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.228 ...$(}\DataTypeTok{FC}\CharTok{)} \CharTok{$
+                                                  (}\DataTypeTok{FFLAGS}\Cha...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.228 ...k{FC}\CharTok{)} \CharTok{$(}\DataTypeTok
+                                                  {FFLAGS}\CharTok{)}\Normal...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228 ... \CharTok{$(}\DataTypeTok{FFLAGS}\CharTok
+                                                  {)}\NormalTok{ {-}o }\Char...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228 ...\DataTypeTok{FFLAGS}\CharTok{)}\NormalTok
+                                                  { {-}o }\CharTok{$@} \Char...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228 ...AGS}\CharTok{)}\NormalTok{ {-}o }\CharTok
+                                                  {$@} \CharTok{$(}\DataType...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.228 ...\CharTok{)}\NormalTok{ {-}o }\CharTok{$@}
+                                                   \CharTok{$(}\DataTypeTok{...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.228 ...)}\NormalTok{ {-}o }\CharTok{$@} \CharTok
+                                                  {$(}\DataTypeTok{LIB\_OBJ}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.228 ...\NormalTok{ {-}o }\CharTok{$@} \CharTok{$
+                                                  (}\DataTypeTok{LIB\_OBJ}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.228 ...}o }\CharTok{$@} \CharTok{$(}\DataTypeTok
+                                                  {LIB\_OBJ}\CharTok{)} \Cha...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228 ...CharTok{$(}\DataTypeTok{LIB\_OBJ}\CharTok
+                                                  {)} \CharTok{$(}\DataTypeT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228 ...DataTypeTok{LIB\_OBJ}\CharTok{)} \CharTok
+                                                  {$(}\DataTypeTok{MAIN\_OBJ...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.228 ...TypeTok{LIB\_OBJ}\CharTok{)} \CharTok{$(}
+                                                  \DataTypeTok{MAIN\_OBJ}\Ch...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.228 ..._OBJ}\CharTok{)} \CharTok{$(}\DataTypeTok
+                                                  {MAIN\_OBJ}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.228 ...harTok{$(}\DataTypeTok{MAIN\_OBJ}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.229 
+      
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Undefined control sequence.
+l.230 \DecValTok
+                {$(OBJ\_DIR)/energy.o:}\DataTypeTok{ lib/energy.f90 }\CharTo...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.230 \DecValTok{$(OBJ\_DIR)/energy.o:}
+                                       \DataTypeTok{ lib/energy.f90 }\CharTo...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.230 ...ValTok{$(OBJ\_DIR)/energy.o:}\DataTypeTok
+                                                  { lib/energy.f90 }\CharTok...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.230 ...o:}\DataTypeTok{ lib/energy.f90 }\CharTok
+                                                  {\textbackslash{}}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+LaTeX Warning: Command \textbackslash invalid in math mode on input line 230.
+
+! Undefined control sequence.
+l.231 \DataTypeTok
+                  {                     }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.231 \DataTypeTok{                     }\CharTok
+                                                 {$(}\DataTypeTok{OBJ\_DIR}\...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.231 ...aTypeTok{                     }\CharTok{$
+                                                  (}\DataTypeTok{OBJ\_DIR}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.231 ...                }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Data...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.231 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\DataTypeTok{/parameter...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.231 ...aTypeTok{OBJ\_DIR}\CharTok{)}\DataTypeTok
+                                                  {/parameters.o}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.232 \NormalTok
+                {...}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.234 \DecValTok
+                {$(OBJ\_DIR)/main\_serial.o:}\DataTypeTok{ main\_serial.f90 ...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.234 \DecValTok{$(OBJ\_DIR)/main\_serial.o:}
+                                             \DataTypeTok{ main\_serial.f90 ...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.234 ...{$(OBJ\_DIR)/main\_serial.o:}\DataTypeTok
+                                                  { main\_serial.f90 }\CharT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.234 ...}\DataTypeTok{ main\_serial.f90 }\CharTok
+                                                  {$(}\DataTypeTok{LIB\_OBJ}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.234 ...DataTypeTok{ main\_serial.f90 }\CharTok{$
+                                                  (}\DataTypeTok{LIB\_OBJ}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.234 ...ain\_serial.f90 }\CharTok{$(}\DataTypeTok
+                                                  {LIB\_OBJ}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.234 ...CharTok{$(}\DataTypeTok{LIB\_OBJ}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.235 \ErrorTok
+               {    }\CharTok{@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.235 \ErrorTok{    }\CharTok
+                             {@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.235 \ErrorTok{    }\CharTok{@}\FunctionTok
+                                            {mkdir {-}p }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.235 ...arTok{@}\FunctionTok{mkdir {-}p }\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.235 ...k{@}\FunctionTok{mkdir {-}p }\CharTok{$(}
+                                                  \DataTypeTok{OBJ\_DIR}\Cha...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.235 ...nTok{mkdir {-}p }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.235 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236     \CharTok
+                  {$(}\DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.236     \CharTok{$
+                    (}\DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.236     \CharTok{$(}\DataTypeTok
+                                  {FC}\CharTok{)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236     \CharTok{$(}\DataTypeTok{FC}\CharTok
+                                              {)} \CharTok{$(}\DataTypeTok{F...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...k{$(}\DataTypeTok{FC}\CharTok{)} \CharTok
+                                                  {$(}\DataTypeTok{FFLAGS}\C...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.236 ...}\DataTypeTok{FC}\CharTok{)} \CharTok{$(}
+                                                  \DataTypeTok{FFLAGS}\CharT...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.236 ...k{FC}\CharTok{)} \CharTok{$(}\DataTypeTok
+                                                  {FFLAGS}\CharTok{)}\Normal...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ... \CharTok{$(}\DataTypeTok{FFLAGS}\CharTok
+                                                  {)}\NormalTok{ {-}J}\CharT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...\DataTypeTok{FFLAGS}\CharTok{)}\NormalTok
+                                                  { {-}J}\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...LAGS}\CharTok{)}\NormalTok{ {-}J}\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.236 ...GS}\CharTok{)}\NormalTok{ {-}J}\CharTok{$
+                                                  (}\DataTypeTok{OBJ\_DIR}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.236 ...\NormalTok{ {-}J}\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Norm...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\NormalTok{ {-}I}\CharT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok
+                                                  { {-}I}\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ..._DIR}\CharTok{)}\NormalTok{ {-}I}\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.236 ...}\CharTok{)}\NormalTok{ {-}I}\CharTok{$(}
+                                                  \DataTypeTok{OBJ\_DIR}\Cha...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.236 ...\NormalTok{ {-}I}\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Norm...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\NormalTok{ {-}c }\Char...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok
+                                                  { {-}c }\CharTok{$\textles...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...DIR}\CharTok{)}\NormalTok{ {-}c }\CharTok
+                                                  {$\textless{}}\NormalTok{ ...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.236 ...R}\CharTok{)}\NormalTok{ {-}c }\CharTok{$
+                                                  \textless{}}\NormalTok{ {-...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.236 ...k{ {-}c }\CharTok{$\textless{}}\NormalTok
+                                                  { {-}o }\CharTok{$@}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.236 ...k{$\textless{}}\NormalTok{ {-}o }\CharTok
+                                                  {$@}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.236 ...textless{}}\NormalTok{ {-}o }\CharTok{$@}
+                                                  
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+
+! LaTeX Error: \begin{document} ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.237 \end{Highlighting}
+                        
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.237 \end{Highlighting}
+                        
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.237 \end{Highlighting}
+                        
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.237 \end{Highlighting}
+                        
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.237 \end{Highlighting}
+                        
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+
+! LaTeX Error: \begin{document} ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.238 \end{Shaded}
+                  ... \begin{itemize}
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.239 \tightlist
+                
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.251   \tightlist
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.257     \tightlist
+                    
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: Environment Shaded undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.271 \begin{Shaded}
+                    
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+! LaTeX Error: Environment Highlighting undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.272 \begin{Highlighting}
+                          []
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.273 \OtherTok
+               {.PHONY:}\DataTypeTok{ all clean run figures pipeline}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.273 \OtherTok{.PHONY:}\DataTypeTok
+                                    { all clean run figures pipeline}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.275 \DecValTok
+                {run:}\DataTypeTok{ all}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.275 \DecValTok{run:}\DataTypeTok
+                                  { all}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.276 \ErrorTok
+               {    }\CharTok{@}\FunctionTok{mkdir {-}p ../results}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.276 \ErrorTok{    }\CharTok
+                             {@}\FunctionTok{mkdir {-}p ../results}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.276 \ErrorTok{    }\CharTok{@}\FunctionTok
+                                            {mkdir {-}p ../results}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.277     \CharTok
+                  {$(}\DataTypeTok{EXE}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.277     \CharTok{$(}
+                      \DataTypeTok{EXE}\CharTok{)}
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.277     \CharTok{$(}\DataTypeTok
+                                  {EXE}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.277     \CharTok{$(}\DataTypeTok{EXE}\CharTok
+                                               {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.278 
+      
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Undefined control sequence.
+l.279 \DecValTok
+                {figures:}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.280 \ErrorTok
+               {    }\NormalTok{python lib/plot\_results.py}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.280 \ErrorTok{    }\NormalTok
+                               {python lib/plot\_results.py}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.282 \DecValTok
+                {clean:}\DataTypeTok{ }
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.282 \DecValTok{clean:}\DataTypeTok
+                                    { }
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 \ErrorTok
+               {    }\NormalTok{rm {-}rf }\CharTok{$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 \ErrorTok{    }\NormalTok
+                               {rm {-}rf }\CharTok{$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 \ErrorTok{    }\NormalTok{rm {-}rf }\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.283 ...ok{    }\NormalTok{rm {-}rf }\CharTok{$(}
+                                                  \DataTypeTok{OBJ\_DIR}\Cha...
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.283 ...malTok{rm {-}rf }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Norm...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\NormalTok{/*.o }\CharT...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok
+                                                  {/*.o }\CharTok{$(}\DataTy...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 ..._DIR}\CharTok{)}\NormalTok{/*.o }\CharTok
+                                                  {$(}\DataTypeTok{OBJ\_DIR}...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.283 ...IR}\CharTok{)}\NormalTok{/*.o }\CharTok{$
+                                                  (}\DataTypeTok{OBJ\_DIR}\C...
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.283 ...\NormalTok{/*.o }\CharTok{$(}\DataTypeTok
+                                                  {OBJ\_DIR}\CharTok{)}\Norm...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 ...CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok
+                                                  {)}\NormalTok{/*.mod }\Cha...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 ...ataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok
+                                                  {/*.mod }\CharTok{$(}\Data...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 ...IR}\CharTok{)}\NormalTok{/*.mod }\CharTok
+                                                  {$(}\DataTypeTok{EXE}\Char...
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.283 ...CharTok{)}\NormalTok{/*.mod }\CharTok{$(}
+                                                  \DataTypeTok{EXE}\CharTok{)}
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.283 ...ormalTok{/*.mod }\CharTok{$(}\DataTypeTok
+                                                  {EXE}\CharTok{)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.283 ...od }\CharTok{$(}\DataTypeTok{EXE}\CharTok
+                                                  {)}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.284 
+      
+I've inserted a begin-math/end-math symbol since I think
+you left one out. Proceed, with fingers crossed.
+
+! Undefined control sequence.
+l.285 \DecValTok
+                {pipeline:}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.286 \ErrorTok
+               {    }\CharTok{$(}\DataTypeTok{MAKE}\CharTok{)}\NormalTok{ run}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.286 \ErrorTok{    }\CharTok
+                             {$(}\DataTypeTok{MAKE}\CharTok{)}\NormalTok{ run}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Extra }, or forgotten $.
+l.286 \ErrorTok{    }\CharTok{$(}
+                                 \DataTypeTok{MAKE}\CharTok{)}\NormalTok{ run}
+I've deleted a group-closing symbol because it seems to be
+spurious, as in `$x}$'. But perhaps the } is legitimate and
+you forgot something else, as in `\hbox{$x}'. In such cases
+the way to recover is to insert both the forgotten and the
+deleted material, e.g., by typing `I$}'.
+
+! Undefined control sequence.
+l.286 \ErrorTok{    }\CharTok{$(}\DataTypeTok
+                                             {MAKE}\CharTok{)}\NormalTok{ run}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.286 ...  }\CharTok{$(}\DataTypeTok{MAKE}\CharTok
+                                                  {)}\NormalTok{ run}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.286 ...(}\DataTypeTok{MAKE}\CharTok{)}\NormalTok
+                                                  { run}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.287     \CharTok
+                  {$(}\DataTypeTok{MAKE}\CharTok{)}\NormalTok{ figures}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.287     \CharTok{$
+                    (}\DataTypeTok{MAKE}\CharTok{)}\NormalTok{ figures}
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Undefined control sequence.
+l.287     \CharTok{$(}\DataTypeTok
+                                  {MAKE}\CharTok{)}\NormalTok{ figures}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.287     \CharTok{$(}\DataTypeTok{MAKE}\CharTok
+                                                {)}\NormalTok{ figures}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.287 ...(}\DataTypeTok{MAKE}\CharTok{)}\NormalTok
+                                                  { figures}
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+! LaTeX Error: \begin{document} ended by \end{Highlighting}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.288 \end{Highlighting}
+                        
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.288 \end{Highlighting}
+                        
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+! Missing } inserted.
+<inserted text> 
+                }
+l.288 \end{Highlighting}
+                        
+I've inserted something that you may have forgotten.
+(See the <inserted text> above.)
+With luck, this will get me unwedged. But if you
+really didn't forget anything, try typing `2' now; then
+my insertion and my current dilemma will both disappear.
+
+
+! LaTeX Error: \begin{document} ended by \end{Shaded}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.289 \end{Shaded}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+! Undefined control sequence.
+l.292 \tightlist
+                
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+! Undefined control sequence.
+l.297   \tightlist
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+
+ [5]) (./sections/03_initial_configuration.tex
+Overfull \hbox (0.67554pt too wide) in paragraph at lines 11--19
+\T1/cmr/m/n/10.95 The \T1/cmtt/m/n/10.95 initial_conf \T1/cmr/m/n/10.95 mod-ule
+ is re-spon-si-ble for gen-er-at-ing the start-ing con-for-ma-tion of the polye
+thy-
+ []
+
+Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
+nput line 20.
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 22.
+
+
+ [6]) (./sections/04_io_module.tex
+LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/cmtt/m/n' tried instead on input line 9.
+
+
+ [7]
+Overfull \hbox (3.49316pt too wide) in paragraph at lines 37--43
+[]\T1/cmr/m/n/10.95 Output is writ-ten in XYZ for-mat: tra-jec-to-ries to \T1/c
+mtt/m/n/10.95 traj_\T1/cmtt/m/it/10.95 label\T1/cmtt/m/n/10.95 .xyz\T1/cmr/m/n/
+10.95 , en-er-gies to \T1/cmtt/m/n/10.95 energy_\T1/cmtt/m/it/10.95 label\T1/cm
+tt/m/n/10.95 .dat\T1/cmr/m/n/10.95 ,
+ []
+
+) (./sections/05_energy_montecarlo.tex
+
+ [8
+pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has
+ been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.39 
+     
+pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has
+ been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.39 
+     ]
+
+ [9]
+
+ [10]) (./sections/06_serial_postprocessing.tex
+Overfull \hbox (29.4221pt too wide) in paragraph at lines 11--18
+\T1/cmr/m/n/10.95 tion stage fol-lowed by a fixed-length pro-duc-tion stage. Th
+is is im-ple-mented in \T1/cmtt/m/n/10.95 main_serial_equil.f90\T1/cmr/m/n/10.9
+5 ,
+ []
+
+
+
+ [11]
+Overfull \hbox (0.19922pt too wide) in paragraph at lines 71--79
+[]\T1/cmr/m/n/10.95 The plot-ting layer is or-ga-nized around three main func-t
+ions: \T1/cmtt/m/n/10.95 plot_energies\T1/cmr/m/n/10.95 , \T1/cmtt/m/n/10.95 pl
+ot_observables\T1/cmr/m/n/10.95 ,
+ []
+
+
+
+ [12]
+<figs/serial_geweke/VMD_serial_geweke_initial_geometry.png, id=363, 488.42474pt
+ x 404.10976pt>
+File: figs/serial_geweke/VMD_serial_geweke_initial_geometry.png Graphic file (t
+ype png)
+<use figs/serial_geweke/VMD_serial_geweke_initial_geometry.png>
+Package pdftex.def Info: figs/serial_geweke/VMD_serial_geweke_initial_geometry.
+png  used on input line 116.
+(pdftex.def)             Requested size: 218.51521pt x 180.79327pt.
+<figs/serial_geweke/VMD_serial_geweke_final_geometry.png, id=365, 489.62926pt x
+ 351.714pt>
+File: figs/serial_geweke/VMD_serial_geweke_final_geometry.png Graphic file (typ
+e png)
+<use figs/serial_geweke/VMD_serial_geweke_final_geometry.png>
+Package pdftex.def Info: figs/serial_geweke/VMD_serial_geweke_final_geometry.pn
+g  used on input line 118.
+(pdftex.def)             Requested size: 218.51521pt x 156.96573pt.
+<figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf, id=366, 36
+4.9635pt x 270.08745pt>
+File: figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf Graphi
+c file (type pdf)
+<use figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf>
+Package pdftex.def Info: figs/serial_geweke/observables_evolution_500_4_1000000
+0_300.00.pdf  used on input line 138.
+(pdftex.def)             Requested size: 455.24411pt x 336.92023pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+ [13
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.149 
+       <./figs/serial_geweke/VMD_serial_geweke_initial_geometry.png> <./figs/se
+rial_geweke/VMD_serial_geweke_final_geometry.png>]
+<figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf, id=375, 341.581
+53pt x 266.65231pt>
+File: figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf Graphic fil
+e (type pdf)
+<use figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf>
+Package pdftex.def Info: figs/serial_geweke/energy_evolution_500_4_10000000_300
+.00.pdf  used on input line 152.
+(pdftex.def)             Requested size: 455.24411pt x 355.3999pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf, id=376, 364
+.9635pt x 270.08745pt>
+File: figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf Graphic
+ file (type pdf)
+<use figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf>
+Package pdftex.def Info: figs/serial_geweke/torsion_distribution_500_4_10000000
+_300.00.pdf  used on input line 166.
+(pdftex.def)             Requested size: 455.24411pt x 336.92023pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+ [14
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.185 \]
+         <./figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf>
+]) (./sections/07_cluster_compatibility.tex
+
+ [15
+pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.3 
+     <./figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf>]
+Overfull \hbox (1.9185pt too wide) in paragraph at lines 9--19
+\T1/cmr/m/n/10.95 Portability to shared HPC in-fras-truc-ture re-quired two tar
+-geted mod-i-fi-ca-tions. First, the \T1/cmtt/m/n/10.95 Makefile
+ []
+
+) (./sections/08_mpi_independent_replicas.tex
+
+ [16
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.12 
+      <./figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf>]) (
+./sections/09_mpi_observables.tex
+Overfull \hbox (0.23178pt too wide) in paragraph at lines 11--20
+\T1/cmr/m/n/10.95 Post-processing of the tra-jec-tory data has been par-al-leli
+zed in \T1/cmtt/m/n/10.95 main_parallel_observables.f90\T1/cmr/m/n/10.95 .
+ []
+
+
+
+ [17]
+Overfull \hbox (1.93762pt too wide) in paragraph at lines 59--67
+\T1/cmtt/m/n/10.95 summary_global_np2.dat\T1/cmr/m/n/10.95 , \T1/cmtt/m/n/10.95
+ summary_global_np4.dat\T1/cmr/m/n/10.95 , and \T1/cmtt/m/n/10.95 summary_globa
+l_np8.dat\T1/cmr/m/n/10.95 ) show that
+ []
+
+
+Overfull \hbox (42.2745pt too wide) in paragraph at lines 68--73
+[]\T1/cmr/m/n/10.95 The bench-mark driver is in-voked from the clus-ter sub-mis
+-sion script \T1/cmtt/m/n/10.95 3.run_parallel_observables_np.sh\T1/cmr/m/n/10.
+95 ,
+ []
+
+
+
+ [18]) (./sections/10_mpi_collaborative_equilibration.tex
+
+ [19]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<figs/convergence_speedup_equil.pdf, id=509, 1293.34756pt x 427.74178pt>
+File: figs/convergence_speedup_equil.pdf Graphic file (type pdf)
+<use figs/convergence_speedup_equil.pdf>
+Package pdftex.def Info: figs/convergence_speedup_equil.pdf  used on input line
+ 183.
+(pdftex.def)             Requested size: 455.24411pt x 150.56033pt.
+
+
+ [20
+pdfTeX warning (ext4): destination with the same identifier (name{table.3}) has
+ been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.185 \end{figure}
+                  ]
+
+ [21
+pdfTeX warning (ext4): destination with the same identifier (name{table.4}) has
+ been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.208 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.208 
+       <./figs/convergence_speedup_equil.pdf>]
+<figs/parallel_star_speedup_plot.png, id=594, 635.976pt x 419.166pt>
+File: figs/parallel_star_speedup_plot.png Graphic file (type png)
+<use figs/parallel_star_speedup_plot.png>
+Package pdftex.def Info: figs/parallel_star_speedup_plot.png  used on input lin
+e 234.
+(pdftex.def)             Requested size: 455.24411pt x 300.0468pt.
+) (./sections/11_openmp_parallelization.tex
+Overfull \hbox (3.46938pt too wide) in paragraph at lines 10--15
+\T1/cmr/m/n/10.95 The dom-i-nant cost in \T1/cmtt/m/n/10.95 compute_total_energ
+y \T1/cmr/m/n/10.95 is the $\OML/cmm/m/it/10.95 O\OT1/cmr/m/n/10.95 (\OML/cmm/m
+/it/10.95 N[]\OT1/cmr/m/n/10.95 )$ \T1/cmr/m/n/10.95 dou-ble loop over non-bond
+ed Lennard-
+ []
+
+
+Overfull \hbox (10.02031pt too wide) in paragraph at lines 10--15
+\T1/cmr/m/n/10.95 Jones pairs. Each it-er-a-tion is in-de-pen-dent --- it reads
+ a pair of co-or-di-nates, eval-u-ates \T1/cmtt/m/n/10.95 ljpairenergy\T1/cmr/m
+/n/10.95 ,
+ []
+
+
+
+ [22
+pdfTeX warning (ext4): destination with the same identifier (name{table.5}) has
+ been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.22 
+     
+pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.22 
+      <./figs/parallel_star_speedup_plot.png>]
+Overfull \hbox (9.39983pt too wide) in paragraph at lines 66--71
+\T1/cmtt/m/n/10.95 mainbenchtotal.f90 \T1/cmr/m/n/10.95 was writ-ten. It per-fo
+rms 10,000 back-to-back calls to \T1/cmtt/m/n/10.95 compute_total_energy
+ []
+
+
+
+ [23]
+Overfull \hbox (0.98877pt too wide) in paragraph at lines 100--106
+\T1/cmr/m/n/10.95 An at-tempt was made to ad-di-tion-ally ex-ploit single-core 
+SIMD vec-tor-iza-tion on the \T1/cmtt/m/n/10.95 ljpairenergy
+ []
+
+) (./sections/12_scaling_discussion.tex
+<figs/speedup_vs_natoms.pdf, id=607, 490.46642pt x 202.356pt>
+File: figs/speedup_vs_natoms.pdf Graphic file (type pdf)
+<use figs/speedup_vs_natoms.pdf>
+Package pdftex.def Info: figs/speedup_vs_natoms.pdf  used on input line 38.
+(pdftex.def)             Requested size: 455.24411pt x 187.83405pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<figs/speedup_vs_nsteps.pdf, id=608, 491.436pt x 202.356pt>
+File: figs/speedup_vs_nsteps.pdf Graphic file (type pdf)
+<use figs/speedup_vs_nsteps.pdf>
+Package pdftex.def Info: figs/speedup_vs_nsteps.pdf  used on input line 47.
+(pdftex.def)             Requested size: 455.24411pt x 187.46352pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+ [24]
+<figs/benchmark_vs_np.pdf, id=613, 628.1982pt x 202.356pt>
+File: figs/benchmark_vs_np.pdf Graphic file (type pdf)
+<use figs/benchmark_vs_np.pdf>
+Package pdftex.def Info: figs/benchmark_vs_np.pdf  used on input line 84.
+(pdftex.def)             Requested size: 455.24411pt x 146.64412pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<figs/observables_vs_np.pdf, id=614, 491.436pt x 202.356pt>
+File: figs/observables_vs_np.pdf Graphic file (type pdf)
+<use figs/observables_vs_np.pdf>
+Package pdftex.def Info: figs/observables_vs_np.pdf  used on input line 93.
+(pdftex.def)             Requested size: 455.24411pt x 187.46352pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+
+
+ [25
+pdfTeX warning (ext4): destination with the same identifier (name{figure.7}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.107 
+      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.8}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.107 
+       <./figs/speedup_vs_natoms.pdf> <./figs/speedup_vs_nsteps.pdf>]
+
+ [26
+pdfTeX warning (ext4): destination with the same identifier (name{figure.9}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.121 C
+       ombining MPI and OpenMP also requires careful control to avoid
+pdfTeX warning (ext4): destination with the same identifier (name{figure.10}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.121 C
+       ombining MPI and OpenMP also requires careful control to avoid <./figs/b
+enchmark_vs_np.pdf> <./figs/observables_vs_np.pdf>]
+<figs/ParallelProcessing_ResourceUtilization.png, id=723, 1766.6pt x 2411.0075p
+t>
+File: figs/ParallelProcessing_ResourceUtilization.png Graphic file (type png)
+<use figs/ParallelProcessing_ResourceUtilization.png>
+Package pdftex.def Info: figs/ParallelProcessing_ResourceUtilization.png  used 
+on input line 169.
+(pdftex.def)             Requested size: 455.24411pt x 621.29205pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+) (./sections/13_references.tex)
+
+ [27]
+
+ [28
+pdfTeX warning (ext4): destination with the same identifier (name{figure.11}) h
+as been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.91 \end{document}
+                    <./figs/ParallelProcessing_ResourceUtilization.png>] (./mai
+n.aux)
+ ***********
+LaTeX2e <2024-11-01> patch level 2
+L3 programming layer <2025-01-18>
+ ***********
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: C6B4B9ED818922C250E13D667F881A12;8997.
+ ) 
+Here is how much of TeX's memory you used:
+ 13547 strings out of 473190
+ 206262 string characters out of 5715800
+ 873788 words of memory out of 5000000
+ 36390 multiletter control sequences out of 15000+600000
+ 577659 words of font info for 83 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 75i,11n,79p,635b,2069s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
+></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
+</usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
+/usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></
+usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></us
+r/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/
+local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/lo
+cal/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local
+/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/te
+xlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/tex
+live/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texli
+ve/2025/texmf-dist/fonts/type1/public/cm-super/sfbx1095.pfb></usr/local/texlive
+/2025/texmf-dist/fonts/type1/public/cm-super/sfbx1200.pfb></usr/local/texlive/2
+025/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/202
+5/texmf-dist/fonts/type1/public/cm-super/sfbx1728.pfb></usr/local/texlive/2025/
+texmf-dist/fonts/type1/public/cm-super/sfit1000.pfb></usr/local/texlive/2025/te
+xmf-dist/fonts/type1/public/cm-super/sfit1095.pfb></usr/local/texlive/2025/texm
+f-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2025/texmf-
+dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2025/texmf-di
+st/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2025/texmf-dist
+/fonts/type1/public/cm-super/sfti1095.pfb></usr/local/texlive/2025/texmf-dist/f
+onts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2025/texmf-dist/fon
+ts/type1/public/cm-super/sftt1095.pfb></usr/local/texlive/2025/texmf-dist/fonts
+/type1/public/cm-super/sftt1200.pfb>
+Output written on main.pdf (28 pages, 6287756 bytes).
+PDF statistics:
+ 869 PDF objects out of 1000 (max. 8388607)
+ 672 compressed objects within 7 object streams
+ 191 named destinations out of 1000 (max. 500000)
+ 413 words of extra memory for PDF output out of 10000 (max. 10000000)
+
