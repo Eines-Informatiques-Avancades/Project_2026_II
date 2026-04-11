@@ -40,7 +40,19 @@ List of participants:
 
 ---
 
-### Run Instructions:
+### Run Instructions from cerqt2.q:
+
+1. **Navigate to the** `src` **directory:**
+   ```bash
+   cd src
+   ```
+   
+2. **Run the following command:**
+   ```bash
+   qsub run_parallel.sh
+   ```
+
+### Run Instructions (Advanced):
 
 1. **Navigate to the** ```src``` **directory:**
    ```bash
