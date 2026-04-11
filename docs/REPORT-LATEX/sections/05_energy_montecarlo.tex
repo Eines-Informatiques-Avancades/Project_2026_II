@@ -1,7 +1,7 @@
 % Source ownership:
 % - Oliwier: energy models, OPLS-AA, topology, delta_energy
 % - Manel: Geweke runtime equilibration and MC workflow
-% - Arthur: integration/prose cleanup
+% - Arthur: integration / prose cleanup
 
 % - Keep modular because Oliwier will still update references
 
@@ -9,3 +9,237 @@
 \label{sec:energy_mc}
 
 \subsection{Energy Calculations}
+
+The energy evaluation layer is implemented through two complementary
+modules, \texttt{energy.f90} and \texttt{energy\_all\_atoms.f90}. Together,
+they provide the total-energy routines and the \(\Delta E\) calculations
+required by the Metropolis acceptance/rejection step during Monte Carlo
+sampling. The split is deliberate: the united-atom (UA) pathway focuses
+on high-throughput conformational sampling, whereas the all-atom (AA)
+pathway extends the physical model to include explicit hydrogens and a
+more detailed topology.
+
+For the united-atom model, the priority was computational efficiency.
+Because the torsional and non-bonded energy terms are evaluated
+continuously inside the Monte Carlo loop, even modest overhead in the
+energy routine would be amplified over millions of steps. The UA
+implementation therefore avoids unnecessarily expensive transcendental
+operations wherever possible.
+
+A key optimization concerns the torsional term. Direct evaluation of a
+dihedral angle typically requires \texttt{acos} and sometimes
+\texttt{atan2}, both of which are relatively expensive. To bypass this,
+the code computes \(\cos\phi\) directly from the geometry using vector
+cross products and dot products of the plane normals defined by four
+successive backbone atoms. In practice, this replaces repeated angle
+reconstruction by a cheaper purely algebraic calculation. Guard clauses
+are also included to handle nearly collinear geometries safely by
+defaulting to a trans-like value when the normal vectors become
+numerically ill-defined.
+
+The united-atom torsional potential follows the standard TraPPE-UA form,
+\[
+U(\phi)=c_1(1+\cos\phi)+c_2(1-\cos 2\phi)+c_3(1+\cos 3\phi).
+\]
+Introducing \(y=\cos\phi\) and using the trigonometric identities
+\(\cos 2\phi = 2y^2-1\) and \(\cos 3\phi = 4y^3-3y\), this expression can
+be rewritten as a cubic polynomial in \(y\):
+\[
+U(y) = (c_1 + 2c_2 + c_3) + (c_1 - 3c_3)y - 2c_2 y^2 + 4c_3 y^3.
+\]
+This transformation removes transcendental function calls from the
+inner Monte Carlo loop and reduces the torsional evaluation to a short
+sequence of multiplications and additions.
+
+The transition to explicit hydrogens required a more detailed
+description of the chain and therefore a separate all-atom treatment.
+For this purpose, the AA implementation adopts an OPLS-AA description of
+polyethylene. A naive implementation would be prohibitively expensive,
+because rotating a single C--C bond induces several distinct dihedral
+contributions across that bond. Evaluating all such contributions
+explicitly at every trial move would make the torsional part of the
+simulation the dominant bottleneck.
+
+To avoid this, the AA implementation uses an effective backbone
+potential. Rather than evaluating every C--C--C--H and H--C--C--H
+contribution independently, their combined effect is absorbed into a
+single effective torsional expression acting only on the carbon
+backbone. This preserves the intended force-field behaviour while
+greatly reducing the cost of each Monte Carlo step. The same
+polynomial-expansion strategy used in the UA model is then reused with a
+different parameter set, so the all-atom torsional energy is also
+evaluated as a compact polynomial in \(\cos\phi\).
+
+The explicit-hydrogen model also requires a topology-aware treatment of
+non-bonded interactions. In molecular mechanics, Lennard-Jones terms are
+not evaluated indiscriminately between all pairs of atoms, because
+short-range bonded interactions are already represented elsewhere in the
+force field. For this reason, the code initializes a topology map that
+assigns each hydrogen to its parent carbon and constructs a boolean
+exclusion matrix. This matrix is then queried during energy evaluation
+to skip atom pairs that should not contribute to the non-bonded
+Lennard-Jones energy.
+
+A second important optimization concerns the \(\Delta E\) calculation
+during trial moves. Recomputing the full chain energy after every pivot
+would be unnecessarily expensive, especially in the all-atom model.
+Instead, the code identifies which atoms have actually moved and splits
+the system into two dynamic lists: a fixed set and a moved set. Only
+cross-interactions between these two sets can change during a rigid-body
+pivot. The \(\Delta E\) routine therefore restricts the Lennard-Jones
+calculation to exactly those interactions whose relative distances may
+have changed, while routing each valid pair to the appropriate C--C,
+C--H, or H--H parameter set. This significantly reduces the amount of
+work per trial move and is one of the key reasons the AA model remains
+tractable.
+
+\subsection{Pivot Move and Monte Carlo Step}
+
+The conformational sampling mechanism used throughout the project is the
+pivot move. Rather than perturbing the whole chain diffusely, the
+algorithm selects one internal C--C bond and rotates the entire tail of
+the polymer as a rigid body around that bond axis. This generates large
+collective rearrangements and allows the chain to explore configuration
+space much more efficiently than local coordinate displacements.
+
+The rigid-body rotation is implemented with Rodrigues' rotation formula.
+If \(\mathbf{v}\) is the position of an atom relative to the pivot
+point, \(\mathbf{k}\) is the unit vector along the selected bond, and
+\(\theta\) is the random rotation angle, the rotated vector is
+\[
+\mathbf{v}_{\mathrm{rot}}
+=
+\mathbf{v}\cos\theta
++
+(\mathbf{k}\times\mathbf{v})\sin\theta
++
+\mathbf{k}(\mathbf{k}\cdot\mathbf{v})(1-\cos\theta).
+\]
+This construction preserves bond lengths and bond angles while applying
+a clean rigid-body rotation to the selected downstream segment.
+
+In all-atom mode, the same geometric transformation must be applied not
+only to the carbon backbone but also to the hydrogens attached to every
+rotating carbon. Because these hydrogens represent an approximately
+tetrahedral \(\mathrm{sp}^3\) environment, any inconsistency between the
+carbon motion and the attached hydrogen motion would immediately distort
+the local geometry and generate unphysical configurations. The AA
+rotation routine therefore identifies the hydrogens attached to each
+moving carbon and applies the exact same pivot point, axis, and angle to
+them.
+
+Each call to \texttt{mc\_step} performs one trial move. First, the code
+draws a random internal bond index and a random rotation angle. Second,
+a trial configuration is generated by rotating the corresponding tail
+segment while leaving the current coordinates unchanged. Third, the
+change in energy is computed using the model-appropriate \(\Delta E\)
+routine: a united-atom path for UA simulations and an all-atom path for
+AA simulations. Fourth, the trial move is accepted or rejected using the
+Metropolis criterion.
+
+The Metropolis rule is standard. If the move lowers the total energy, it
+is accepted unconditionally. Otherwise, it is accepted with probability
+\[
+P_{\mathrm{acc}} = \exp(-\beta \Delta E),
+\qquad
+\beta = \frac{1}{k_B T}.
+\]
+If accepted, the trial coordinates replace the current coordinates and
+the total, Lennard-Jones, and torsional energies are updated in place.
+If rejected, the trial geometry is discarded and the original state is
+retained. Repeating this procedure generates a Markov chain whose
+stationary distribution is the desired Boltzmann distribution.
+
+\subsection{Geweke Convergence Detection}
+
+Detecting equilibration in a Markov chain is non-trivial because
+successive configurations are strongly autocorrelated. Earlier versions
+of the workflow relied on a fixed burn-in length and a posterior
+post-processing check, but this was often too rigid and could either
+discard too much data or fail to detect persistent transients. To make
+equilibration detection adaptive, the serial Monte Carlo engine was
+extended with an in-simulation Geweke diagnostic.
+
+The Geweke test compares the mean of an early window of the trajectory
+with the mean of a late window of the same trajectory. In our
+implementation, the monitored quantity is the total energy. If the chain
+has equilibrated, both windows should be consistent with the same
+stationary distribution. The resulting \(z\)-score is
+\[
+z = \frac{\bar{x}_A - \bar{x}_B}
+         {\sqrt{\mathrm{SE}_A^2 + \mathrm{SE}_B^2}},
+\]
+where \(\bar{x}_A\) and \(\bar{x}_B\) are the mean energies in the early
+and late windows, and \(\mathrm{SE}_A\) and \(\mathrm{SE}_B\) are their
+standard errors.
+
+A crucial point is that the standard errors cannot be estimated from the
+raw sample variance as if the measurements were independent. Monte Carlo
+trajectories are correlated, so such a treatment would underestimate the
+uncertainty and produce false positives. To account for this, the code
+uses batch means. The window is partitioned into contiguous blocks, the
+mean of each block is computed, and the variance of those block means is
+used as an estimator of the uncertainty in the presence of
+autocorrelation.
+
+The implementation uses an accumulated buffer of \(N=300\) energy
+samples. The early window contains the first \(f_A=10\%\) of the buffer
+and the late window contains the last \(f_B=50\%\). With these values,
+the two windows contain \(n_A=30\) and \(n_B=150\) samples respectively.
+The block decomposition then produces several batch means for each
+window, from which the corresponding standard errors are estimated.
+
+Under the null hypothesis of stationarity, the Geweke statistic follows
+an approximately standard normal distribution. Equilibrium is declared
+when
+\[
+|z| < z_{\mathrm{crit}} = 1.96
+\]
+at the 95\% confidence level on three consecutive evaluations. Requiring
+multiple consecutive passes prevents the algorithm from mistaking a
+temporary plateau for genuine equilibration. The diagnostic is evaluated
+periodically once the rolling buffer is full, so the simulation can stop
+the equilibration phase as soon as a statistically stable regime has
+been reached.
+
+\subsection{Main Program Workflow Notes}
+
+The serial driver was updated so that equilibration is no longer treated
+as a hard-coded number of initial steps. Instead, the program reads the
+simulation parameters from \texttt{input.dat}, builds the initial
+coordinates, and enters a dedicated equilibration phase that continues
+until the Geweke criterion is satisfied.
+
+If a previously equilibrated geometry is already available, it can be
+loaded directly to bypass the initial search. Otherwise, the simulation
+starts from the generated initial chain and repeatedly performs Monte
+Carlo steps while monitoring the total energy and structural
+observables. This turns equilibration into a data-driven phase of the
+workflow rather than an externally imposed burn-in guess.
+
+The main equilibration loop is therefore a \texttt{do while
+(.not. is\_equilibrated)} structure. At each step, the code updates the
+temperature-dependent parameter \(\beta\), performs one Monte Carlo
+trial move, and increments acceptance statistics when appropriate.
+Although the code retains a temperature schedule of the form
+\[
+T = T_{\mathrm{ini}} - \Delta T \, (\texttt{istep}-1),
+\]
+the project simulations themselves are run at fixed temperature, so this
+acts mainly as a retained hook for possible future simulated-annealing
+tests.
+
+Observables and trajectory information are written only at
+\texttt{print\_interval} checkpoints rather than every single Monte
+Carlo step. At those checkpoints, the code records the total energy,
+Lennard-Jones energy, torsional energy, radius of gyration, end-to-end
+distance, and other phase-specific outputs required later by the
+plotting scripts.
+
+Once the Geweke criterion has been satisfied for the required number of
+consecutive checks, the equilibration phase ends. The equilibrated
+geometry is saved and used as the starting point for the production
+phase. The production run then proceeds with its own step counter and
+output files, ensuring that the equilibrated and production data remain
+cleanly separated both scientifically and in the downstream
+post-processing pipeline.

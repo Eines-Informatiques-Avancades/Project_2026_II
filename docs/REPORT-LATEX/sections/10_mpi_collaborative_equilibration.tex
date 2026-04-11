@@ -1,0 +1,236 @@
+% Source ownership:
+% - Manel: collaborative equilibration, Boltzmann roulette, metrics
+% - Arthur: ensemble averaging / orchestrator narrative
+% - Itxaso: MUST add "Orchestrator Initial Config Read & Broadcast"
+
+\section{MPI Parallelization: Collaborative Equilibration}
+\label{sec:mpi_collab}
+
+\subsection{Orchestrator Initial Configuration Read and Broadcast}
+
+In the MPI version of the program, rank 0 acts as the central
+orchestrator. Its role is to read the initial configuration files,
+decide whether each conformation must still be equilibrated or can
+directly enter production, and distribute the corresponding work to the
+workers.
+
+At startup, the master reads the input settings and the geometry
+required to initialise each polymer configuration. If an equilibrated
+geometry is already available for a given configuration, the program can
+bypass the equilibration stage and directly unlock the corresponding
+production replicas. Otherwise, the master marks that configuration as
+pending collaborative equilibration.
+
+For configurations that still require equilibration, rank 0 assigns a
+group of workers to the same initial structure. These workers all begin
+from the same geometry, but each one uses a different random seed so
+their trajectories immediately diverge. The master therefore provides a
+common starting point while still allowing independent exploration of
+phase space.
+
+This orchestrator stage also centralises the campaign-level file
+handling. Workers do not need to parse the full simulation manifest or
+determine which configurations are ready for production. Instead, they
+receive either the job descriptor or the coordinates required for the
+task they have been assigned, initialise their local arrays, and begin
+Monte Carlo propagation.
+
+\subsection{Equilibration Optimization}
+
+Rather than assigning a single worker to equilibrate each configuration
+type independently, a group of \texttt{workers\_per\_equil} MPI workers
+is assigned to each configuration type simultaneously. Each worker
+starts from the same initial geometry but with a different random seed,
+for example \texttt{rngseed = rank * 104729}, ensuring that trajectories
+immediately diverge and explore distinct regions of conformational
+space.
+
+Every \texttt{sync\_interval} Monte Carlo steps, a synchronisation
+protocol is executed. Each worker sends its current energy and
+\(R_g\) to the master, which selects the most representative
+configuration via a Boltzmann-weighted roulette wheel and broadcasts
+those coordinates back to the non-winning workers in the group. The
+winning worker continues its trajectory uninterrupted, preserving the
+best conformational path found so far.
+
+The purpose of this strategy is to reduce the time required to reach a
+well-equilibrated low-energy configuration. Instead of waiting for one
+trajectory to escape a poor metastable region on its own, the algorithm
+lets several replicas search in parallel and periodically shares the
+best result across the group. In this way, all workers benefit from the
+progress made by the most successful replica.
+
+\subsection{Replica Selection: Boltzmann Roulette Wheel}
+
+At each synchronisation point, the master assigns a statistical weight
+to each replica \(i\) based on its total energy \(E_i\):
+\[
+w_i = \exp\!\left(-\frac{E_i - E_{\min}}{k_B T_{\mathrm{virt}}}\right),
+\]
+where \(E_{\min}\) is the lowest energy in the current group and
+\(T_{\mathrm{virt}}\) is a virtual temperature.
+
+The virtual temperature is a purely algorithmic parameter with no
+physical meaning. It controls how aggressively low-energy replicas are
+favoured:
+\begin{itemize}
+\item \(T_{\mathrm{virt}} \to 0\): deterministic selection of the
+minimum-energy replica.
+\item \(T_{\mathrm{virt}} \to \infty\): uniform selection, ignoring
+energies.
+\end{itemize}
+
+A uniform random number then samples this distribution via roulette-wheel
+selection. The selected replica becomes the winner of that
+synchronisation round, and its coordinates are sent to the non-winning
+workers so they can resume the search from the most promising state
+found so far.
+
+\subsection{MPI Communication Protocol}
+
+The synchronisation uses only point-to-point MPI operations
+\texttt{MPI\_Send} and \texttt{MPI\_Recv} to avoid the need for
+temporary communicators or collective operations across worker
+subgroups. At each sync point, the master loops over all workers in the
+active equilibration group and performs the following exchanges.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{clll}
+\toprule
+Step & Direction & Tag & Content \\
+\midrule
+1 & worker \(\rightarrow\) master & \texttt{TAG\_SYNC\_OBS} &
+\(E_{\mathrm{tot}}, R_g^2\) \\
+2 & master \(\rightarrow\) worker & \texttt{TAG\_SYNC\_CTRL} &
+control signal, \texttt{bestlocalidx} \\
+3 & worker \(\rightarrow\) master & \texttt{TAG\_EQUIL\_COORDS} &
+full coordinate array \\
+4 & master \(\rightarrow\) non-winners & \texttt{TAG\_SYNC\_COORDS} &
+winning coordinates \\
+\bottomrule
+\end{tabular}
+\caption{Point-to-point synchronisation protocol used during collaborative equilibration.}
+\end{table}
+
+Once the Geweke test declares equilibrium, the master saves the
+equilibrated geometry to \texttt{../results/equilibrated\_cX.xyz} and
+unlocks the 10 production jobs for that configuration type in the task
+queue.
+
+\subsection{Metrics and Methodology}
+
+This section evaluates the performance of the equilibration
+optimization technique compared to the serial baseline. The system
+studied is configuration 1, a chain of 500 carbons at \(T = 300\) K
+including hydrogens. Efficiency is evaluated based on the time to reach
+specific energy thresholds \(E_{\mathrm{tot}} = 110\), 100, and
+90 kcal/mol.
+
+The speedup is defined as
+\[
+S_w = \frac{\mathrm{Steps}_{\mathrm{serial}}}
+           {\mathrm{Steps}_{\mathrm{parallel},\,w}},
+\]
+where \(w\) is the number of workers participating in the collaborative
+equilibration group. Efficiency is then defined as
+\[
+\eta_w = \frac{S_w}{w}.
+\]
+
+The table below summarises the number of MC steps required by different
+worker configurations to reach the target energy levels.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{ccccc}
+\toprule
+Threshold & Workers \(w\) & Steps Required & Speedup \(S_w\) & Efficiency \(S_w / w\) \\
+\midrule
+110 kcal/mol & 1 & 590,000  & 1.00  & 1.00 \\
+110 kcal/mol & 2 & 70,000   & 8.43  & 4.21 \\
+110 kcal/mol & 4 & 140,000  & 4.21  & 1.05 \\
+110 kcal/mol & 8 & 50,000   & 11.80 & 1.47 \\
+\midrule
+100 kcal/mol & 1 & 1,180,000 & 1.00  & 1.00 \\
+100 kcal/mol & 2 & 350,000   & 3.37  & 1.68 \\
+100 kcal/mol & 4 & 210,000   & 5.62  & 1.40 \\
+100 kcal/mol & 8 & 50,000    & 23.60 & 2.95 \\
+\midrule
+90 kcal/mol & 1 & 2,400,000 & 1.00  & 1.00 \\
+90 kcal/mol & 2 & 1,780,000 & 1.35  & 0.67 \\
+90 kcal/mol & 4 & 570,000   & 4.21  & 1.05 \\
+90 kcal/mol & 8 & 160,000   & 15.00 & 1.87 \\
+\bottomrule
+\end{tabular}
+\caption{Monte Carlo steps required to reach selected energy thresholds during collaborative equilibration.}
+\end{table}
+
+These results show that the method can exhibit superlinear speedup.
+This is not just because more workers are used, but because the search
+itself changes. A population of replicas explores several
+conformational regions at once, and once one replica finds a much
+better basin, that discovery is broadcast to the others at the next
+synchronisation point.
+
+For this reason, the observed acceleration is partly computational and
+partly algorithmic. The collaborative protocol does not simply divide
+the same work among more processes; it improves the probability of
+finding favourable states earlier than a single serial trajectory would.
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{convergence_speedup_equil.png}
+  \caption{Convergence speedup analysis for collaborative equilibration.}
+\end{figure}
+
+\subsection{Ensemble Averaging and Star Topology}
+
+Once an equilibrated geometry has been found, the workflow switches from
+collaborative equilibration to large-scale production sampling. At this
+stage, rank 0 acts as a central dispatcher in a star-topology MPI
+scheme, while the remaining ranks behave as workers that repeatedly
+request new tasks from the master.
+
+The master maintains a global queue of production jobs. Each job
+corresponds to an independent production replica, and workers are
+assigned new jobs dynamically as soon as they finish their current one.
+This avoids the load imbalance that would appear if all replicas were
+distributed statically at launch, since individual trajectories may
+still differ slightly in runtime.
+
+The dispatcher listens using a tag-based communication pattern and can
+react to whichever worker becomes free first. In practice, this means
+that workers request work, receive a production assignment, run the
+simulation, write their outputs, and notify the master when they have
+finished. The master then either sends another job or terminates the
+worker once the queue has been exhausted.
+
+This star-topology design turns the MPI layer into an ensemble averaging
+engine. Independent production replicas are generated as efficiently as
+possible, and the final observables are obtained by averaging over the
+outputs of all completed runs. In this phase, the objective is no
+longer to accelerate the equilibration of a single chain, but to
+maximize statistical throughput across the whole ensemble.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{cll}
+\toprule
+Direction & Tag & Meaning \\
+\midrule
+worker \(\rightarrow\) master & \texttt{TAG\_REQUEST\_WORK} & worker requests a new task \\
+master \(\rightarrow\) worker & \texttt{TAG\_DO\_PROD} & start a production replica \\
+master \(\rightarrow\) worker & \texttt{TAG\_WAIT} & remain idle temporarily \\
+master \(\rightarrow\) worker & \texttt{TAG\_DIE} & terminate execution \\
+worker \(\rightarrow\) master & \texttt{TAG\_PROD\_DONE} & production replica finished \\
+\bottomrule
+\end{tabular}
+\caption{Tag-based work distribution in the star-topology production phase.}
+\end{table}
+
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{parallel_star_speedup_plot.png}
+  \caption{Timing and efficiency of the orchestrator-worker production workflow.}
+\end{figure}
