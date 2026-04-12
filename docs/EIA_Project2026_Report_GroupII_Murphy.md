@@ -387,6 +387,28 @@ _Fig. x: Torsional distribution of post-equilibrated MCS across various initial 
 The low-energy rotational valley relaxation tendency for Conf 5 is even more apparent in this graph, which shows the probability density of the each polymer exploring various dihedral (torsion) angles. Each configuration's post-equilibration data is compared to the OPLS-AA potential, where the results confirm the highest probability at $\pi$ (trans) configuration. While all configurations follow the expected potential, Conf 5 adheres most closely, fully affirming the above energy and observable data. Also of note is how the graph demonstrates the expected rise in probablity around the potential's local minima at $\sim \pi/3$.
 
 <br>
+
+## Parallel v Serial Wall Time
+
+![Wall Time Comparison](img/parallel_combined_v_serial_plot.png)
+_Fig. x: Wall-Clock timing for serial vs combined parallelized simulation_
+
+A final test of the parallelization efforts' efficiency was running the simulation serially, combining their runtimes, and comparing it to the wall-clock time required to complete the same parallel execution. No equilibration steps were bypassed to keep the comparison as similar as possible.
+
+As seen in figure x, the parallel version took 14h 26min to complete while the serial versions took a combined 55h 35m to perform the same tasks. The parallel version required 13 cores to operate, consisting of over 89h of compute time, not counting the master node's orchestration. The multi-processing approach condensed the parallel version's CPU-to-Wall clock time by a factor of **6.16x**, while the wall-to-wall clock speedup (parallel vs serial) was sped up by **3.85x**.
+
+It's interesting to notice that while more resources are needed to run the parallel version, it was also able to complete all 3 configurations' equilibration and production simulations faster than the quickest serial simulation (Conf 5). This beautifully illustrates the contributions of high-performance computing architecture to scientific research, showing that it can assist in converting multi-day research bottlenecks into overnight jobs.
+
+Computational Speedup: Serial vs Parallel Architecture
+To quantify the success of moving from a standard sequential environment into the dynamically balanced Master-Worker (Star) topology, we must contrast the raw computational cost against the practical real-world waiting time.
+
+As the plot demonstrates, running the exact same workload (equilibration and 10-million step production phases across all 3 independent configurations) sequentially in the Serial environment took over 55.6 continuous hours (over two days) of real-world waiting time.
+
+By utilizing the Parallelization framework with 1 Master orchestrating 6 Worker nodes dynamically, that identical workload was condensed down into just 14.4 hours of actual Wall-Clock time. This represents roughly a ~3.85x speedup for the researcher!
+
+However, it's crucial to acknowledge the computational overhead associated with this architecture. As noted in the Parallel bar, the nodes actually accumulated a combined 89.05 hours of raw CPU execution time (due to message passing, MPI synchronization, and administrative load sorting) to do what the Serial execution did in 55.6 raw CPU hours.
+
+The Significance: This beautifully visualizes the primary tradeoff in high-performance computational simulation. While the dynamic OpenMPI framework incurs a larger total computational footprint/cost natively via overhead, its ability to safely distribute and parallelize the mathematical workload across multiple cores achieves its primary design goal: taking multi-day research bottlenecks and turning them into overnight jobs.
 <br>
 <br>
 <br>
