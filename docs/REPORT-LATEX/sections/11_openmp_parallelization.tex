@@ -1,118 +1,147 @@
 % Source ownership:
-% - Mainly Arthur/Manel/Oliwier
-% - pending final benchmark figures / commentary
+% - Oliwier
 
-\section{OpenMP Parallelization}
+\section{OpenMP Parallelization of Energy Routines}
 \label{sec:openmp}
 
-\subsection{\texttt{compute\_total\_energy}}
+\subsection{\texttt{compute\_total\_energy}: implementation}
+ 
+The $O(N^2)$ LJ pair loop in \texttt{compute\_total\_energy} has
+independent iterations and is suitable for OpenMP worksharing. Two
+separate \texttt{!\$omp parallel do} regions were written: the LJ loop
+uses \texttt{schedule(dynamic,~10)} to compensate for the triangular
+iteration space (inner bound varies with \texttt{i}); the torsional
+backbone loop uses the default static schedule, which has lower overhead
+for a uniform workload. Private variables are declared per region
+(\texttt{j}, \texttt{r2} in the LJ region; \texttt{cos\_phi} in the
+torsional region), and both accumulators (\texttt{e\_lj}, \texttt{e\_tors})
+use a \texttt{reduction(+:...)} clause to prevent data races.
+ 
+The parallelisation is activated at build time via the
+\texttt{\_USE\_OPENMP} preprocessor macro, which sets the
+\texttt{omp\_total\_energy} flag to \texttt{.true.}. This allows the
+same source to compile into a serial or parallel binary without code
+changes.
+ 
+\subsection{\texttt{delta\_energy}: implementation}
+ 
+The fixed/moved partitioning reduces the LJ work to a rectangular
+$N_\mathrm{fixed} \times N_\mathrm{moved}$ loop. The
+\texttt{collapse(2)} directive merges both loop indices into a single
+flat iteration space, which OpenMP distributes evenly across threads.
+Because pivot moves near the chain termini produce very few moved atoms,
+a runtime guard \texttt{if(omp\_delta\_energy .and.\ (n\_fixed*n\_moved > 1000))}
+prevents thread-spawn overhead from exceeding the parallel benefit for
+small moves.
+ 
+\subsection{Benchmarking: \texttt{compute\_total\_energy}}
+ 
+A dedicated benchmark program performs 10\,000 consecutive calls to \texttt{compute\_total\_energy} on a fixed geometry and reports the total wall time via \texttt{MPI\_Wtime}. The script sweeps thread counts of 1, 2, 3, and 4 across chain sizes of $N = 20,\,50,\,100,\,500$ carbons in all-atom mode. Figure~\ref{fig:omp_total} shows the wall times and parallel efficiency $E = T_1/(p \cdot T_p)$.
+ 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{total_omp_performance.pdf}
+  \caption{OpenMP scaling of \texttt{compute\_total\_energy} (10\,000
+    evaluations, all-atom model, explicit hydrogens). Left: absolute
+    wall time. Right: parallel efficiency $E = T_1/(p\,T_p)$; dashed
+    line marks ideal efficiency $E = 1$.}
+  \label{fig:omp_total}
+\end{figure}
+ 
+Three features stand out. First, at small chain sizes ($N \leq 100$)
+adding threads increases wall time — at $N = 20$, three and four
+threads are slower than serial — confirming that the computation volume
+is too small to cover thread-management overhead. Second, even at
+$N = 500$ all thread counts converge to essentially the same wall time
+($\approx 99$--$104\,\text{s}$), with efficiencies of 0.53, 0.35, and
+0.26 for 2, 3, and 4 threads respectively -- well below ideal, with only marginal improvement as $N$ grows.. 
+This indicates that the bottleneck is not arithmetic
+but memory bandwidth: the triangular LJ loop accesses coordinate data
+in a pattern that generates cache misses, so threads stall waiting for
+data rather than executing useful work. The \texttt{is\_excluded}
+branch inside the inner loop further fragments the iteration space in
+a way that \texttt{schedule(dynamic,~10)} cannot fully correct.
+ 
+\texttt{compute\_total\_energy} is called once at initialisation; the
+energy accumulators are subsequently updated incrementally via
+$E \leftarrow E + \Delta E$ at each accepted move, so no repeated
+full-energy evaluations occur during the MC loop. Given that
+parallelisation of this routine yields no measurable benefit, the
+\texttt{omp\_total\_energy} flag was disabled for all production
+simulations.
+ 
+\subsection{Benchmarking: \texttt{delta\_energy}}
+ 
+Because \texttt{compute\_total\_energy} is called only at
+initialisation, the actual runtime cost of a 1\,M-step simulation is
+dominated entirely by \texttt{delta\_energy}. At $N = 500$ with one
+thread, the benchmark records $6{,}592\,\text{s}$ for $10^6$ steps,
+compared to $0.01\,\text{s}$ for the single \texttt{compute\_total\_energy}
+call — a factor of ${\sim}660{,}000$ difference.
+ 
+The \texttt{delta\_energy} benchmark was run as a full
+$10^6$-step MC simulation rather than an isolated call counter,
+since that is the context in which the routine operates in
+production. Three independent replicas were executed simultaneously
+as separate MPI processes, each starting from a different initial
+chain configuration. Wall time was recorded per replica using
+\texttt{MPI\_Wtime()} and the maximum across all three ranks was
+taken as the reported time for each (thread count, chain size)
+combination. Thread counts of 1, 2, 3, and 4 were tested across
+chain sizes of $N = 50,\,100,\,500$ carbons.
+Figure~\ref{fig:omp_delta} shows the results.
+ 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{delta_omp_1000000_steps.pdf}
+  \caption{OpenMP scaling of \texttt{delta\_energy} ($10^6$ MC steps,
+    all-atom model). Left: absolute wall time. Right: parallel
+    efficiency $E = T_1/(p\,T_p)$; dashed line marks ideal $E = 1$.}
+  \label{fig:omp_delta}
+\end{figure}
+ 
+Unlike \texttt{compute\_total\_energy}, \texttt{delta\_energy} shows
+genuine speedup with 2 and 3 threads. Efficiency with 2 threads is
+0.60 at both $N = 50$ and $N = 500$, and 0.56 at $N = 100$, giving
+wall-time reductions of 11--17\%. With 3 threads the speedup reaches
+$1.47$--$1.52\times$ (efficiency $\approx 0.50$) across all chain
+sizes, reducing the $N = 500$ simulation from $6{,}592\,\text{s}$ to
+$4{,}333\,\text{s}$.
+ 
+Four threads, however, is consistently counterproductive. At $N = 50$
+and $N = 100$ the 4-thread run is slower than the serial baseline
+(speedup 0.90 and 0.98 respectively), and at $N = 500$ the gain is
+negligible (speedup $1.04\times$). The efficiency values of 0.22--0.26
+across all sizes indicate that thread-management overhead outweighs
+the parallel benefit at this thread count.
+ 
+Notably, the efficiency values are nearly independent of $N$. This is
+explained by the \texttt{is\_excluded} branch inside the inner loop:
+the number of valid (non-excluded) pairs in the
+$N_\mathrm{fixed} \times N_\mathrm{moved}$ space depends on topology,
+not simply on $N$, so the effective parallel workload does not scale
+uniformly with chain length. The \texttt{collapse(2)} directive assigns
+the flat iteration range to threads before knowing which pairs will be
+skipped, leaving load imbalance that static scheduling cannot correct.
+For 4 threads, synchronization cost and this imbalance together erase
+the parallel benefit.
 
-The dominant cost in \texttt{compute\_total\_energy} is the
-\(O(N^2)\) double loop over non-bonded Lennard-Jones pairs. Each
-iteration is independent --- it reads a pair of coordinates, evaluates
-\texttt{ljpairenergy}, and adds to a running sum --- which makes it a
-natural fit for OpenMP worksharing.
+The practical conclusion is that 3 threads is the effective optimum
+for \texttt{delta\_energy} (tested on the \texttt{cerqt01.q} cluster queue):
+it delivers a consistent ${\approx}1.5\times$ speedup with
+${\approx}50\%$ efficiency, reducing the wall time for a $10^6$-step
+simulation at $N = 500$ carbons from 6{,}592\,s to 4{,}333\,s — a
+34\% reduction. Four threads provides no benefit on this hardware,
+and is slower than serial for smaller chain sizes.
 
-The outer loop is distributed across threads with
-\texttt{!\$omp parallel do}, with the inner index, the squared
-distance \(r^2\), and the dihedral cosine \texttt{cosphi} declared
-\texttt{private} to prevent cross-thread interference. The global
-accumulators \texttt{elj} and \texttt{etors} are aggregated safely
-using a \texttt{reduction(+:...)} clause.
-
-The two loops inside the subroutine have different iteration structures
-and were scheduled accordingly. The LJ pair loop has a triangular
-iteration space because the inner bound depends on the outer index, so
-\texttt{schedule(dynamic,10)} is used to prevent faster threads from
-sitting idle while slower ones finish larger chunks of work. The
-torsional loop over the carbon backbone is uniform in length and uses
-the default static scheduling, which has lower overhead when the
-workload is balanced.
-
-Both parallel regions are wrapped in an \texttt{if(omp\_totalenergy)}
-runtime guard, which is set from the input file. This allows the same
-binary to run in purely serial mode during development or lightweight
-tests without any code changes.
-
-\subsection{\texttt{delta\_energy}}
-
-The \texttt{delta\_energy} subroutine is the true bottleneck of the MC
-loop --- it is called once per accepted or rejected move, millions of
-times per simulation. The key algorithmic feature here is the dynamic
-partitioning of atoms into \texttt{fixedlist} and \texttt{movedlist} at
-the start of each call.
-
-Only cross-interactions between fixed and moved atoms can have changed
-during a pivot, so the LJ loop processes exclusively those pairs rather
-than the full \(O(N^2)\) set. This drastically reduces the amount of
-work required for a local move and makes the subroutine much more
-sensitive to efficient parallelization.
-
-The two nested loops over fixed and moved form a perfectly rectangular
-iteration space, which makes \texttt{collapse(2)} effective: it merges
-both loops into a single flat range of \(n_{\mathrm{fixed}}
-n_{\mathrm{moved}}\) iterations and distributes them evenly across
-threads.
-
-Since pivot moves near the ends of the chain move very few atoms,
-spawning threads for only a small number of pairs would cost more than
-it saves. The parallel block is therefore gated by
-\texttt{if(omp\_deltaenergy .and. nfixed*nmoved > 1000)}, ensuring that
-OpenMP is only activated when the workload genuinely justifies the
-threading overhead.
-
-\subsection{Benchmarking Methodology}
-
-To quantify the effect of thread count on both energy routines, a
-dedicated benchmark program \texttt{mainbenchtotal.f90} was written. It
-performs 10,000 back-to-back calls to
-\texttt{compute\_total\_energy} for a given chain size and reports the
-wall time via \texttt{MPI\_Wtime}.
-
-Two shell scripts automate the full benchmark sweeps.
-\texttt{4.runomptotaltest.sh} compiles and runs the benchmark binary
-across thread counts of 1, 2, 3, and 4 for chain sizes of 20, 50, 100,
-and 500 carbons, writing the results to a CSV file in the benchmark
-results folder.
-
-\texttt{5.runompdeltatest.sh} follows the same structure but targets
-\texttt{delta\_energy} by running full 1M-step MC simulations via
-\texttt{mainparallelreplicas.x} and extracting wall time from the CPU
-output files. Both scripts are written for the cluster queue and load
-the appropriate MPI module.
-
-The results are plotted by \texttt{plotbenchmarks.py}, which reads both
-CSV files and produces per-chain-size scaling plots as PDF figures.
-
-A note must be made regarding the \texttt{delta\_energy} benchmark:
-because it is measured inside full Monte Carlo production runs, the
-timings are affected by randomness. Different random trajectories lead
-to different accepted moves and different moved/fixed partitions, so the
-workload is not bitwise identical between runs. For that reason, the
-\texttt{delta\_energy} benchmark should be interpreted as a practical
-end-to-end timing measurement rather than as a perfectly controlled
-microbenchmark.
-
-% Oliwier to add images / results / analysis
-
-\subsection{SIMD Exploration}
-
-An attempt was made to additionally exploit single-core SIMD
-vectorization on the \texttt{ljpairenergy} function using the
-\texttt{!\$omp declare simd} directive. The idea was to generate a
-vectorized variant of the function callable from an
-\texttt{!\$omp simd}-annotated inner loop, allowing each thread to
-process multiple atom pairs simultaneously using AVX registers.
-
-In practice, activating this required structural changes to
-\texttt{delta\_energy} that conflicted with the existing threading
-design. The \texttt{collapse(2)} clause and the inner-loop
-\texttt{cycle} on \texttt{isexcluded} are not naturally compatible with
-SIMD regions, and removing them in order to support vectorization
-degraded the thread load balancing that \texttt{collapse(2)} provides.
-
-Given that OpenMP threading was the primary parallelization goal, the
-SIMD experiment was abandoned and the directive was removed from the
-code. It remains a direction worth revisiting, particularly if the pair
-loops are later refactored to use pre-filtered pair lists that eliminate
-the exclusion branch entirely.
+\subsection{SIMD exploration}
+ 
+An attempt was made to exploit single-core SIMD vectorisation on
+\texttt{lj\_pair\_energy} with the \texttt{!\$omp declare simd}
+directive, processing multiple atom pairs simultaneously in AVX
+registers. The \texttt{cycle} on \texttt{is\_excluded} inside the
+inner loop is incompatible with SIMD regions, and removing it to
+enable vectorisation degraded the load balance provided by
+\texttt{collapse(2)}. The directive was removed. Revisiting this is
+feasible if the pair loops are refactored to use pre-filtered pair
+lists, which would eliminate the exclusion branch entirely.
