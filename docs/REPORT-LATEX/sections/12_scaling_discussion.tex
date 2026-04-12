@@ -143,11 +143,10 @@ equilibration or execute independent production replicas drawn from a
 global queue.
 
 Within each worker, OpenMP is used to accelerate the most expensive
-energy kernels, especially the nested Lennard-Jones loops in
-\texttt{compute\_total\_energy} and \texttt{delta\_energy}. This creates
-a hybrid structure in which MPI handles macro-level task distribution
-while OpenMP performs micro-level acceleration inside each simulation
-task.
+energy kernel, the nested Lennard-Jones loop in
+\texttt{delta\_energy}. This creates a hybrid structure in which MPI
+handles macro-level task distribution while OpenMP performs
+micro-level acceleration inside each Monte Carlo step.
 
 A key design choice is that the simulation is separated into phases so
 that resources can be reused dynamically. If an equilibrated geometry
