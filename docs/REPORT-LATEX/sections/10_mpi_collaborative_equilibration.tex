@@ -141,7 +141,7 @@ equilibration group. Efficiency is then defined as
 The table below summarises the number of MC steps required by different
 worker configurations to reach the target energy levels.
 
-\begin{table}[h!]
+\begin{table}[H]
 \centering
 \begin{tabular}{ccccc}
 \toprule
@@ -166,22 +166,20 @@ Threshold & Workers \(w\) & Steps Required & Speedup \(S_w\) & Efficiency \(S_w 
 \caption{Monte Carlo steps required to reach selected energy thresholds during collaborative equilibration.}
 \end{table}
 
-These results show that the method can exhibit superlinear speedup.
-This is not just because more workers are used, but because the search
-itself changes. A population of replicas explores several
-conformational regions at once, and once one replica finds a much
-better basin, that discovery is broadcast to the others at the next
-synchronisation point.
+The results demonstrate a clear superlinear speedup ($S(w) > w$) in almost all parallel configurations. This phenomenon is a direct consequence of the collaborative sampling strategy implemented via the Boltzmann roulette wheel.
 
-For this reason, the observed acceleration is partly computational and
-partly algorithmic. The collaborative protocol does not simply divide
-the same work among more processes; it improves the probability of
-finding favourable states earlier than a single serial trajectory would.
+In the serial run, the polymer chain often becomes trapped in metastable states (local energy minima). The parallel implementation, by maintaining a population of $w$ independent trajectories, significantly increases the probability that at least one replica discovers a more favorable region of the phase space. Once a lower-energy conformation is found, the synchronization protocol "rescues" the rest of the population, broadcasting the winning coordinates to all workers. This creates a collective escape mechanism that reduces the number of steps required to converge by a factor far greater than the number of processors.
 
-\begin{figure}[h!]
+For instance, at the 100 kcal/mol threshold, the 8-worker group reaches the target in only 50,000 steps, compared to the 1.18 million steps required by the serial run, resulting in a speedup of 23.60×.
+
+We also observe stochastic fluctuations typical of Monte Carlo methods, such as the anomalous efficiency at $w=2$ for the 110 kcal/mol threshold. As the energy targets become more stringent (90 kcal/mol), the speedup values tend to stabilize, as finding further conformational improvements becomes more difficult even for a larger population.
+
+\begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{convergence_speedup_equil.pdf}
-  \caption{Convergence speedup analysis for collaborative equilibration.}
+  \caption{Left: evolution of $E\text{total}$ for each worker configuration. \\
+           Centre: MC steps required to reach each energy threshold. \\
+           Right: speedup S(w) relative to the serial run; the dashed line shows ideal linear scaling}
 \end{figure}
 
 \subsection{Ensemble Averaging and Star Topology}
@@ -229,8 +227,12 @@ worker \(\rightarrow\) master & \texttt{TAG\_PROD\_DONE} & production replica fi
 \caption{Tag-based work distribution in the star-topology production phase.}
 \end{table}
 
+The benefits of this star topology combined with phased execution of equilibration runs followed by production runs is compared below to the serial version of the program. As the number of dynamic active nodes increases, the time to complete 10-million MC Steps decreases, albeit non-ideally:
+
 \begin{figure}[h!]
   \centering
   \includegraphics[width=\textwidth]{parallel_star_speedup_plot.png}
-  \caption{Timing and efficiency of the orchestrator-worker production workflow.}
+  \caption{Comparing timing \& efficiency of Ensemble Averaging with various core count to Serial production run}
 \end{figure}
+
+Simply adding more cores does not result in a perfectly linear speedup. This can be attributed to parallelization overhead plus device hardware bottlenecks. The most efficient use of cores is found in factors of 10 (2 \& 5 cores), in which cases all worker nodes are participating in the final group of remaining 1M MCS steps. The non-factors of 10 could see performance improvements with the addition of a dynamic algorithm that determines how many steps are left once there are fewer 1M MCS jobs remaining than cores participating. This would eliminates worker "dead-time" towards the end of the production run.
