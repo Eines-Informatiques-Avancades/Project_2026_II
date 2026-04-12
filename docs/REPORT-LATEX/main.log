@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.2.22)  12 APR 2026 19:29
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.2.22)  12 APR 2026 20:38
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -567,7 +567,19 @@ LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <10> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 22.
 
 
- [6]) (./sections/04_io_module.tex
+ [6]
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+<figs/INITIAL-CONFIGS.png, id=371, 1450.41875pt x 859.21pt>
+File: figs/INITIAL-CONFIGS.png Graphic file (type png)
+<use figs/INITIAL-CONFIGS.png>
+Package pdftex.def Info: figs/INITIAL-CONFIGS.png  used on input line 114.
+(pdftex.def)             Requested size: 455.24411pt x 269.6824pt.
+
+LaTeX Warning: `!h' float specifier changed to `!ht'.
+
+) (./sections/04_io_module.tex
 LaTeX Font Info:    Font shape `T1/cmtt/bx/n' in size <12> not available
 (Font)              Font shape `T1/cmtt/m/n' tried instead on input line 9.
 
@@ -580,36 +592,42 @@ mtt/m/n/10.95 traj_\T1/cmtt/m/it/10.95 label\T1/cmtt/m/n/10.95 .xyz\T1/cmr/m/n/
 tt/m/n/10.95 .dat\T1/cmr/m/n/10.95 ,
  []
 
-) (./sections/05_energy_montecarlo.tex
+
 
  [8
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.25 
+l.43 
      
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.43 
+      <./figs/INITIAL-CONFIGS.png>]) (./sections/05_energy_montecarlo.tex
+
+ [9
 pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.25 
+l.58 
      ]
-
- [9]
 
  [10]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 218.
+(hyperref)                removing `math shift' on input line 188.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `superscript' on input line 218.
+(hyperref)                removing `superscript' on input line 188.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 218.
+(hyperref)                removing `math shift' on input line 188.
 
 
 
@@ -633,82 +651,82 @@ ions: \T1/cmtt/m/n/10.95 plot_energies\T1/cmr/m/n/10.95 , \T1/cmtt/m/n/10.95 pl
 ot_observables\T1/cmr/m/n/10.95 ,
  []
 
-
-
- [15]
-<figs/serial_geweke/VMD_serial_geweke_initial_geometry.png, id=559, 488.42474pt
+<figs/serial_geweke/VMD_serial_geweke_initial_geometry.png, id=512, 488.42474pt
  x 404.10976pt>
 File: figs/serial_geweke/VMD_serial_geweke_initial_geometry.png Graphic file (t
 ype png)
 <use figs/serial_geweke/VMD_serial_geweke_initial_geometry.png>
 Package pdftex.def Info: figs/serial_geweke/VMD_serial_geweke_initial_geometry.
-png  used on input line 115.
+png  used on input line 116.
 (pdftex.def)             Requested size: 218.51521pt x 180.79327pt.
-<figs/serial_geweke/VMD_serial_geweke_final_geometry.png, id=561, 489.62926pt x
+<figs/serial_geweke/VMD_serial_geweke_final_geometry.png, id=513, 489.62926pt x
  351.714pt>
 File: figs/serial_geweke/VMD_serial_geweke_final_geometry.png Graphic file (typ
 e png)
 <use figs/serial_geweke/VMD_serial_geweke_final_geometry.png>
 Package pdftex.def Info: figs/serial_geweke/VMD_serial_geweke_final_geometry.pn
-g  used on input line 117.
+g  used on input line 118.
 (pdftex.def)             Requested size: 218.51521pt x 156.96573pt.
-<figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf, id=563, 36
+<figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf, id=515, 36
 4.9635pt x 270.08745pt>
 File: figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf Graphi
 c file (type pdf)
 <use figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf>
 Package pdftex.def Info: figs/serial_geweke/observables_evolution_500_4_1000000
-0_300.00.pdf  used on input line 135.
+0_300.00.pdf  used on input line 138.
 (pdftex.def)             Requested size: 364.19667pt x 269.53453pt.
-<figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf, id=565, 341.581
-53pt x 266.65231pt>
-File: figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf Graphic fil
-e (type pdf)
-<use figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf>
-Package pdftex.def Info: figs/serial_geweke/energy_evolution_500_4_10000000_300
-.00.pdf  used on input line 161.
-(pdftex.def)             Requested size: 364.19667pt x 284.3183pt.
 
+
+ [15]
 
  [16
-pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.173 
-       <./figs/serial_geweke/VMD_serial_geweke_initial_geometry.png> <./figs/se
-rial_geweke/VMD_serial_geweke_final_geometry.png>]
-
- [17
 pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.173 
+l.156 
       
 pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.173 
-       <./figs/serial_geweke/observables_evolution_500_4_10000000_300.00.pdf> <
-./figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf>]
-<figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf, id=630, 364
+l.156 
+       <./figs/serial_geweke/VMD_serial_geweke_initial_geometry.png> <./figs/se
+rial_geweke/VMD_serial_geweke_final_geometry.png> <./figs/serial_geweke/observa
+bles_evolution_500_4_10000000_300.00.pdf>]
+<figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf, id=559, 341.581
+53pt x 266.65231pt>
+File: figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf Graphic fil
+e (type pdf)
+<use figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf>
+Package pdftex.def Info: figs/serial_geweke/energy_evolution_500_4_10000000_300
+.00.pdf  used on input line 170.
+(pdftex.def)             Requested size: 364.19667pt x 284.3183pt.
+
+
+ [17
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) ha
+s been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.201 
+       <./figs/serial_geweke/energy_evolution_500_4_10000000_300.00.pdf>]
+<figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf, id=587, 364
 .9635pt x 270.08745pt>
 File: figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf Graphic
  file (type pdf)
 <use figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf>
 Package pdftex.def Info: figs/serial_geweke/torsion_distribution_500_4_10000000
-_300.00.pdf  used on input line 178.
+_300.00.pdf  used on input line 206.
 (pdftex.def)             Requested size: 364.19667pt x 269.53453pt.
 
 
  [18
-pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) ha
+pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.224 
+l.249 
        <./figs/serial_geweke/torsion_distribution_500_4_10000000_300.00.pdf>]) 
 (./sections/07_cluster_compatibility.tex
 Overfull \hbox (1.9185pt too wide) in paragraph at lines 9--19
@@ -749,31 +767,27 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
  [22]
-<figs/convergence_speedup_equil.pdf, id=711, 1293.34756pt x 427.74178pt>
-File: figs/convergence_speedup_equil.pdf Graphic file (type pdf)
-<use figs/convergence_speedup_equil.pdf>
-Package pdftex.def Info: figs/convergence_speedup_equil.pdf  used on input line
- 183.
-(pdftex.def)             Requested size: 455.24411pt x 150.56033pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
 
  [23
 pdfTeX warning (ext4): destination with the same identifier (name{table.3}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.194 
+l.180 
       
 pdfTeX warning (ext4): destination with the same identifier (name{table.4}) has
  been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.194 
+l.180 
       ]
-<figs/parallel_star_speedup_plot.png, id=718, 635.976pt x 419.166pt>
+<figs/convergence_speedup_equil.pdf, id=674, 1293.34756pt x 427.74178pt>
+File: figs/convergence_speedup_equil.pdf Graphic file (type pdf)
+<use figs/convergence_speedup_equil.pdf>
+Package pdftex.def Info: figs/convergence_speedup_equil.pdf  used on input line
+ 183.
+(pdftex.def)             Requested size: 455.24411pt x 150.56033pt.
+<figs/parallel_star_speedup_plot.png, id=675, 635.976pt x 419.166pt>
 File: figs/parallel_star_speedup_plot.png Graphic file (type png)
 <use figs/parallel_star_speedup_plot.png>
 Package pdftex.def Info: figs/parallel_star_speedup_plot.png  used on input lin
@@ -785,7 +799,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 ) (./sections/11_openmp_parallelization.tex
 
  [24
-pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) ha
+pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -799,13 +813,13 @@ l.19
       <./figs/convergence_speedup_equil.pdf>]
 
  [25
-pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) ha
+pdfTeX warning (ext4): destination with the same identifier (name{figure.7}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.40 
       <./figs/parallel_star_speedup_plot.png>]
-<figs/total_omp_performance.pdf, id=806, 844.11362pt x 397.68576pt>
+<figs/total_omp_performance.pdf, id=763, 844.11362pt x 397.68576pt>
 File: figs/total_omp_performance.pdf Graphic file (type pdf)
 <use figs/total_omp_performance.pdf>
 Package pdftex.def Info: figs/total_omp_performance.pdf  used on input line 43.
@@ -814,13 +828,13 @@ Package pdftex.def Info: figs/total_omp_performance.pdf  used on input line 43.
 
 
  [26
-pdfTeX warning (ext4): destination with the same identifier (name{figure.7}) ha
+pdfTeX warning (ext4): destination with the same identifier (name{figure.8}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.93 
       <./figs/total_omp_performance.pdf>]
-<figs/delta_omp_1000000_steps.pdf, id=844, 844.11362pt x 397.68576pt>
+<figs/delta_omp_1000000_steps.pdf, id=800, 844.11362pt x 397.68576pt>
 File: figs/delta_omp_1000000_steps.pdf Graphic file (type pdf)
 <use figs/delta_omp_1000000_steps.pdf>
 Package pdftex.def Info: figs/delta_omp_1000000_steps.pdf  used on input line 9
@@ -829,18 +843,18 @@ Package pdftex.def Info: figs/delta_omp_1000000_steps.pdf  used on input line 9
 ) (./sections/12_scaling_discussion.tex
 
  [27
-pdfTeX warning (ext4): destination with the same identifier (name{figure.8}) ha
+pdfTeX warning (ext4): destination with the same identifier (name{figure.9}) ha
 s been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.4 
      <./figs/delta_omp_1000000_steps.pdf>]
-<figs/speedup_vs_natoms.pdf, id=874, 490.46642pt x 202.356pt>
+<figs/speedup_vs_natoms.pdf, id=830, 490.46642pt x 202.356pt>
 File: figs/speedup_vs_natoms.pdf Graphic file (type pdf)
 <use figs/speedup_vs_natoms.pdf>
 Package pdftex.def Info: figs/speedup_vs_natoms.pdf  used on input line 38.
 (pdftex.def)             Requested size: 455.24411pt x 187.83405pt.
-<figs/speedup_vs_nsteps.pdf, id=875, 491.436pt x 202.356pt>
+<figs/speedup_vs_nsteps.pdf, id=831, 491.436pt x 202.356pt>
 File: figs/speedup_vs_nsteps.pdf Graphic file (type pdf)
 <use figs/speedup_vs_nsteps.pdf>
 Package pdftex.def Info: figs/speedup_vs_nsteps.pdf  used on input line 47.
@@ -851,13 +865,13 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
  [28
-pdfTeX warning (ext4): destination with the same identifier (name{figure.9}) ha
-s been already used, duplicate ignored
+pdfTeX warning (ext4): destination with the same identifier (name{figure.10}) h
+as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.62 
       <./figs/speedup_vs_natoms.pdf>]
-<figs/benchmark_vs_np.pdf, id=911, 628.1982pt x 202.356pt>
+<figs/benchmark_vs_np.pdf, id=868, 628.1982pt x 202.356pt>
 File: figs/benchmark_vs_np.pdf Graphic file (type pdf)
 <use figs/benchmark_vs_np.pdf>
 Package pdftex.def Info: figs/benchmark_vs_np.pdf  used on input line 84.
@@ -865,7 +879,7 @@ Package pdftex.def Info: figs/benchmark_vs_np.pdf  used on input line 84.
 
 LaTeX Warning: `!h' float specifier changed to `!ht'.
 
-<figs/observables_vs_np.pdf, id=912, 491.436pt x 202.356pt>
+<figs/observables_vs_np.pdf, id=869, 491.436pt x 202.356pt>
 File: figs/observables_vs_np.pdf Graphic file (type pdf)
 <use figs/observables_vs_np.pdf>
 Package pdftex.def Info: figs/observables_vs_np.pdf  used on input line 93.
@@ -876,7 +890,7 @@ LaTeX Warning: `!h' float specifier changed to `!ht'.
 
 
  [29
-pdfTeX warning (ext4): destination with the same identifier (name{figure.10}) h
+pdfTeX warning (ext4): destination with the same identifier (name{figure.11}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -885,20 +899,20 @@ l.121 C
 peedup_vs_nsteps.pdf>]
 
  [30
-pdfTeX warning (ext4): destination with the same identifier (name{figure.11}) h
+pdfTeX warning (ext4): destination with the same identifier (name{figure.12}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.144 
       
-pdfTeX warning (ext4): destination with the same identifier (name{figure.12}) h
+pdfTeX warning (ext4): destination with the same identifier (name{figure.13}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.144 
        <./figs/benchmark_vs_np.pdf> <./figs/observables_vs_np.pdf>]) (./section
 s/13_final_parallel_results.tex
-<figs/parallel_combined/parallel_energy_evolution.pdf, id=988, 707.81688pt x 41
+<figs/parallel_combined/parallel_energy_evolution.pdf, id=944, 707.81688pt x 41
 9.166pt>
 File: figs/parallel_combined/parallel_energy_evolution.pdf Graphic file (type p
 df)
@@ -909,22 +923,22 @@ used on input line 9.
 
 
  [31
-pdfTeX warning (ext4): destination with the same identifier (name{figure.13}) h
+pdfTeX warning (ext4): destination with the same identifier (name{figure.14}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.34 
       <./figs/parallel_combined/parallel_energy_evolution.pdf>]
-<figs/parallel_combined/parallel_observables_evolution.pdf, id=1027, 708.04356p
-t x 563.70598pt>
+<figs/parallel_combined/parallel_observables_evolution.pdf, id=983, 708.04356pt
+ x 563.70598pt>
 File: figs/parallel_combined/parallel_observables_evolution.pdf Graphic file (t
 ype pdf)
 <use figs/parallel_combined/parallel_observables_evolution.pdf>
 Package pdftex.def Info: figs/parallel_combined/parallel_observables_evolution.
 pdf  used on input line 37.
 (pdftex.def)             Requested size: 364.19667pt x 289.95486pt.
-<figs/parallel_combined/parallel_torsion_distribution.pdf, id=1029, 708.15408pt
- x 419.166pt>
+<figs/parallel_combined/parallel_torsion_distribution.pdf, id=985, 708.15408pt 
+x 419.166pt>
 File: figs/parallel_combined/parallel_torsion_distribution.pdf Graphic file (ty
 pe pdf)
 <use figs/parallel_combined/parallel_torsion_distribution.pdf>
@@ -934,7 +948,7 @@ df  used on input line 54.
 
 
  [32
-pdfTeX warning (ext4): destination with the same identifier (name{figure.14}) h
+pdfTeX warning (ext4): destination with the same identifier (name{figure.15}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -943,7 +957,7 @@ l.59
 ns/14_conclusions.tex
 
  [33
-pdfTeX warning (ext4): destination with the same identifier (name{figure.15}) h
+pdfTeX warning (ext4): destination with the same identifier (name{figure.16}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -951,14 +965,14 @@ l.42
       <./figs/parallel_combined/parallel_torsion_distribution.pdf>]
 
  [34]
-<figs/ParallelProcessing_ResourceUtilization.png, id=1092, 1766.6pt x 2411.0075
+<figs/ParallelProcessing_ResourceUtilization.png, id=1049, 1766.6pt x 2411.0075
 pt>
 File: figs/ParallelProcessing_ResourceUtilization.png Graphic file (type png)
 <use figs/ParallelProcessing_ResourceUtilization.png>
 Package pdftex.def Info: figs/ParallelProcessing_ResourceUtilization.png  used 
 on input line 119.
 (pdftex.def)             Requested size: 364.19667pt x 497.01892pt.
-<figs/parallel_combined_v_serial_plot.pdf, id=1093, 563.70598pt x 419.166pt>
+<figs/parallel_combined_v_serial_plot.pdf, id=1050, 563.70598pt x 419.166pt>
 File: figs/parallel_combined_v_serial_plot.pdf Graphic file (type pdf)
 <use figs/parallel_combined_v_serial_plot.pdf>
 Package pdftex.def Info: figs/parallel_combined_v_serial_plot.pdf  used on inpu
@@ -967,7 +981,7 @@ t line 128.
 
 
  [35
-pdfTeX warning (ext4): destination with the same identifier (name{figure.16}) h
+pdfTeX warning (ext4): destination with the same identifier (name{figure.17}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -976,7 +990,7 @@ l.132
 erences.tex
 
  [36
-pdfTeX warning (ext4): destination with the same identifier (name{figure.17}) h
+pdfTeX warning (ext4): destination with the same identifier (name{figure.18}) h
 as been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
@@ -998,23 +1012,17 @@ L3 programming layer <2025-01-18>
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-
-Package rerunfilecheck Warning: File `main.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `main.out':
-(rerunfilecheck)             Before: 685A69163199C4F0F026611FBD6BA2F9;12069
-(rerunfilecheck)             After:  53D747113B1B1E82B1600988031BF4BA;12630.
+Package rerunfilecheck Info: File `main.out' has not changed.
+(rerunfilecheck)             Checksum: 53D747113B1B1E82B1600988031BF4BA;12630.
  ) 
 Here is how much of TeX's memory you used:
- 13844 strings out of 473190
- 212418 string characters out of 5715800
- 914603 words of memory out of 5000000
- 36538 multiletter control sequences out of 15000+600000
- 577033 words of font info for 81 fonts, out of 8000000 for 9000
+ 13772 strings out of 473190
+ 211573 string characters out of 5715800
+ 915840 words of memory out of 5000000
+ 36519 multiletter control sequences out of 15000+600000
+ 577659 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,11n,79p,917b,2069s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,11n,79p,635b,2069s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb
 ></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb>
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><
@@ -1043,10 +1051,10 @@ nts/type1/public/cm-super/sfti1095.pfb></usr/local/texlive/2025/texmf-dist/font
 s/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2025/texmf-dist/fonts/
 type1/public/cm-super/sftt1095.pfb></usr/local/texlive/2025/texmf-dist/fonts/ty
 pe1/public/cm-super/sftt1200.pfb>
-Output written on main.pdf (37 pages, 6822386 bytes).
+Output written on main.pdf (37 pages, 7414260 bytes).
 PDF statistics:
- 1297 PDF objects out of 1440 (max. 8388607)
- 1034 compressed objects within 11 object streams
- 335 named destinations out of 1000 (max. 500000)
- 547 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1242 PDF objects out of 1440 (max. 8388607)
+ 978 compressed objects within 10 object streams
+ 281 named destinations out of 1000 (max. 500000)
+ 568 words of extra memory for PDF output out of 10000 (max. 10000000)
 

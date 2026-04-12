@@ -85,7 +85,7 @@ h2 = coords(i,:) + r_CH * ( (-1.0d0/3.0d0)*(-perp)  &
 Five distinct initial configuration modes have been implemented, each designed
 to probe a different region of the polymer's conformational space:
 
-\begin{table}[ht]
+\begin{table}[h!]
 \centering
 \caption{Summary of implemented initial configuration types.}
 \label{tab:conf_types}
@@ -109,11 +109,24 @@ to probe a different region of the polymer's conformational space:
 \end{tabular}
 \end{table}
 
+\begin{figure}[h!]
+  \centering
+  \includegraphics[width=\textwidth]{figs/INITIAL-CONFIGS.png}
+  \caption{VMD snapshots of the five implemented initial configuration modes
+  for the polyethylene chain. From left to right: (1) all-trans planar,
+  (2) random, (3) RIS-like discrete, (4) spring/helix, and
+  (5) perturbed trans.}
+  \label{fig:initial_configs}
+\end{figure}
+
 Configurations 1 and 5 span the near-trans region of phase space, whereas
 configurations 2 and 3 provide disordered starting points. Configuration 4 was
-added to test helical initial geometries. This variety is relevant when the
-simulation is tested at different temperatures: some initial states may lie
-closer to the equilibrated ensemble than others, reducing the effective
-burn-in time.
+added to test helical initial geometries. Figure~\ref{fig:initial_configs}
+provides a direct visual comparison of these starting states, illustrating the
+broad structural diversity used to initialize the simulations.
+
+This variety is relevant when the simulation is tested at different
+temperatures: some initial states may lie closer to the equilibrated ensemble
+than others, reducing the effective burn-in time.
 
 % ============================================================

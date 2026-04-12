@@ -9,10 +9,10 @@
 \contentsline {subsection}{\numberline {1.2}Configuration Modes}{7}{subsection.1.2}%
 \contentsline {section}{\numberline {2}Input/Output Module}{8}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Parameter Parsing from \texttt {input.dat}}{8}{subsection.2.1}%
-\contentsline {section}{\numberline {3}Energy Evaluation and Monte Carlo Engine}{8}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Energy Calculations}{8}{subsection.3.1}%
-\contentsline {subsubsection}{\numberline {3.1.1}United-Atom (UA) Model \& TraPPE-UA}{8}{subsubsection.3.1.1}%
-\contentsline {subsubsection}{\numberline {3.1.2}Explicit Hydrogens and the OPLS-AA Force Field}{9}{subsubsection.3.1.2}%
+\contentsline {section}{\numberline {3}Energy Evaluation and Monte Carlo Engine}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Energy Calculations}{9}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {3.1.1}United-Atom (UA) Model \& TraPPE-UA}{9}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {3.1.2}Explicit Hydrogens and the OPLS-AA Force Field}{10}{subsubsection.3.1.2}%
 \contentsline {subsection}{\numberline {3.2}Pivot Move and Monte Carlo Step}{11}{subsection.3.2}%
 \contentsline {subsubsection}{\numberline {3.2.1}Handling $sp^3$ Hybridisation in All-Atom Mode}{11}{subsubsection.3.2.1}%
 \contentsline {subsubsection}{\numberline {3.2.2}The MC Step and Metropolis Criterion}{12}{subsubsection.3.2.2}%
@@ -21,9 +21,9 @@
 \contentsline {section}{\numberline {4}Serial Driver, Results and Post-Processing}{14}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Two-Phase Simulation Structure}{14}{subsection.4.1}%
 \contentsline {subsection}{\numberline {4.2}Automated Equilibration Detection}{15}{subsection.4.2}%
-\contentsline {subsection}{\numberline {4.3}Serial Version Simulation Results}{16}{subsection.4.3}%
-\contentsline {subsubsection}{\numberline {4.3.1}Structural Observables}{16}{subsubsection.4.3.1}%
-\contentsline {subsubsection}{\numberline {4.3.2}Energy Evolution}{16}{subsubsection.4.3.2}%
+\contentsline {subsection}{\numberline {4.3}Serial Version Simulation Results}{15}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Structural Observables}{15}{subsubsection.4.3.1}%
+\contentsline {subsubsection}{\numberline {4.3.2}Energy Evolution}{17}{subsubsection.4.3.2}%
 \contentsline {subsubsection}{\numberline {4.3.3}Torsion Angle Distribution}{18}{subsubsection.4.3.3}%
 \contentsline {subsection}{\numberline {4.4}Interpretation}{18}{subsection.4.4}%
 \contentsline {section}{\numberline {5}Cluster Compatibility}{19}{section.5}%
