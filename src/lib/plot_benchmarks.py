@@ -1,3 +1,9 @@
+# Plotting utilities for OpenMP benchmark results.
+# Generates performance charts from benchmark CSV data across varying
+# system sizes and thread counts.
+#
+# Author: Oliwier Misztal
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import os
