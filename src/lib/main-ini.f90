@@ -6,14 +6,14 @@ program main_ini
   use initial_conf
   implicit none
 
-  integer :: n_carbons, conf_type, rng_seed
-  logical :: explicit_h
-  character(len=256) :: xyz_file
-  character(len=2), allocatable :: symbols(:)
-  double precision, allocatable :: coords(:, :)
-  character(len=256) :: comment
+  integer:: n_carbons, conf_type, rng_seed, n_steps 
+  logical:: explicit_h
+  character(len=256):: xyz_file
+  character(len=2), allocatable:: symbols(:)
+  double precision, allocatable:: coords(:, :)
+  character(len=256):: comment
 
-  call read_input_dat(n_carbons, explicit_h, conf_type, rng_seed, xyz_file)
+  call read_input_dat(n_carbons, n_steps, explicit_h, conf_type, rng_seed, xyz_file)
 
   call generate_initial_configuration(n_carbons, explicit_h, conf_type, rng_seed, symbols, coords)
 
