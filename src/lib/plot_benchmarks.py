@@ -4,6 +4,16 @@ import os
 
 plt.style.use(os.path.join(os.path.dirname(__file__), 'science.mplstyle'))
 
+plt.rcParams.update({
+    'font.size':        14,
+    'axes.labelsize':   14,
+    'axes.titlesize':   15,
+    'xtick.labelsize':  12,
+    'ytick.labelsize':  12,
+    'legend.fontsize':  14,
+    'figure.titlesize': 16,
+})
+
 OUT_DIR = os.path.join(os.path.dirname(__file__), '..', '..', 'results')
 
 def plot_total_omp():
