@@ -1,5 +1,5 @@
-# Author: Arthur Murphy
-# Contributors: Itxaso Muñoz-Aldalur, Oliwier Misztal
+# Author: Oliwier Misztal
+# Contributors: Arthur Murphy, Itxaso Muñoz-Aldalur
 
 FC     = gfortran
 # -cpp in base FFLAGS so #ifdef in parameters.f90 works for serial AND parallel builds
