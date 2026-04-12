@@ -1,0 +1,175 @@
+\subsection{Repository Structure}\label{repository-structure}
+
+GitHub was used as the team's code repository management platform. From the root of
+\href{https://github.com/Eines-Informatiques-Avancades/Project_2026_II}{the project},
+the code is organized into three main folders: \texttt{src}, \texttt{results}, and \texttt{docs}.
+
+\begin{itemize}
+  \item \texttt{src} contains:
+  \begin{itemize}
+    \item the Makefile and shell scripts,
+    \item the different versions of the main program (serial and parallel),
+    \item a \texttt{confs} folder where initial configurations are stored and runtime options are controlled through \texttt{input.dat},
+    \item a \texttt{lib} folder containing the Fortran modules, Python analysis scripts, and plotting style dependencies.
+  \end{itemize}
+  \item \texttt{results} contains the simulation outputs.
+  \item \texttt{docs} contains the documentation and the report sources, including the \texttt{img} folder used for embedded figures.
+\end{itemize}
+
+In addition to these folders, the repository includes a \texttt{README} file with execution instructions and dependency information. The main simulation code is written in Fortran, while the post-processing and plotting workflow is implemented in Python.
+
+\paragraph{Module library overview.}
+The main program files rely on the following supporting modules:
+
+\begin{itemize}
+  \item \texttt{energy.f90} and \texttt{energy\_all\_atoms.f90}: implement the two energy models, allowing the code to switch between TraPPE-UA and OPLS-AA-style effective backbone potentials depending on the \texttt{explicit\_h} option read from \texttt{input.dat}.
+  \item \texttt{initial-conf.f90}: generates the initial polymer configuration.
+  \item \texttt{io.f90}: handles file input and output operations.
+  \item \texttt{monte\_carlo.f90}: implements the rotation algorithm and the Monte Carlo update step.
+  \item \texttt{observables.f90}: computes the structural observables, including end-to-end distance \(R_{ee}\), radius of gyration \(R_g\), and torsional angles.
+  \item \texttt{parameters.f90}: stores global simulation parameters and interfaces with the settings defined in \texttt{input.dat}.
+  \item \texttt{plot\_*.py}: post-processing and plotting scripts for observables and serial-versus-parallel comparisons.
+  \item \texttt{requirements.txt}: lists the Python dependencies.
+  \item \texttt{science.mplstyle}: defines the plotting style used in the generated figures.
+\end{itemize}
+
+\subsection{Code Management via GitHub}\label{code-management-via-github}
+
+The project leader reviewed pull requests, checked that incoming changes followed the project guidelines, and merged them into the main branch. Team coordination was handled through a shared WhatsApp group, where members reported progress and informed the rest of the group whenever new code had been merged.
+
+In most cases, integration was straightforward. However, overlapping uploads from different team members occasionally produced merge conflicts. This led the team to adopt a consistent workflow based on stashing and rebasing before recommitting local work. The process used was the following:
+
+\begin{enumerate}
+  \item Stash local uncommitted changes:
+\begin{verbatim}
+git stash
+\end{verbatim}
+
+  \item Pull the latest version of the main branch:
+\begin{verbatim}
+git checkout master
+git pull main master
+\end{verbatim}
+
+  \item Rebase the local feature branch onto the updated main branch:
+\begin{verbatim}
+git checkout <fork-feature>/<fork-branch>
+git rebase master
+\end{verbatim}
+
+  \item Resolve conflicts and re-apply the stashed changes:
+\begin{verbatim}
+git stash pop
+\end{verbatim}
+
+  \item Commit and push the rebased branch:
+\begin{verbatim}
+git push <fork-remote> <fork-branch> --force
+\end{verbatim}
+\end{enumerate}
+
+This workflow helped keep the repository history cleaner and reduced repeated integration issues during collaborative development.
+
+\subsection{Makefile}\label{makefile}
+
+As the project evolved, the Makefile also became more structured. It was used to automate compilation, execution, and post-processing for both the serial and parallel versions of the code.
+
+The main compilation variables are:
+
+\begin{verbatim}
+FC        = gfortran
+FFLAGS    = -O2 -Wall -Wextra
+OBJ_DIR   = ../bin
+EXE       = $(OBJ_DIR)/main_serial.x
+LIB_OBJ   = $(OBJ_DIR)/parameters.o \
+            $(OBJ_DIR)/io.o \
+            ...
+MAIN_OBJ  = $(OBJ_DIR)/main_serial.o
+
+NP          ?= 4
+OMP_THREADS ?= 2
+\end{verbatim}
+
+Their roles are summarized below:
+
+\begin{itemize}
+  \item \texttt{FC}: the Fortran compiler, initially set to \texttt{gfortran}.
+  \item \texttt{FFLAGS}: compiler flags; \texttt{-O2} enables optimization, while \texttt{-Wall -Wextra} activates additional warnings.
+  \item \texttt{OBJ\_DIR} and \texttt{EXE}: define the directory for compiled objects and the name of the executable.
+  \item \texttt{LIB\_OBJ} and \texttt{MAIN\_OBJ}: list the object files needed for the library modules and the main program.
+  \item \texttt{NP} and \texttt{OMP\_THREADS}: define the number of MPI processes and OpenMP threads used in parallel executions. These values can be overridden from the command line, for example with \texttt{make run\_parallel NP=7 OMP\_THREADS=3}.
+\end{itemize}
+
+To support both serial and parallel builds, the Makefile checks whether the requested target contains the word \texttt{parallel}. If so, it verifies that the MPI compiler wrapper is available and then switches the compiler from \texttt{gfortran} to \texttt{mpif90}.
+
+\begin{verbatim}
+ifneq (, $(findstring parallel,$(MAKECMDGOALS)))
+  MPI_BIN := $(shell command -v mpif90 2>/dev/null)
+  ifeq ($(strip $(MPI_BIN)),)
+    $(error "MPI Compiler is required but 'mpif90' was not found!")
+  endif
+  FC = mpif90
+  ...
+endif
+\end{verbatim}
+
+Instead of writing an explicit build rule for every \texttt{.f90} file, a pattern rule is used:
+
+\begin{verbatim}
+$(OBJ_DIR)/%.o: lib/%.f90
+    @mkdir -p $(OBJ_DIR)
+    $(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+\end{verbatim}
+
+This rule states that any object file in \texttt{bin/} can be built from its corresponding source file in \texttt{lib/}. The \texttt{-c} option compiles without linking, while \texttt{-J} and \texttt{-I} direct the compiler to store and search module files in the object directory.
+
+The final executable is linked through the default target:
+
+\begin{verbatim}
+all: $(EXE)
+
+$(EXE): $(LIB_OBJ) $(MAIN_OBJ)
+    @mkdir -p $(OBJ_DIR)
+    $(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_OBJ)
+\end{verbatim}
+
+Finally, convenience targets are declared as \texttt{.PHONY} rules:
+
+\begin{verbatim}
+.PHONY: all clean run figures pipeline
+
+run: all
+    @mkdir -p ../results
+    $(EXE)
+
+figures:
+    python lib/plot_results.py
+
+clean:
+    rm -rf $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE)
+
+pipeline:
+    $(MAKE) run
+    $(MAKE) figures
+\end{verbatim}
+
+These shortcuts make it possible to compile, execute, clean, and post-process the project with short commands such as \texttt{make run}, \texttt{make clean}, and \texttt{make pipeline}.
+
+\subsection{Shell Scripting}\label{shell-scripting}
+% Itxaso bit added + Arthur's explanation merged
+
+Shell scripting was used to make our runs compatible with the CERQT2
+cluster environment and to automate benchmarking. The scripts
+initialize the runtime environment, load the required modules, and set
+variables such as \texttt{OMP\_NUM\_THREADS}, \texttt{NSLOTS}, and
+\texttt{MPLBACKEND=Agg} for stable non-interactive execution. They were
+also used to automate parameter sweeps, build explicit trajectory
+manifests for the observables analysis, and collect timing data into
+summary files for MPI and OpenMP tests.
+
+A qsub script \texttt{run\_collab.qsub} was also written during the
+testing of the program to submit an individual portion of the simulation
+to the HPC cluster. It involved loading the appropriate modules for that
+queue, selecting a custom makefile (separate from the main program's
+Makefile), indentifying the correct commandline arguments to pass at
+compile time, and submit the mpirun command.
