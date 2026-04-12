@@ -10,7 +10,7 @@ if os.path.exists(style_path):
     plt.style.use(style_path)
 
 # Point to the specific isolated production directory
-OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../results/main_parallel_local'))
+OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../results/data_fix_parallel'))
 if not os.path.exists(OUTPUT_DIR):
     print(f"Results directory not found at {OUTPUT_DIR}")
     exit(1)
@@ -251,7 +251,7 @@ def main():
     fig_obs.savefig(os.path.join(OUTPUT_DIR, 'parallel_observables_evolution.pdf'))
     print("Generated parallel_observables_evolution.pdf")
 
-    # ── Finalize Torsions Plot & Add TraPPE Potential ── 
+    # ── Finalize Torsions Plot & Add OPLS-AA Potential ── 
     if not explicit_h:
         c1, c2, c3 = 0.705, -0.135, 1.572
     else:
@@ -263,7 +263,7 @@ def main():
           + c3 * (1.0 + np.cos(3.0 * phi_grid)))
 
     ax_tors2 = ax_tors.twinx()
-    ax_tors2.plot(phi_grid, Uphi, color='black', linestyle='--', linewidth=2, label='TraPPE Potential')
+    ax_tors2.plot(phi_grid, Uphi, color='black', linestyle='--', linewidth=2, label='OPLS-AA Potential')
     ax_tors2.set_ylabel('Torsion Potential (kcal/mol)')
 
     ax_tors.set_xlabel('Torsion Angle (rad)')

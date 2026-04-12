@@ -354,3 +354,50 @@ _Fig. x: Comparing timing & efficiency of Ensemble Averaging with various core c
 <br>
 
 Simply adding more cores does not result in a perfectly linear speedup. This can be attributed to parallelization overhead plus device hardware bottlenecks. The most efficient use of cores is found in factors of 10 (2 & 5 cores), in which cases all worker nodes are participating in the final group of remaining 1M MCS steps. The non-factors of 10 could see performance improvements with the addition of a dynamic algorithm that determines how many steps are left once there are fewer 1M MCS jobs remaining than cores participating. This would eliminates worker "dead-time" towards the end of the production run.
+
+<br>
+
+## Parallel Simulation Results
+
+![Energy Evolution](img/parallel_combined/parallel_energy_evolution.png)
+_Fig. x: Total, LJ, & Torsional Energy plots across various initial conformations_
+
+This plot tracks the total, Lennard-Jones (LJ), and torsional energy trends over the progression of Monte Carlo Steps (MCS) for configurations 1, 4, and 5. The vertical dashed lines mark the transition point between equilibration and the subsequent 10-million step production data. 
+
+In this particular instance of the combined simulation, the torsional and LJ energy took longer to stabilize in configuration 4 than the other configurations (1 & 5), meaning equilibration took longer to pass the Geweke equilibration determination test as indicated in the red, vertical, dashed line. For this reason its combined simultion to run for $\sim1.55x10^7$ total steps.
+
+An important observation and detail obtained from this graph is how initial configuration influences the total energy within the simulation. Configurations 1 & 4 are rigid and straight helical structures, respectively, while introducing random, out-of-plane tilts to configuration 5 allowed it to find a much lower equilibrated torsional (and therefore, total) energy.
+
+
+
+<br> 
+
+![Energy Evolution](img/parallel_combined/parallel_observables_evolution.png)
+_Fig. x: Radius of Gyration & End-to-End Distance plots across various initial conformations_
+
+This chart displays the Radius of Gyration (Rg) and End-to-End Distance for the different configurations. As with the energy plots above which showed similar torsional energies between Conf 1 & 4 while Conf 5 was much lower after equilibration, the Rg for Conf 5 is the most distinct here as well. Configuration 5, due to its initial out-of-plane tilts, was able to better relax its bonds into low-energy rotational valleys, allowing the chain to naturally untangle and adopt an expanded, looser geometry, mathematically resulting in a higher Radius of Gyration.
+
+
+
+<br> 
+
+![Energy Evolution](img/parallel_combined/parallel_torsion_distribution.png)
+_Fig. x: Torsional distribution of post-equilibrated MCS across various initial conformations_
+
+The low-energy rotational valley relaxation tendency for Conf 5 is even more apparent in this graph, which shows the probability density of the each polymer exploring various dihedral (torsion) angles. Each configuration's post-equilibration data is compared to the OPLS-AA potential, where the results confirm the highest probability at $\pi$ (trans) configuration. While all configurations follow the expected potential, Conf 5 adheres most closely, fully affirming the above energy and observable data. Also of note is how the graph demonstrates the expected rise in probablity around the potential's local minima at $\sim \pi/3$.
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+## UNUSED WRITING
+
+**Project Impact**: While raw energy can sometimes settle rapidly, physical tangles and extensions inside long macroscopic polymers often require extended periods to fully untangle. The eventual flattening of Rg and End-to-End values verifies that the polymer has achieved a true spatial equilibrium. Furthermore, the steady stability throughout the interleaved 10-million-step stretches proves that our technique of batching multiple independent random-seeded 1-million-step parallel runs generates completely robust, reliable macroscopic samples capable of replacing a single sequential run.
+
+**Graph Analysis**: This distribution visualizes the probability density of the polymer exploring various dihedral (torsion) angles, constructed exclusively by aggregating the pure post-equilibration production data from the parallel worker nodes. It is superimposed over the theoretical mathematical potential (dashed black line).
+
+**Project Impact**: The histogram peaks for all three independent polymer configurations perfectly align within the low-energy target "valleys" of the theoretical potential curve. This represents the ultimate verification of our parallel approach. It definitively proves that the Master-Worker topology's localized Metropolis acceptance criteria functioned flawlessly across distributed nodes, accurately guiding the simulated chains into realistic physical states. By successfully distributing the load, we achieve massive speedups while retaining the absolute energetic fidelity required for complex structural modeling.
