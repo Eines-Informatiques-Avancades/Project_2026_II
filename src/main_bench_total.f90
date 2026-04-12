@@ -1,3 +1,8 @@
+! Benchmark program for total energy computation using OpenMP parallelism.
+! Measures CPU time across varying system sizes and configurations.
+!
+! Author: Oliwier Misztal
+
 program main_bench_total
   use mpi
   use parameters

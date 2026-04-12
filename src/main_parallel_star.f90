@@ -92,7 +92,7 @@ program main_parallel_star
   !equil_confs = (/ 1, 4, 5 /)
 
   ! TEMPORARY OVERWRITING TO GET JUST 1 CONF TYPE
-  integer :: equil_confs(1) = (/ 5 /)
+  integer :: equil_confs(1) = (/ 4 /)
   integer :: prod_queue(10)
   logical :: needs_equil(1)
 
@@ -281,13 +281,13 @@ program main_parallel_star
            run_tag = trim(s_ncarb)//'_'//trim(s_conf)//'_equil_sd'//trim(s_seed)//'_rk'//trim(s_ncarb) ! Reuse vars to make string
            ! Fix the string cleanly:
            write(s_ncarb, '(I0)') rank
-           run_tag = 'equil_c'//trim(s_conf)//'_sd'//trim(s_seed)//'_w'//trim(s_ncarb)
+           run_tag = 'c'//trim(s_conf)//'_sd'//trim(s_seed)//'_w'//trim(s_ncarb)
            
-           energy_file = '../results/energy_'      // trim(run_tag) // '.dat'
-           obs_file    = '../results/observables_' // trim(run_tag) // '.dat'
-           tors_file   = '../results/torsions_'    // trim(run_tag) // '.dat'
-           cpu_file    = '../results/cpu_'         // trim(run_tag) // '.dat'
-           traj_file   = '../results/trajectory_'  // trim(run_tag) // '.xyz'
+           energy_file = '../results/equil_energy_'      // trim(run_tag) // '.dat'
+           obs_file    = '../results/equil_observables_' // trim(run_tag) // '.dat'
+           tors_file   = '../results/equil_torsions_'    // trim(run_tag) // '.dat'
+           cpu_file    = '../results/equil_cpu_'         // trim(run_tag) // '.dat'
+           traj_file   = '../results/equil_trajectory_'  // trim(run_tag) // '.xyz'
 
            ! Open output files in ../results/
            u_ener = 11; u_obs  = 12; u_tors = 13; u_cpu  = 14; u_traj = 15
@@ -459,13 +459,13 @@ program main_parallel_star
            write(s_conf, '(I0)') c_type
            write(s_seed, '(I0)') seed_to_use
            write(s_ncarb, '(I0)') rank
-           run_tag = 'prod_c'//trim(s_conf)//'_sd'//trim(s_seed)//'_w'//trim(s_ncarb)
+           run_tag = 'c'//trim(s_conf)//'_sd'//trim(s_seed)//'_w'//trim(s_ncarb)
 
-           energy_file = '../results/energy_'      // trim(run_tag) // '.dat'
-           obs_file    = '../results/observables_' // trim(run_tag) // '.dat'
-           tors_file   = '../results/torsions_'    // trim(run_tag) // '.dat'
-           cpu_file    = '../results/cpu_'         // trim(run_tag) // '.dat'
-           traj_file   = '../results/trajectory_'  // trim(run_tag) // '.xyz'
+           energy_file = '../results/prod_energy_'      // trim(run_tag) // '.dat'
+           obs_file    = '../results/prod_observables_' // trim(run_tag) // '.dat'
+           tors_file   = '../results/prod_torsions_'    // trim(run_tag) // '.dat'
+           cpu_file    = '../results/prod_cpu_'         // trim(run_tag) // '.dat'
+           traj_file   = '../results/prod_trajectory_'  // trim(run_tag) // '.xyz'
 
            u_ener = 11; u_obs  = 12; u_tors = 13; u_cpu  = 14; u_traj = 15
            open(unit=u_ener, file=trim(energy_file), status='replace'); write(u_ener, '(A)') '# Step E_total E_lj E_tors'

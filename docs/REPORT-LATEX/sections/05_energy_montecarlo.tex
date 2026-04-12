@@ -10,88 +10,155 @@
 
 \subsection{Energy Calculations}
 
-The energy evaluation layer is implemented through two complementary
-modules, \texttt{energy.f90} and \texttt{energy\_all\_atoms.f90}. Together,
-they provide the total-energy routines and the \(\Delta E\) calculations
-required by the Metropolis acceptance/rejection step during Monte Carlo
-sampling. The split is deliberate: the united-atom (UA) pathway focuses
-on high-throughput conformational sampling, whereas the all-atom (AA)
-pathway extends the physical model to include explicit hydrogens and a
-more detailed topology.
+The energy evaluation modules, \texttt{energy.f90} and \texttt{energy\_all\_atoms.f90}, were designed and implemented to compute the total potential energy of the chain and the $\Delta E$ increments required by the Metropolis acceptance/rejection step.
 
-For the united-atom model, the priority was computational efficiency.
-Because the torsional and non-bonded energy terms are evaluated
-continuously inside the Monte Carlo loop, even modest overhead in the
-energy routine would be amplified over millions of steps. The UA
-implementation therefore avoids unnecessarily expensive transcendental
-operations wherever possible.
+\subsubsection{United-Atom (UA) Model \& TraPPE-UA}
 
-A key optimization concerns the torsional term. Direct evaluation of a
-dihedral angle typically requires \texttt{acos} and sometimes
-\texttt{atan2}, both of which are relatively expensive. To bypass this,
-the code computes \(\cos\phi\) directly from the geometry using vector
-cross products and dot products of the plane normals defined by four
-successive backbone atoms. In practice, this replaces repeated angle
-reconstruction by a cheaper purely algebraic calculation. Guard clauses
-are also included to handle nearly collinear geometries safely by
-defaulting to a trans-like value when the normal vectors become
-numerically ill-defined.
+\textbf{Trigonometric bypass in dihedral calculations.}
 
-The united-atom torsional potential follows the standard TraPPE-UA form,
-\[
-U(\phi)=c_1(1+\cos\phi)+c_2(1-\cos 2\phi)+c_3(1+\cos 3\phi).
-\]
-Introducing \(y=\cos\phi\) and using the trigonometric identities
-\(\cos 2\phi = 2y^2-1\) and \(\cos 3\phi = 4y^3-3y\), this expression can
-be rewritten as a cubic polynomial in \(y\):
-\[
-U(y) = (c_1 + 2c_2 + c_3) + (c_1 - 3c_3)y - 2c_2 y^2 + 4c_3 y^3.
-\]
-This transformation removes transcendental function calls from the
-inner Monte Carlo loop and reduces the torsional evaluation to a short
-sequence of multiplications and additions.
+The standard approach to evaluating a dihedral angle requires an
+\texttt{acos} or \texttt{atan2} call, both of which are transcendental
+functions with significant CPU cost relative to basic arithmetic.
+Instead, \texttt{compute\_cos\_dihedral} computes $\cos\phi$ directly
+from the dot product of the normal vectors of the two planes defined by
+the carbon backbone:
 
-The transition to explicit hydrogens required a more detailed
-description of the chain and therefore a separate all-atom treatment.
-For this purpose, the AA implementation adopts an OPLS-AA description of
-polyethylene. A naive implementation would be prohibitively expensive,
-because rotating a single C--C bond induces several distinct dihedral
-contributions across that bond. Evaluating all such contributions
-explicitly at every trial move would make the torsional part of the
-simulation the dominant bottleneck.
+\begin{equation}
+  \cos\phi = \frac{\mathbf{n}_1 \cdot \mathbf{n}_2}{|\mathbf{n}_1|\,|\mathbf{n}_2|},
+  \qquad
+  \mathbf{n}_1 = \mathbf{b}_1 \times \mathbf{b}_2,\quad
+  \mathbf{n}_2 = \mathbf{b}_2 \times \mathbf{b}_3
+\end{equation}
 
-To avoid this, the AA implementation uses an effective backbone
-potential. Rather than evaluating every C--C--C--H and H--C--C--H
-contribution independently, their combined effect is absorbed into a
-single effective torsional expression acting only on the carbon
-backbone. This preserves the intended force-field behaviour while
-greatly reducing the cost of each Monte Carlo step. The same
-polynomial-expansion strategy used in the UA model is then reused with a
-different parameter set, so the all-atom torsional energy is also
-evaluated as a compact polynomial in \(\cos\phi\).
+where $\mathbf{b}_i$ are successive bond vectors. A guard clause handles
+collinear atoms (degenerate normals) by setting $\cos\phi = 1$ as a
+fallback. The function is declared \texttt{pure}, signalling to the compiler
+that it has no side effects, which allows it to be called safely
+from within parallel regions and \texttt{forall} constructs.
 
-The explicit-hydrogen model also requires a topology-aware treatment of
-non-bonded interactions. In molecular mechanics, Lennard-Jones terms are
-not evaluated indiscriminately between all pairs of atoms, because
-short-range bonded interactions are already represented elsewhere in the
-force field. For this reason, the code initializes a topology map that
-assigns each hydrogen to its parent carbon and constructs a boolean
-exclusion matrix. This matrix is then queried during energy evaluation
-to skip atom pairs that should not contribute to the non-bonded
-Lennard-Jones energy.
+\textbf{Polynomial expansion for TraPPE-UA.}
 
-A second important optimization concerns the \(\Delta E\) calculation
-during trial moves. Recomputing the full chain energy after every pivot
-would be unnecessarily expensive, especially in the all-atom model.
-Instead, the code identifies which atoms have actually moved and splits
-the system into two dynamic lists: a fixed set and a moved set. Only
-cross-interactions between these two sets can change during a rigid-body
-pivot. The \(\Delta E\) routine therefore restricts the Lennard-Jones
-calculation to exactly those interactions whose relative distances may
-have changed, while routing each valid pair to the appropriate C--C,
-C--H, or H--H parameter set. This significantly reduces the amount of
-work per trial move and is one of the key reasons the AA model remains
-tractable.
+The TraPPE-UA torsional potential~[3] is:
+
+\begin{equation}
+  U(\phi) = c_1(1+\cos\phi) + c_2(1-\cos 2\phi) + c_3(1+\cos 3\phi)
+\end{equation}
+
+Substituting $y = \cos\phi$ and applying the identities
+$\cos 2\phi = 2y^2-1$ and $\cos 3\phi = 4y^3-3y$ gives a polynomial
+in $y$:
+
+\begin{equation}
+  U(y) = c_1(1+y) + c_2(2-2y^2) + c_3(1-3y+4y^3)
+\end{equation}
+
+Since $y = \cos\phi$ is already available from the cross-product step,
+the torsional energy is evaluated with only multiplications and
+additions -- no further transcendental calls are needed in the MC loop.
+
+\subsubsection{Explicit Hydrogens and the OPLS-AA Force Field}
+
+The all-atom model requires handling a substantially more complex
+topology. The OPLS-AA force field~[4] was adopted, with atom-specific
+Lennard-Jones parameters for carbon and hydrogen
+($\sigma_\mathrm{CC}=3.50\,\text{\AA}$,
+$\varepsilon_\mathrm{CC}=0.066\,\text{kcal/mol}$;
+$\sigma_\mathrm{HH}=2.50\,\text{\AA}$,
+$\varepsilon_\mathrm{HH}=0.030\,\text{kcal/mol}$; cross-terms from
+geometric mixing rules).
+
+\textbf{Effective backbone torsional potential.}
+
+In OPLS-AA, rotating a single C--C bond changes nine distinct dihedral
+angles: one C--C--C--C, four C--C--C--H, and four H--C--C--H. Computing
+all nine at every MC step is expensive for a code designed to run
+millions of steps. An \emph{effective backbone potential} was therefore
+constructed by summing the OPLS-AA Fourier coefficients for all nine
+dihedral types analytically, producing a single set of effective
+coefficients that reproduce the combined torsional energy from the
+C--C--C--C backbone coordinates alone:
+
+\begin{equation}
+  c_1^\mathrm{eff} = 0.870,\quad
+  c_2^\mathrm{eff} = -0.0785,\quad
+  c_3^\mathrm{eff} = 1.5075 \quad \text{(kcal/mol)}
+\end{equation}
+
+The OPLS-AA Lennard-Jones parameters are taken from the framework of
+Sæther et al.~[4]; the effective coefficient derivation is an original
+contribution of this work. The same polynomial form used for the UA
+model is then applied with these coefficients, so the all-atom
+torsional evaluation has the same arithmetic cost as the united-atom one.
+
+The corresponding \texttt{torsion\_single} function in
+\texttt{energy\_all\_atoms.f90} is:
+
+\begin{lstlisting}
+pure function torsion_single(cos_phi) result(e)
+  double precision, intent(in) :: cos_phi
+  double precision :: e, y, y2, y3
+
+  y  = cos_phi
+  y2 = y * y
+  y3 = y2 * y
+
+  e = opls_c1 * (1.0d0 + y)            &
+    + opls_c2 * (2.0d0 - 2.0d0 * y2)   &
+    + opls_c3 * (1.0d0 - 3.0d0 * y + 4.0d0 * y3)
+end function torsion_single
+\end{lstlisting}
+
+\textbf{Topology mapping and exclusion matrix.}
+
+Non-bonded Lennard-Jones interactions must be suppressed for atom pairs
+separated by fewer than four bonds (1-2, 1-3, and 1-4), since those
+interactions are already captured by the bonded energy terms. The
+initialisation routine \texttt{init\_energy\_topology} assigns each
+hydrogen to its parent carbon by geometric distance (C--H threshold
+$1.2\,\text{\AA}$), records the backbone position index for every atom,
+and builds a global Boolean matrix \texttt{is\_excluded}. Each pair is
+then looked up in $O(1)$ per call, avoiding any bond traversal during
+the MC loop.
+
+The exclusion criterion uses a uniform backbone-position threshold: pair
+$(i,j)$ is excluded when
+$|\text{backbone\_pos}(i) - \text{backbone\_pos}(j)| < 4$.
+For C--C pairs this is exact. For C--H and H--H pairs the actual bond
+count exceeds the backbone-position difference by one and two
+respectively, so the threshold over-excludes some 1-5 and 1-6
+interactions. The torsional potential partially compensates, since its
+parameterisation implicitly encodes the conformational barriers arising
+from steric repulsion. The single-chain, vacuum context of the
+simulation further limits the practical impact relative to a condensed
+phase. Correcting the exclusion criterion to a bond-count-aware rule is
+left for future work.
+
+\textbf{Dynamic atom lists for $\Delta E$.}
+
+At each pivot move only atoms downstream of the chosen bond change
+position. Recomputing the full $O(N^2)$ LJ sum is therefore unnecessary.
+Instead, the atoms are partitioned into \texttt{fixed\_list} and
+\texttt{moved\_list} by comparing old and new coordinate arrays:
+
+\begin{lstlisting}
+n_fixed = 0
+n_moved = 0
+do i = 1, n_atoms
+  if (sum((coords_new(i,:) - coords_old(i,:))**2) > 1.0d-12) then
+    n_moved = n_moved + 1
+    moved_list(n_moved) = i
+  else
+    n_fixed = n_fixed + 1
+    fixed_list(n_fixed) = i
+  end if
+end do
+\end{lstlisting}
+
+Only cross-interactions between fixed and moved atoms are re-evaluated,
+reducing the $\Delta E$ cost to $O(N_\mathrm{fixed} \times
+N_\mathrm{moved})$. A secondary \texttt{pair\_type\_matrix} routes each
+valid pair to the pre-computed C--C, C--H, or H--H LJ parameters in a
+single array lookup.
 
 \subsection{Pivot Move and Monte Carlo Step}
 

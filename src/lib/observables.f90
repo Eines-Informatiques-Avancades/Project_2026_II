@@ -20,7 +20,7 @@ contains
   ! ---------------------------------------------------------------------------
   function compute_rg(nc, coords) result(rg2)
     integer, intent(in) :: nc                     ! Number of atoms
-    double precision, intent(in) :: coords(nc, 3) ! Coordinates of atoms
+    double precision, intent(in) :: coords(:,:)   ! Coordinates of atoms
     double precision :: rg2, com(3), dx, dy, dz   ! Radius of gyration, center of mass, differences in coordinates
     integer :: i                                  ! Loop counter
 
@@ -48,7 +48,7 @@ contains
   ! ---------------------------------------------------------------------------
   function compute_end_to_end(nc, coords) result(ree2)
     integer, intent(in) :: nc                     ! Number of atoms
-    double precision, intent(in) :: coords(nc, 3) ! Coordinates of atoms
+    double precision, intent(in) :: coords(:,:)   ! Coordinates of atoms
     double precision :: ree2, dx, dy, dz          ! End-to-end distance, differences in coordinates
 
     dx = coords(nc, 1) - coords(1, 1)
@@ -65,7 +65,7 @@ contains
   ! ---------------------------------------------------------------------------
   subroutine compute_torsion_angles(nc, coords, phis)
     integer, intent(in) :: nc                     ! Number of atoms
-    double precision, intent(in) :: coords(nc, 3) ! Coordinates of atoms
+    double precision, intent(in) :: coords(:,:)   ! Coordinates of atoms
     double precision, intent(out) :: phis(nc - 3) ! Torsion angles
     double precision :: cos_phi                   ! Cosine of torsion angles
     integer :: i                                  ! Loop counter

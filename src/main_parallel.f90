@@ -591,12 +591,12 @@ program main_parallel
         ! Name files based off observables and core/worker number
         write(s_rank, '(I0)') rank
         write(s_conf, '(I0)') my_c_type
-        run_tag     = 'equil_c' // trim(s_conf) // '_w' // trim(s_rank)
-        energy_file = '../results/energy_'      // trim(run_tag) // '.dat'
-        obs_file    = '../results/observables_' // trim(run_tag) // '.dat'
-        tors_file   = '../results/torsions_'    // trim(run_tag) // '.dat'
-        cpu_file    = '../results/cpu_'         // trim(run_tag) // '.dat'
-        traj_file   = '../results/trajectory_'  // trim(run_tag) // '.xyz'
+        run_tag     = 'c' // trim(s_conf) // '_w' // trim(s_rank)
+        energy_file = '../results/equil_energy_'      // trim(run_tag) // '.dat'
+        obs_file    = '../results/equil_observables_' // trim(run_tag) // '.dat'
+        tors_file   = '../results/equil_torsions_'    // trim(run_tag) // '.dat'
+        cpu_file    = '../results/equil_cpu_'         // trim(run_tag) // '.dat'
+        traj_file   = '../results/equil_trajectory_'  // trim(run_tag) // '.xyz'
 
         u_ener = 10; u_obs = 11; u_tors = 12; u_cpu = 13; u_traj = 14
         open(unit=u_ener, file=trim(energy_file), status='replace')
@@ -718,12 +718,12 @@ program main_parallel
         write(s_rank, '(I0)') rank
         write(s_conf, '(I0)') my_c_type
         write(s_seed, '(I0)') my_seed
-        run_tag     = 'prod_c'//trim(s_conf)//'_sd'//trim(s_seed)//'_w'//trim(s_rank)
-        energy_file = '../results/energy_'      // trim(run_tag) // '.dat'
-        obs_file    = '../results/observables_' // trim(run_tag) // '.dat'
-        tors_file   = '../results/torsions_'    // trim(run_tag) // '.dat'
-        cpu_file    = '../results/cpu_'         // trim(run_tag) // '.dat'
-        traj_file   = '../results/trajectory_'  // trim(run_tag) // '.xyz'
+        run_tag     = 'c'//trim(s_conf)//'_sd'//trim(s_seed)//'_w'//trim(s_rank)
+        energy_file = '../results/prod_energy_'      // trim(run_tag) // '.dat'
+        obs_file    = '../results/prod_observables_' // trim(run_tag) // '.dat'
+        tors_file   = '../results/prod_torsions_'    // trim(run_tag) // '.dat'
+        cpu_file    = '../results/prod_cpu_'         // trim(run_tag) // '.dat'
+        traj_file   = '../results/prod_trajectory_'  // trim(run_tag) // '.xyz'
 
         u_ener = 10; u_obs = 11; u_tors = 12; u_cpu = 13; u_traj = 14
         open(unit=u_ener, file=trim(energy_file), status='replace')

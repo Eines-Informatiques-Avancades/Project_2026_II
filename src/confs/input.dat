@@ -11,4 +11,5 @@
   equil_conf2_xyz = .false.
   equil_conf3_xyz = .false.
   equil_conf4_xyz = "../src/confs/equil_conf4_initial.xyz"
+!  equil_conf4_xyz = .false.
   equil_conf5_xyz = .false.

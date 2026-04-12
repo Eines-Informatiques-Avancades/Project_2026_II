@@ -354,3 +354,72 @@ _Fig. x: Comparing timing & efficiency of Ensemble Averaging with various core c
 <br>
 
 Simply adding more cores does not result in a perfectly linear speedup. This can be attributed to parallelization overhead plus device hardware bottlenecks. The most efficient use of cores is found in factors of 10 (2 & 5 cores), in which cases all worker nodes are participating in the final group of remaining 1M MCS steps. The non-factors of 10 could see performance improvements with the addition of a dynamic algorithm that determines how many steps are left once there are fewer 1M MCS jobs remaining than cores participating. This would eliminates worker "dead-time" towards the end of the production run.
+
+<br>
+
+## Parallel Simulation Results
+
+![Energy Evolution](img/parallel_combined/parallel_energy_evolution.png)
+_Fig. x: Total, LJ, & Torsional Energy plots across various initial conformations_
+
+This plot tracks the total, Lennard-Jones (LJ), and torsional energy trends over the progression of Monte Carlo Steps (MCS) for configurations 1, 4, and 5. The vertical dashed lines mark the transition point between equilibration and the subsequent 10-million step production data. 
+
+In this particular instance of the combined simulation, the torsional and LJ energy took longer to stabilize in configuration 4 than the other configurations (1 & 5), meaning equilibration took longer to pass the Geweke equilibration determination test as indicated in the red, vertical, dashed line. For this reason its combined simultion to run for $\sim1.55x10^7$ total steps.
+
+An important observation and detail obtained from this graph is how initial configuration influences the total energy within the simulation. Configurations 1 & 4 are rigid and straight helical structures, respectively, while introducing random, out-of-plane tilts to configuration 5 allowed it to find a much lower equilibrated torsional (and therefore, total) energy.
+
+
+
+<br> 
+
+![Energy Evolution](img/parallel_combined/parallel_observables_evolution.png)
+_Fig. x: Radius of Gyration & End-to-End Distance plots across various initial conformations_
+
+This chart displays the Radius of Gyration (Rg) and End-to-End Distance for the different configurations. As with the energy plots above which showed similar torsional energies between Conf 1 & 4 while Conf 5 was much lower after equilibration, the Rg for Conf 5 is the most distinct here as well. Configuration 5, due to its initial out-of-plane tilts, was able to better relax its bonds into low-energy rotational valleys, allowing the chain to naturally untangle and adopt an expanded, looser geometry, mathematically resulting in a higher Radius of Gyration.
+
+
+
+<br> 
+
+![Energy Evolution](img/parallel_combined/parallel_torsion_distribution.png)
+_Fig. x: Torsional distribution of post-equilibrated MCS across various initial conformations_
+
+The low-energy rotational valley relaxation tendency for Conf 5 is even more apparent in this graph, which shows the probability density of the each polymer exploring various dihedral (torsion) angles. Each configuration's post-equilibration data is compared to the OPLS-AA potential, where the results confirm the highest probability at $\pi$ (trans) configuration. While all configurations follow the expected potential, Conf 5 adheres most closely, fully affirming the above energy and observable data. Also of note is how the graph demonstrates the expected rise in probablity around the potential's local minima at $\sim \pi/3$.
+
+<br>
+
+## Parallel v Serial Wall Time
+
+![Wall Time Comparison](img/parallel_combined_v_serial_plot.png)
+_Fig. x: Wall-Clock timing for serial vs combined parallelized simulation_
+
+A final test of the parallelization efforts' efficiency was running the simulation serially, combining their runtimes, and comparing it to the wall-clock time required to complete the same parallel execution. No equilibration steps were bypassed to keep the comparison as similar as possible.
+
+As seen in figure x, the parallel version took 14h 26min to complete while the serial versions took a combined 55h 35m to perform the same tasks. The parallel version required 13 cores to operate, consisting of over 89h of compute time, not counting the master node's orchestration. The multi-processing approach condensed the parallel version's CPU-to-Wall clock time by a factor of **6.16x**, while the wall-to-wall clock speedup (parallel vs serial) was sped up by **3.85x**.
+
+It's interesting to notice that while more resources are needed to run the parallel version, it was also able to complete all 3 configurations' equilibration and production simulations faster than the quickest serial simulation (Conf 5). This beautifully illustrates the contributions of high-performance computing architecture to scientific research, showing that it can assist in converting multi-day research bottlenecks into overnight jobs.
+
+Computational Speedup: Serial vs Parallel Architecture
+To quantify the success of moving from a standard sequential environment into the dynamically balanced Master-Worker (Star) topology, we must contrast the raw computational cost against the practical real-world waiting time.
+
+As the plot demonstrates, running the exact same workload (equilibration and 10-million step production phases across all 3 independent configurations) sequentially in the Serial environment took over 55.6 continuous hours (over two days) of real-world waiting time.
+
+By utilizing the Parallelization framework with 1 Master orchestrating 6 Worker nodes dynamically, that identical workload was condensed down into just 14.4 hours of actual Wall-Clock time. This represents roughly a ~3.85x speedup for the researcher!
+
+However, it's crucial to acknowledge the computational overhead associated with this architecture. As noted in the Parallel bar, the nodes actually accumulated a combined 89.05 hours of raw CPU execution time (due to message passing, MPI synchronization, and administrative load sorting) to do what the Serial execution did in 55.6 raw CPU hours.
+
+The Significance: This beautifully visualizes the primary tradeoff in high-performance computational simulation. While the dynamic OpenMPI framework incurs a larger total computational footprint/cost natively via overhead, its ability to safely distribute and parallelize the mathematical workload across multiple cores achieves its primary design goal: taking multi-day research bottlenecks and turning them into overnight jobs.
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+## UNUSED WRITING
+
+**Project Impact**: While raw energy can sometimes settle rapidly, physical tangles and extensions inside long macroscopic polymers often require extended periods to fully untangle. The eventual flattening of Rg and End-to-End values verifies that the polymer has achieved a true spatial equilibrium. Furthermore, the steady stability throughout the interleaved 10-million-step stretches proves that our technique of batching multiple independent random-seeded 1-million-step parallel runs generates completely robust, reliable macroscopic samples capable of replacing a single sequential run.
+
+**Graph Analysis**: This distribution visualizes the probability density of the polymer exploring various dihedral (torsion) angles, constructed exclusively by aggregating the pure post-equilibration production data from the parallel worker nodes. It is superimposed over the theoretical mathematical potential (dashed black line).
+
+**Project Impact**: The histogram peaks for all three independent polymer configurations perfectly align within the low-energy target "valleys" of the theoretical potential curve. This represents the ultimate verification of our parallel approach. It definitively proves that the Master-Worker topology's localized Metropolis acceptance criteria functioned flawlessly across distributed nodes, accurately guiding the simulated chains into realistic physical states. By successfully distributing the load, we achieve massive speedups while retaining the absolute energetic fidelity required for complex structural modeling.
