@@ -4,7 +4,17 @@ import os
 import glob
 import re
 
-OUTPUT_DIR = '../results/'
+# Style handling
+style_path = os.path.join(os.path.dirname(__file__), 'science.mplstyle')
+if os.path.exists(style_path):
+    plt.style.use(style_path)
+
+# Point to the specific isolated production directory
+OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../results/main_parallel_local'))
+if not os.path.exists(OUTPUT_DIR):
+    print(f"Results directory not found at {OUTPUT_DIR}")
+    exit(1)
+
 
 def get_explicit_h_setting():
     input_path = os.path.join(os.path.dirname(__file__), '../confs/input.dat')
@@ -34,10 +44,10 @@ def main():
         plt.style.use(style_path)
 
     # Detect all output files dynamically based on config IDs
-    prod_energy_files = glob.glob(os.path.join(OUTPUT_DIR, 'energy_prod_c*_sd*.dat'))
+    prod_energy_files = glob.glob(os.path.join(OUTPUT_DIR, 'prod_energy_c*_sd*.dat'))
     configs = set()
     for f in prod_energy_files:
-        m = re.search(r'prod_c(\d+)_', os.path.basename(f))
+        m = re.search(r'prod_energy_c(\d+)_', os.path.basename(f))
         if m: configs.add(int(m.group(1)))
     configs = sorted(list(configs))
 
@@ -46,6 +56,9 @@ def main():
         return
 
     explicit_h = get_explicit_h_setting()
+
+    any_equil_ener = False
+    any_equil_obs = False
 
     # Pre-setup the 3 desired figures
     fig_ener, ax_ener = plt.subplots(figsize=(10, 6))
@@ -57,10 +70,13 @@ def main():
         color_dark, color_mid, color_light = BASE_COLORS[c_idx % len(BASE_COLORS)]
 
         # Sorted files to logically 'collapse' them sequentially by seed string order
-        e_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f'energy_prod_{c_str}_sd*.dat')))
-        o_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f'observables_prod_{c_str}_sd*.dat')))
-        t_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f'torsions_prod_{c_str}_sd*.dat')))
-        tr_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f'trajectory_prod_{c_str}_sd*.xyz')))
+        e_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f'prod_energy_{c_str}_sd*.dat')))
+        o_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f'prod_observables_{c_str}_sd*.dat')))
+        t_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f'prod_torsions_{c_str}_sd*.dat')))
+        tr_files = sorted(glob.glob(os.path.join(OUTPUT_DIR, f'prod_trajectory_{c_str}_sd*.xyz')))
+        
+        e_equil_files = glob.glob(os.path.join(OUTPUT_DIR, f'equil_energy_{c_str}_*.dat'))
+        o_equil_files = glob.glob(os.path.join(OUTPUT_DIR, f'equil_observables_{c_str}_*.dat'))
 
         e_tot_list, e_lj_list, e_tors_list = [], [], []
         rg_list, ree_list = [], []
@@ -95,30 +111,68 @@ def main():
         # 1. Plotting Energy (Intertwined collapse)
         if e_tot_list:
             min_len = min(len(arr) for arr in e_tot_list)
-            e_tot_cat = np.column_stack([arr[:min_len] for arr in e_tot_list]).flatten()
-            e_lj_cat  = np.column_stack([arr[:min_len] for arr in e_lj_list]).flatten()
-            e_tors_cat= np.column_stack([arr[:min_len] for arr in e_tors_list]).flatten()
+            e_tot_prod = np.column_stack([arr[:min_len] for arr in e_tot_list]).flatten()
+            e_lj_prod  = np.column_stack([arr[:min_len] for arr in e_lj_list]).flatten()
+            e_tors_prod= np.column_stack([arr[:min_len] for arr in e_tors_list]).flatten()
             
-            # Synthesize an X-axis up to 10M Steps
-            steps_cat = np.linspace(10000, len(e_tot_cat)*10000, len(e_tot_cat))
+            # Synthesize an X-axis up to 10M Steps for production
+            steps_prod = np.linspace(10000, len(e_tot_prod)*10000, len(e_tot_prod))
+
+            if e_equil_files and os.path.exists(e_equil_files[0]):
+                try:
+                    e_equil = np.loadtxt(e_equil_files[0])
+                    steps_e = e_equil[:, 0]
+                    max_equil_step = steps_e[-1]
+                    steps_prod_shifted = steps_prod + max_equil_step
+                    
+                    steps_cat = np.concatenate((steps_e, steps_prod_shifted))
+                    e_tot_cat = np.concatenate((e_equil[:, 1], e_tot_prod))
+                    e_lj_cat = np.concatenate((e_equil[:, 2], e_lj_prod))
+                    e_tors_cat = np.concatenate((e_equil[:, 3], e_tors_prod))
+                    
+                    ax_ener.axvline(x=max_equil_step, color=color_mid, linestyle='--', linewidth=1.5, label='Equil/Prod Demarcation' if c_idx==0 else "")
+                    any_equil_ener = True
+                except Exception:
+                    steps_cat, e_tot_cat, e_lj_cat, e_tors_cat = steps_prod, e_tot_prod, e_lj_prod, e_tors_prod
+            else:
+                steps_cat, e_tot_cat, e_lj_cat, e_tors_cat = steps_prod, e_tot_prod, e_lj_prod, e_tors_prod
 
             ax_ener.plot(steps_cat, e_tot_cat, label=f'Conf {c_val} (Total)', color=color_dark, alpha=0.9, linewidth=1)
             ax_ener.plot(steps_cat, e_lj_cat, label=f'Conf {c_val} (LJ)', color=color_mid, alpha=0.9, linewidth=1)
             ax_ener.plot(steps_cat, e_tors_cat, label=f'Conf {c_val} (Torsional)', color=color_light, alpha=0.9, linewidth=1)
 
-            print(f"Conf {c_val} Scalar Averages over 10M MCS:")
-            print(f"  E_Total: {np.mean(e_tot_cat):.4f} | E_LJ: {np.mean(e_lj_cat):.4f} | E_Tors: {np.mean(e_tors_cat):.4f}")
+            print(f"Conf {c_val} Scalar Averages over Production MCS:")
+            print(f"  E_Total: {np.mean(e_tot_prod):.4f} | E_LJ: {np.mean(e_lj_prod):.4f} | E_Tors: {np.mean(e_tors_prod):.4f}")
 
         # 2. Plotting Observables (Intertwined collapse)
         if rg_list and ree_list:
             min_len = min(len(arr) for arr in rg_list)
-            rg_cat = np.column_stack([arr[:min_len] for arr in rg_list]).flatten()
-            ree_cat = np.column_stack([arr[:min_len] for arr in ree_list]).flatten()
-            steps_cat_obs = np.linspace(10000, len(rg_cat)*10000, len(rg_cat))
+            rg_prod = np.column_stack([arr[:min_len] for arr in rg_list]).flatten()
+            ree_prod = np.column_stack([arr[:min_len] for arr in ree_list]).flatten()
+            steps_prod_obs = np.linspace(10000, len(rg_prod)*10000, len(rg_prod))
+
+            if o_equil_files and os.path.exists(o_equil_files[0]):
+                try:
+                    o_equil = np.loadtxt(o_equil_files[0])
+                    steps_e = o_equil[:, 0]
+                    max_equil_step = steps_e[-1]
+                    steps_prod_obs_shifted = steps_prod_obs + max_equil_step
+                    
+                    steps_cat_obs = np.concatenate((steps_e, steps_prod_obs_shifted))
+                    rg_cat = np.concatenate((o_equil[:, 1], rg_prod))
+                    ree_cat = np.concatenate((o_equil[:, 2], ree_prod))
+                    
+                    ax_rg.axvline(x=max_equil_step, color=color_mid, linestyle='--', linewidth=1.0)
+                    ax_ree.axvline(x=max_equil_step, color=color_mid, linestyle='--', linewidth=1.0)
+                    any_equil_obs = True
+                except Exception:
+                    steps_cat_obs, rg_cat, ree_cat = steps_prod_obs, rg_prod, ree_prod
+            else:
+                steps_cat_obs, rg_cat, ree_cat = steps_prod_obs, rg_prod, ree_prod
 
             ax_rg.plot(steps_cat_obs, rg_cat, label=f'Conf {c_val} (Rg)', color=color_dark, alpha=0.9, linewidth=1)
             ax_ree.plot(steps_cat_obs, ree_cat, label=f'Conf {c_val} (End-to-End)', color=color_mid, alpha=0.9, linewidth=1)
-            print(f"  Rg_avg:  {np.mean(rg_cat):.4f} | Ree_avg: {np.mean(ree_cat):.4f}\n")
+            print(f"  Rg_avg (prod):  {np.mean(rg_prod):.4f} | Ree_avg (prod): {np.mean(ree_prod):.4f}\n")
 
         # 3. Plotting Torsion Distributions
         if tors_list:
@@ -177,7 +231,7 @@ def main():
     # ── Finalize Energy Plot ── 
     ax_ener.set_xlabel('Cumulative MC Steps (10 Runs Collapsed)')
     ax_ener.set_ylabel('Energy (kcal/mol)')
-    ax_ener.set_title('Energy Evolution')
+    ax_ener.set_title('Energy Evolution (Equilibration + Production)' if any_equil_ener else 'Energy Evolution (Production Only)')
     ax_ener.legend(bbox_to_anchor=(1.01, 1), loc='upper left', prop={'size': 9})
     fig_ener.tight_layout()
     fig_ener.savefig(os.path.join(OUTPUT_DIR, 'parallel_energy_evolution.png'), dpi=300)
@@ -186,7 +240,7 @@ def main():
 
     # ── Finalize Observables Plot ── 
     ax_rg.set_ylabel('Radius of Gyration (Å)')
-    ax_rg.set_title('Structural Observables Evolution')
+    ax_rg.set_title('Structural Observables Evolution (Equil + Prod)' if any_equil_obs else 'Structural Observables Evolution (Production Only)')
     ax_rg.legend(bbox_to_anchor=(1.01, 1), loc='upper left', prop={'size': 9})
     
     ax_ree.set_xlabel('Cumulative MC Steps (10 Runs Collapsed)')

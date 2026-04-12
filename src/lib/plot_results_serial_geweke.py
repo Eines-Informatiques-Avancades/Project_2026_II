@@ -9,7 +9,7 @@ if os.path.exists(style_path):
     plt.style.use(style_path)
 
 # Point to the specific isolated production directory
-OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../results/serial_geweke_CH_conf4_10Mil_300K'))
+OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../results'))
 if not os.path.exists(OUTPUT_DIR):
     print(f"Results directory not found at {OUTPUT_DIR}")
     exit(1)
@@ -29,6 +29,7 @@ def get_explicit_h_setting():
                     if val_str == '.true.': return True
                     elif val_str == '.false.': return False
     except FileNotFoundError:
+        print("Could not find input.dat, defaulting explicit_h=True")
         pass
     return True
 
@@ -36,34 +37,49 @@ def get_explicit_h_setting():
 
 def plot_energies(equil_file, prod_file, run_tag):
     try:
-        e_data_equil = np.loadtxt(equil_file)
         e_data_prod = np.loadtxt(prod_file)
-
-        # Offset the production steps to continue cleanly from the final equilibration step
-        steps_e = e_data_equil[:, 0]
-        max_equil_step = steps_e[-1]
-        steps_p = e_data_prod[:, 0] + max_equil_step
         
-        # Stitch arrays
-        steps = np.concatenate((steps_e, steps_p))
-        e_tot = np.concatenate((e_data_equil[:, 1], e_data_prod[:, 1]))
-        e_lj = np.concatenate((e_data_equil[:, 2], e_data_prod[:, 2]))
-        e_tors = np.concatenate((e_data_equil[:, 3], e_data_prod[:, 3]))
-
         plt.figure()
-        plt.plot(steps, e_tot, label='Total Energy', alpha=0.8)
-        plt.plot(steps, e_lj,  label='LJ Energy',    alpha=0.8)
-        plt.plot(steps, e_tors,label='Torsion Energy',alpha=0.8)
         
-        # Line of demarcation representing the transition from Equil -> Prod
-        # (Vertical line across the time X-axis)
-        plt.axvline(x=max_equil_step, color='k', linestyle='--', linewidth=1.5, label='Equil/Prod Demarcation')
+        if equil_file and os.path.exists(equil_file):
+            e_data_equil = np.loadtxt(equil_file)
+            
+            # Offset the production steps to continue cleanly from the final equilibration step
+            steps_e = e_data_equil[:, 0]
+            max_equil_step = steps_e[-1]
+            steps_p = e_data_prod[:, 0] + max_equil_step
+            
+            # Stitch arrays
+            steps = np.concatenate((steps_e, steps_p))
+            e_tot = np.concatenate((e_data_equil[:, 1], e_data_prod[:, 1]))
+            e_lj = np.concatenate((e_data_equil[:, 2], e_data_prod[:, 2]))
+            e_tors = np.concatenate((e_data_equil[:, 3], e_data_prod[:, 3]))
+            
+            plt.plot(steps, e_tot, label='Total Energy', alpha=0.8)
+            plt.plot(steps, e_lj,  label='LJ Energy',    alpha=0.8)
+            plt.plot(steps, e_tors,label='Torsion Energy',alpha=0.8)
+            
+            # Line of demarcation representing the transition from Equil -> Prod
+            # (Vertical line across the time X-axis)
+            plt.axvline(x=max_equil_step, color='k', linestyle='--', linewidth=1.5, label='Equil/Prod Demarcation')
+            plt.title('Energy Evolution (Equilibration + Production)')
+            plot_type = "stitched"
+        else:
+            steps = e_data_prod[:, 0]
+            e_tot = e_data_prod[:, 1]
+            e_lj  = e_data_prod[:, 2]
+            e_tors = e_data_prod[:, 3]
+
+            plt.plot(steps, e_tot, label='Total Energy', alpha=0.8)
+            plt.plot(steps, e_lj,  label='LJ Energy',    alpha=0.8)
+            plt.plot(steps, e_tors,label='Torsion Energy',alpha=0.8)
+            plt.title('Energy Evolution (Production Only)')
+            plot_type = "production-only"
 
         plt.xlabel('MC Steps')
         plt.ylabel('Energy (kcal/mol)')
-        plt.title('Energy Evolution (Equilibration + Production)')
         plt.xlim(left=-steps.max() * 0.01)
-        plt.legend(loc='center', bbox_to_anchor=(0.5, 0.4))
+        plt.legend(loc='center', bbox_to_anchor=(0.6, 0.25))
         plt.grid(True, alpha=0.3)
         
         pdf_file = os.path.join(OUTPUT_DIR, f'energy_evolution_{run_tag}.pdf')
@@ -71,36 +87,48 @@ def plot_energies(equil_file, prod_file, run_tag):
         plt.savefig(pdf_file)
         plt.savefig(png_file, dpi=300)
         plt.close()
-        print(f"Generated stitched energy plots for {run_tag}")
+        print(f"Generated {plot_type} energy plots for {run_tag}")
     except Exception as e:
         print(f"Error plotting energies: {e}")
 
 
 def plot_observables(equil_file, prod_file, run_tag):
     try:
-        o_data_equil = np.loadtxt(equil_file)
         o_data_prod = np.loadtxt(prod_file)
 
-        # Offset production steps
-        steps_e = o_data_equil[:, 0]
-        max_equil_step = steps_e[-1]
-        steps_p = o_data_prod[:, 0] + max_equil_step
-        
-        # Stitch arrays
-        steps = np.concatenate((steps_e, steps_p))
-        rg = np.concatenate((o_data_equil[:, 1], o_data_prod[:, 1]))
-        ree = np.concatenate((o_data_equil[:, 2], o_data_prod[:, 2]))
-
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(5.25, 3.9372), sharex=True)
+        
+        if equil_file and os.path.exists(equil_file):
+            o_data_equil = np.loadtxt(equil_file)
+
+            # Offset production steps
+            steps_e = o_data_equil[:, 0]
+            max_equil_step = steps_e[-1]
+            steps_p = o_data_prod[:, 0] + max_equil_step
+            
+            # Stitch arrays
+            steps = np.concatenate((steps_e, steps_p))
+            rg = np.concatenate((o_data_equil[:, 1], o_data_prod[:, 1]))
+            ree = np.concatenate((o_data_equil[:, 2], o_data_prod[:, 2]))
+
+            ax1.axvline(x=max_equil_step, color='k', linestyle='--', linewidth=1)
+            ax2.axvline(x=max_equil_step, color='k', linestyle='--', linewidth=1)
+            ax1.set_title('Structural Observables Evolution (Equil + Prod)')
+            plot_type = "stitched"
+        else:
+            steps = o_data_prod[:, 0]
+            rg = o_data_prod[:, 1]
+            ree = o_data_prod[:, 2]
+            
+            ax1.set_title('Structural Observables Evolution (Production Only)')
+            plot_type = "production-only"
+
         ax1.plot(steps, rg, color='blue')
-        ax1.axvline(x=max_equil_step, color='k', linestyle='--', linewidth=1)
         ax1.set_ylabel('Radius of Gyration (Å)')
-        ax1.set_title('Structural Observables Evolution (Equil + Prod)')
         ax1.set_xlim(left=-steps.max() * 0.01)
         ax1.grid(True, alpha=0.3)
         
         ax2.plot(steps, ree, color='red')
-        ax2.axvline(x=max_equil_step, color='k', linestyle='--', linewidth=1)
         ax2.set_xlabel('MC Steps')
         ax2.set_ylabel('End-to-End Distance (Å)')
         ax2.set_xlim(left=-steps.max() * 0.01)
@@ -112,7 +140,7 @@ def plot_observables(equil_file, prod_file, run_tag):
         plt.savefig(pdf_file)
         plt.savefig(png_file, dpi=300)
         plt.close()
-        print(f"Generated stitched observables plots for {run_tag}")
+        print(f"Generated {plot_type} observables plots for {run_tag}")
     except Exception as e:
         print(f"Error plotting observables: {e}")
 
@@ -161,7 +189,7 @@ def plot_torsions(tors_file, explicit_h=True):
         if not explicit_h:
             ax2.plot(phi_grid, Uphi, label='TraPPE-UA potential')
         else:
-            ax2.plot(phi_grid, Uphi, label='TraPPE-AA potential')
+            ax2.plot(phi_grid, Uphi, label='OPLS-AA potential')
         ax2.set_ylabel('Torsion Potential (kcal/mol)')
 
         lines1, labels1 = ax1.get_legend_handles_labels()
@@ -198,15 +226,15 @@ if __name__ == '__main__':
         
         print(f'\nProcessing run: {run_tag}')
         
-        if os.path.exists(equil_energy_file) and os.path.exists(prod_energy_file):
-            plot_energies(equil_energy_file, prod_energy_file, run_tag)
+        if os.path.exists(prod_energy_file):
+            plot_energies(equil_energy_file if os.path.exists(equil_energy_file) else None, prod_energy_file, run_tag)
         else:
-            print(f'Missing energy file(s) for stitching {run_tag}')
+            print(f'Missing production energy file for {run_tag}')
             
-        if os.path.exists(equil_obs_file) and os.path.exists(prod_obs_file):
-            plot_observables(equil_obs_file, prod_obs_file, run_tag)
+        if os.path.exists(prod_obs_file):
+            plot_observables(equil_obs_file if os.path.exists(equil_obs_file) else None, prod_obs_file, run_tag)
         else:
-            print(f'Missing observables file(s) for stitching {run_tag}')
+            print(f'Missing production observables file for {run_tag}')
             
         if os.path.exists(prod_tors_file):
             plot_torsions(prod_tors_file, explicit_h=get_explicit_h_setting())
