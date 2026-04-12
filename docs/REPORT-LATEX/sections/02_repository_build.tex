@@ -38,293 +38,181 @@ included in the root directory detailing run instructions and code
 dependencies/requirements. The bulk of the code is written in Fortran,
 while the post-processing is done in Python.
 
-\#\#\# Module Library Introduction The following modules support the
-\emph{\texttt{main...f90}} files: - \texttt{energy.f90} \&
-\texttt{energy\_all\_atoms.f90} - Permit \textbf{dual energy modes},
-computing energetic contributions using either TraPPE-UA or OPLS-AA
-(with effective backbone potentials) depending on the
-\texttt{explicit\_h} toggle dynamically read from \texttt{input.dat}. -
-\texttt{initial-conf.f90} - Generates initial configuration of the
-polymer chain. - \texttt{io.f90} - File input/ouput module. -
-\texttt{monte\_carlo.f90} - Provides the rotation algorithm and
-subroutine MCS step used to update spatial configurations. -
-\texttt{observables.f90} - Computes the structural observables:
-End-to-end distance (\(R_{ee}\)), Radius of Gyration (\(R_g\)), and
-torsion angles. - \texttt{parameters.f90} - Stores global parameters
-abstracted from \emph{\texttt{main...f90}} code. Works in tandem with
-\texttt{input.dat} settings. - \emph{\texttt{plot\_...py}} files -
-Various scripts used for plotting observables and serial vs parallel
-code comparisons. - \texttt{requirements.txt} - List of python module
-dependencies. - \texttt{science.mplstyle} - stylized document used in
-plotting to control visualization theme.
+\paragraph{Module Library Introduction.}
+The following modules support the
+\emph{\texttt{main...f90}} files:
 
-\subsection{Code Management via
-Github}\label{code-management-via-github}
+\begin{itemize}
+\tightlist
+\item
+  \texttt{energy.f90} \& \texttt{energy\_all\_atoms.f90} --- Permit
+  \textbf{dual energy modes}, computing energetic contributions using
+  either TraPPE-UA or OPLS-AA (with effective backbone potentials)
+  depending on the \texttt{explicit\_h} toggle dynamically read from
+  \texttt{input.dat}.
+\item
+  \texttt{initial-conf.f90} --- Generates initial configuration of the
+  polymer chain.
+\item
+  \texttt{io.f90} --- File input/ouput module.
+\item
+  \texttt{monte\_carlo.f90} --- Provides the rotation algorithm and
+  subroutine MCS step used to update spatial configurations.
+\item
+  \texttt{observables.f90} --- Computes the structural observables:
+  End-to-end distance (\(R_{ee}\)), Radius of Gyration (\(R_g\)), and
+  torsion angles.
+\item
+  \texttt{parameters.f90} --- Stores global parameters abstracted from
+  \emph{\texttt{main...f90}} code. Works in tandem with
+  \texttt{input.dat} settings.
+\item
+  \emph{\texttt{plot\_...py}} files --- Various scripts used for
+  plotting observables and serial vs parallel code comparisons.
+\item
+  \texttt{requirements.txt} --- List of python module dependencies.
+\item
+  \texttt{science.mplstyle} --- stylized document used in plotting to
+  control visualization theme.
+\end{itemize}
 
-The project leader was responsible for reviewing all pull requests,
-ensuring that the code followed the project guidelines, and merging the
-code into the main branch. The team coordinated through a WhatsApp group
-chat and would regularly check in on each other's progress. Everyone was
-informed when code was merged so we could all pull the latest changes.
+\subsection{Code Management via GitHub}\label{code-management-via-github}
 
-Most times, approving and merging was straightforward with no issues,
-but there was an interesting challenge when multiple uploads from
-different team members overlapped, causing conflicts. This forced us to
-learn about stashing and rebasing to the newly updated master branch
-before recommitting. The following process was ironed out to ensure a
-smooth integration:
+The project leader reviewed pull requests, checked that incoming changes followed the project guidelines, and merged them into the main branch. Team coordination was handled through a shared WhatsApp group, where members reported progress and informed the rest of the group whenever new code had been merged.
+
+In most cases, integration was straightforward. However, overlapping uploads from different team members occasionally produced merge conflicts. This led the team to adopt a consistent workflow based on stashing and rebasing before recommitting local work. The process used was the following:
 
 \begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  Stash local (uncommitted) changes
+  \item Stash local uncommitted changes:
+\begin{verbatim}
+git stash
+\end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-   \FunctionTok{git}\NormalTok{ stash}
-\end{Highlighting}
-\end{Shaded}
-\item
-  Pull latest changes from master branch
+  \item Pull the latest version of the main branch:
+\begin{verbatim}
+git checkout master
+git pull main master
+\end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-   \FunctionTok{git}\NormalTok{ checkout master}
-   \FunctionTok{git}\NormalTok{ pull main master}
-\end{Highlighting}
-\end{Shaded}
-\item
-  Rebase local changes onto master branch so it starts after the new
-  merged code
+  \item Rebase the local feature branch onto the updated main branch:
+\begin{verbatim}
+git checkout <fork-feature>/<fork-branch>
+git rebase master
+\end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-   \FunctionTok{git}\NormalTok{ checkout }\OperatorTok{\textless{}}\NormalTok{fork{-}feature}\OperatorTok{\textgreater{}}\NormalTok{/}\OperatorTok{\textless{}}\NormalTok{fork{-}branch}\OperatorTok{\textgreater{}}
-   \FunctionTok{git}\NormalTok{ rebase master}
-\end{Highlighting}
-\end{Shaded}
-\item
-  Resolve any conflicts \& re-apply stashed changes
+  \item Resolve conflicts and re-apply the stashed changes:
+\begin{verbatim}
+git stash pop
+\end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-   \FunctionTok{git}\NormalTok{ stash pop}
-\end{Highlighting}
-\end{Shaded}
-\item
-  Commit and push (using \texttt{-\/-force} parameter due to rebase)
-
-\begin{Shaded}
-\begin{Highlighting}[]
-   \FunctionTok{git}\NormalTok{ push }\OperatorTok{\textless{}}\NormalTok{fork{-}remote}\OperatorTok{\textgreater{}} \OperatorTok{\textless{}}\NormalTok{fork{-}branch}\OperatorTok{\textgreater{}}\NormalTok{ {-}{-}force}
-\end{Highlighting}
-\end{Shaded}
+  \item Commit and push the rebased branch:
+\begin{verbatim}
+git push <fork-remote> <fork-branch> --force
+\end{verbatim}
 \end{enumerate}
+
+This workflow helped keep the repository history cleaner and reduced repeated integration issues during collaborative development.
 
 \subsection{Makefile}\label{makefile}
 
-As the project evolved, so did the Makefile. Here are some of the
-features we implemented:
+As the project evolved, the Makefile also became more structured. It was used to automate compilation, execution, and post-processing for both the serial and parallel versions of the code.
 
-Starting off, there are few main variables that control the compilation
-process.... \begin{Shaded}
-\begin{Highlighting}[]
-\DataTypeTok{FC}       \CharTok{=}\StringTok{ gfortran}
-\DataTypeTok{FFLAGS}   \CharTok{=}\StringTok{ {-}O2 {-}Wall {-}Wextra}
-\DataTypeTok{OBJ\_DIR}  \CharTok{=}\StringTok{ ../bin}
-\DataTypeTok{EXE}      \CharTok{=}\StringTok{ }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\StringTok{/main\_serial.x}
-\DataTypeTok{LIB\_OBJ}  \CharTok{=}\StringTok{ }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\StringTok{/parameters.o }\CharTok{\textbackslash{}}
-\StringTok{           }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\StringTok{/io.o }\CharTok{\textbackslash{}}
-\StringTok{           ...}
-\DataTypeTok{MAIN\_OBJ} \CharTok{=}\StringTok{ }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\StringTok{/main\_serial.o}
+The main compilation variables are:
 
-\DataTypeTok{NP}          \CharTok{?=}\StringTok{ 4}
-\DataTypeTok{OMP\_THREADS} \CharTok{?=}\StringTok{ 2}
-\end{Highlighting}
-\end{Shaded}
+\begin{verbatim}
+FC        = gfortran
+FFLAGS    = -O2 -Wall -Wextra
+OBJ_DIR   = ../bin
+EXE       = $(OBJ_DIR)/main_serial.x
+LIB_OBJ   = $(OBJ_DIR)/parameters.o \
+            $(OBJ_DIR)/io.o \
+            ...
+MAIN_OBJ  = $(OBJ_DIR)/main_serial.o
 
-\begin{itemize}
-\tightlist
-\item
-  \texttt{FC}: Stands for ``Fortran Compiler''. We tell it to use
-  gfortran.
-\item
-  \texttt{FFLAGS}: These are the compiler flags. \texttt{-O2} is the
-  optimization schema, and \texttt{-Wall\ -Wextra} enables warnings.
-\item
-  \texttt{OBJ\_DIR} \& \texttt{EXE}: Defines the compiled binaries
-  directory and the name of the final executable.
-\item
-  \texttt{LIB\_OBJ} \& \texttt{MAIN\_OBJ}: Defines the object files for
-  the library and the main program.
-\item
-  \texttt{NP} \& \texttt{OMP\_THREADS}: Defines the number of processes
-  (MPI) and threads (openMP) to use for the parallel version of the
-  program. The default values are set to 4 and 2, respectively, but they
-  can be overridden by setting them when compiling in the command line
-  (e.g., \texttt{make\ run\_parallel\ NP=7\ OMP\_THREADS=3}).
-\end{itemize}
+NP          ?= 4
+OMP_THREADS ?= 2
+\end{verbatim}
 
-In order to encompass both the serial and parallel versions of the
-program, a check is performed on the \texttt{make} command entered on
-the command-line for the word \texttt{parallel}. If found, the user's
-system is searched to ensure the environment has the necessary MPI and
-OpenMP libraries installed. If not, an error message is printed and the
-program exits. If they are installed, the compiler variable \texttt{FC}
-is overwritten and the MPI and OpenMP flags are added to the
-\texttt{FFLAGS} variable.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\ControlFlowTok{ifneq}\NormalTok{ (,}\CharTok{$(}\KeywordTok{findstring}\StringTok{ parallel}\KeywordTok{,}\CharTok{$(}\DataTypeTok{MAKECMDGOALS}\CharTok{))}\NormalTok{)}
-  \CommentTok{\# MPI Compiler Wrapper Verification}
-  \DataTypeTok{MPI\_BIN} \CharTok{:=}\StringTok{ }\CharTok{$(}\KeywordTok{shell}\StringTok{ command {-}v mpif90 2\textgreater{}/dev/null}\CharTok{)}
-  \ControlFlowTok{ifeq}\NormalTok{ (}\CharTok{$(}\KeywordTok{strip}\StringTok{ }\CharTok{$(}\DataTypeTok{MPI\_BIN}\CharTok{))}\NormalTok{,)}
-    \CharTok{$(}\KeywordTok{error}\StringTok{ "MPI Compiler is required but \textquotesingle{}mpif90\textquotesingle{} was not found! Please install it (e.g. \textquotesingle{}sudo apt install openmpi{-}bin\textquotesingle{})"}\CharTok{)}
-  \ControlFlowTok{endif}
-  \CommentTok{\# Overwrite Compiler for MPI parallelization flag linking}
-  \DataTypeTok{FC} \CharTok{=}\StringTok{ mpif90}
-\NormalTok{  ...}
-\end{Highlighting}
-\end{Shaded}
-
-Instead of writing a rule for every single \texttt{.f90} file, a pattern
-rule (with \texttt{\%}) is used.
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\DecValTok{$(OBJ\_DIR)/\%.o:}\DataTypeTok{ lib/\%.f90}
-\ErrorTok{    }\CharTok{@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}
-    \CharTok{$(}\DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{FFLAGS}\CharTok{)}\NormalTok{ {-}J}\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok{ {-}I}\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok{ {-}c }\CharTok{$\textless{}}\NormalTok{ {-}o }\CharTok{$@}
-\end{Highlighting}
-\end{Shaded}
+Their roles are summarized below:
 
 \begin{itemize}
-\tightlist
-\item
-  It says: ``To make any \texttt{.o} file in the object directory
-  (\texttt{bin/}) from a matching \texttt{.f90} file in \texttt{lib/},
-  run this command.''
-\item
-  \texttt{-c\ \$\textless{}}: Compiles the ``first dependency''
-  (\texttt{\$\textless{}}, which is the \texttt{.f90} file) without
-  linking (because that's done in the \texttt{\$(EXE)} target).
-\item
-  \texttt{-J\$(OBJ\_DIR)\ -I\$(OBJ\_DIR)}: Tells Fortran to put module
-  \texttt{.mod} files in the \texttt{bin/} folder.
+  \item \texttt{FC}: the Fortran compiler, initially set to \texttt{gfortran}.
+  \item \texttt{FFLAGS}: compiler flags; \texttt{-O2} enables optimization, while \texttt{-Wall -Wextra} activates additional warnings.
+  \item \texttt{OBJ\_DIR} and \texttt{EXE}: define the directory for compiled objects and the name of the executable.
+  \item \texttt{LIB\_OBJ} and \texttt{MAIN\_OBJ}: list the object files needed for the library modules and the main program.
+  \item \texttt{NP} and \texttt{OMP\_THREADS}: define the number of MPI processes and OpenMP threads used in parallel executions. These values can be overridden from the command line, for example with \texttt{make run\_parallel NP=7 OMP\_THREADS=3}.
 \end{itemize}
 
-The following is an example of the \texttt{all} target (serial version
-of the program) with its executable structure, which we then follow up
-with the explicit dependencies to create the \texttt{.o} files for the
-library modules and the main program
+To support both serial and parallel builds, the Makefile checks whether the requested target contains the word \texttt{parallel}. If so, it verifies that the MPI compiler wrapper is available and then switches the compiler from \texttt{gfortran} to \texttt{mpif90}.
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\DecValTok{all:}\DataTypeTok{ }\CharTok{$(}\DataTypeTok{EXE}\CharTok{)}
+\begin{verbatim}
+ifneq (, $(findstring parallel,$(MAKECMDGOALS)))
+  MPI_BIN := $(shell command -v mpif90 2>/dev/null)
+  ifeq ($(strip $(MPI_BIN)),)
+    $(error "MPI Compiler is required but 'mpif90' was not found!")
+  endif
+  FC = mpif90
+  ...
+endif
+\end{verbatim}
 
-\DecValTok{$(EXE):}\DataTypeTok{ }\CharTok{$(}\DataTypeTok{LIB\_OBJ}\CharTok{)}\DataTypeTok{ }\CharTok{$(}\DataTypeTok{MAIN\_OBJ}\CharTok{)}
-\ErrorTok{    }\CharTok{@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}
-    \CharTok{$(}\DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{FFLAGS}\CharTok{)}\NormalTok{ {-}o }\CharTok{$@} \CharTok{$(}\DataTypeTok{LIB\_OBJ}\CharTok{)} \CharTok{$(}\DataTypeTok{MAIN\_OBJ}\CharTok{)}
+Instead of writing an explicit build rule for every \texttt{.f90} file, a pattern rule is used:
 
-\DecValTok{$(OBJ\_DIR)/energy.o:}\DataTypeTok{ lib/energy.f90 }\CharTok{\textbackslash{}}
-\DataTypeTok{                     }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\DataTypeTok{/parameters.o}
-\NormalTok{...}
+\begin{verbatim}
+$(OBJ_DIR)/%.o: lib/%.f90
+    @mkdir -p $(OBJ_DIR)
+    $(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
+\end{verbatim}
 
-\DecValTok{$(OBJ\_DIR)/main\_serial.o:}\DataTypeTok{ main\_serial.f90 }\CharTok{$(}\DataTypeTok{LIB\_OBJ}\CharTok{)}
-\ErrorTok{    }\CharTok{@}\FunctionTok{mkdir {-}p }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}
-    \CharTok{$(}\DataTypeTok{FC}\CharTok{)} \CharTok{$(}\DataTypeTok{FFLAGS}\CharTok{)}\NormalTok{ {-}J}\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok{ {-}I}\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok{ {-}c }\CharTok{$\textless{}}\NormalTok{ {-}o }\CharTok{$@}
-\end{Highlighting}
-\end{Shaded}... \begin{itemize}
-\tightlist
-\item
-  \texttt{all}: This is the default target that needs \texttt{\$(EXE)}
-  to exist.
-\item
-  \texttt{\$(EXE)}: To build the final executable, it needs all the .o
-  files from the \texttt{../bin} folder, which it makes sure exists
-  (\texttt{mkdir\ -p}), and then links them all together using
-  \texttt{gfortran} or \texttt{mpif90} to output (\texttt{-o\ \$@}) the
-  final program.
+This rule states that any object file in \texttt{bin/} can be built from its corresponding source file in \texttt{lib/}. The \texttt{-c} option compiles without linking, while \texttt{-J} and \texttt{-I} direct the compiler to store and search module files in the object directory.
 
-  \begin{itemize}
-  \tightlist
-  \item
-    \textbf{Note}: The \texttt{@} symbol is used 2 different ways here:
+The final executable is linked through the default target:
 
-    \begin{enumerate}
-    \def\labelenumi{\arabic{enumi}.}
-    \tightlist
-    \item
-      Before the \texttt{mkdir} command to suppress being printed to the
-      terminal.
-    \item
-      As an automatic variable representing the target name
-      (\texttt{\$(EXE)} in this case).
-    \end{enumerate}
-  \end{itemize}
-\end{itemize}
+\begin{verbatim}
+all: $(EXE)
 
-Last, we declare the shortcut commands as \texttt{.PHONY} targets to
-prevent conflicts with files that may have the same name as a target.
+$(EXE): $(LIB_OBJ) $(MAIN_OBJ)
+    @mkdir -p $(OBJ_DIR)
+    $(FC) $(FFLAGS) -o $@ $(LIB_OBJ) $(MAIN_OBJ)
+\end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\OtherTok{.PHONY:}\DataTypeTok{ all clean run figures pipeline}
+Finally, convenience targets are declared as \texttt{.PHONY} rules:
 
-\DecValTok{run:}\DataTypeTok{ all}
-\ErrorTok{    }\CharTok{@}\FunctionTok{mkdir {-}p ../results}
-    \CharTok{$(}\DataTypeTok{EXE}\CharTok{)}
+\begin{verbatim}
+.PHONY: all clean run figures pipeline
 
-\DecValTok{figures:}
-\ErrorTok{    }\NormalTok{python lib/plot\_results.py}
+run: all
+    @mkdir -p ../results
+    $(EXE)
 
-\DecValTok{clean:}\DataTypeTok{ }
-\ErrorTok{    }\NormalTok{rm {-}rf }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok{/*.o }\CharTok{$(}\DataTypeTok{OBJ\_DIR}\CharTok{)}\NormalTok{/*.mod }\CharTok{$(}\DataTypeTok{EXE}\CharTok{)}
+figures:
+    python lib/plot_results.py
 
-\DecValTok{pipeline:}
-\ErrorTok{    }\CharTok{$(}\DataTypeTok{MAKE}\CharTok{)}\NormalTok{ run}
-    \CharTok{$(}\DataTypeTok{MAKE}\CharTok{)}\NormalTok{ figures}
-\end{Highlighting}
-\end{Shaded}
+clean:
+    rm -rf $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod $(EXE)
 
-\begin{itemize}
-\tightlist
-\item
-  This enables the following compile-time shortcuts:
+pipeline:
+    $(MAKE) run
+    $(MAKE) figures
+\end{verbatim}
 
-  \begin{itemize}
-  \tightlist
-  \item
-    \texttt{make\ run}: Automatically builds the code (\texttt{all}) and
-    then executes it.
-  \item
-    \texttt{make\ figures}: Envokes python to generate the plots from
-    the \texttt{../results} folder.
-  \item
-    \texttt{make\ clean}: Acts like a reset button, deleting all
-    compiled files to start fresh.
-  \item
-    \texttt{make\ pipeline}: A neat wrapper we built to run the code and
-    generate the python plots back-to-back.
-  \end{itemize}
-\end{itemize}
+These shortcuts make it possible to compile, execute, clean, and post-process the project with short commands such as \texttt{make run}, \texttt{make clean}, and \texttt{make pipeline}.
 
 \subsection{Shell Scripting}\label{shell-scripting}
 % Itxaso bit added + Arthur's explanation merged
 
-Shell scripting was used to make our runs compatible with the CERQT2
+Shell scripting was used to make the runs compatible with the CERQT2
 cluster environment and to automate benchmarking. The scripts
 initialize the runtime environment, load the required modules, and set
 variables such as \texttt{OMP\_NUM\_THREADS}, \texttt{NSLOTS}, and
 \texttt{MPLBACKEND=Agg} for stable non-interactive execution. They were
 also used to automate parameter sweeps, build explicit trajectory
 manifests for the observables analysis, and collect timing data into
-summary files for MPI and OpenMP tests.
+summary files for the MPI and OpenMP benchmarks.
 
-A qsub script \texttt{run\_collab.qsub} was also written during the
-testing of the program to submit an individual portion of the simulation
-to the HPC cluster. It involved loading the appropriate modules for that
-queue, selecting a custom makefile (separate from the main program's
-Makefile), indentifying the correct commandline arguments to pass at
-compile time, and submit the mpirun command.
+A qsub submission script, \texttt{run\_collab.qsub}, was also written
+during program testing to launch an individual portion of the simulation
+on the HPC cluster. This script loads the modules required by the target
+queue, selects a custom Makefile separate from the main program
+Makefile, passes the appropriate command-line compilation arguments, and
+finally launches the simulation with \texttt{mpirun}.
