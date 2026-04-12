@@ -1,146 +1,176 @@
-% Source ownership:
-% - Oliwier: energy models, OPLS-AA, topology, delta_energy
-% - Manel: Geweke runtime equilibration and MC workflow
-% - Arthur: integration / prose cleanup
-
-% - Keep modular because Oliwier will still update references
-
-\section{Energy Evaluation and Monte Carlo Engine}
-\label{sec:energy_mc}
-
-\subsection{Energy Calculations}
-
-The energy evaluation modules, \texttt{energy.f90} and \texttt{energy\_all\_atoms.f90}, were designed and implemented to compute the total potential energy of the chain and the $\Delta E$ increments required by the Metropolis acceptance/rejection step.
-
-\subsubsection{United-Atom (UA) Model \& TraPPE-UA}
-
-\textbf{Trigonometric bypass in dihedral calculations.}
-
-The standard approach to evaluating a dihedral angle requires an
-\texttt{acos} or \texttt{atan2} call, both of which are transcendental
-functions with significant CPU cost relative to basic arithmetic.
-Instead, \texttt{compute\_cos\_dihedral} computes $\cos\phi$ directly
-from the dot product of the normal vectors of the two planes defined by
-the carbon backbone:
-
-\begin{equation}
-  \cos\phi = \frac{\mathbf{n}_1 \cdot \mathbf{n}_2}{|\mathbf{n}_1|\,|\mathbf{n}_2|},
-  \qquad
-  \mathbf{n}_1 = \mathbf{b}_1 \times \mathbf{b}_2,\quad
-  \mathbf{n}_2 = \mathbf{b}_2 \times \mathbf{b}_3
-\end{equation}
-
-where $\mathbf{b}_i$ are successive bond vectors. A guard clause handles
-collinear atoms (degenerate normals) by setting $\cos\phi = 1$ as a
-fallback. The function is declared \texttt{pure}, signalling to the compiler
-that it has no side effects, which allows it to be called safely
-from within parallel regions and \texttt{forall} constructs.
-
-\textbf{Polynomial expansion for TraPPE-UA.}
-
-The TraPPE-UA torsional potential~[3] is:
-
-\begin{equation}
-  U(\phi) = c_1(1+\cos\phi) + c_2(1-\cos 2\phi) + c_3(1+\cos 3\phi)
-\end{equation}
-
-Substituting $y = \cos\phi$ and applying the identities
-$\cos 2\phi = 2y^2-1$ and $\cos 3\phi = 4y^3-3y$ gives a polynomial
-in $y$:
-
-\begin{equation}
-  U(y) = c_1(1+y) + c_2(2-2y^2) + c_3(1-3y+4y^3)
-\end{equation}
-
-Since $y = \cos\phi$ is already available from the cross-product step,
-the torsional energy is evaluated with only multiplications and
-additions -- no further transcendental calls are needed in the MC loop.
-
-\subsubsection{Explicit Hydrogens and the OPLS-AA Force Field}
-
-The all-atom model requires handling a substantially more complex
-topology. The OPLS-AA force field~[4] was adopted, with atom-specific
-Lennard-Jones parameters for carbon and hydrogen
-($\sigma_\mathrm{CC}=3.50\,\text{\AA}$,
-$\varepsilon_\mathrm{CC}=0.066\,\text{kcal/mol}$;
-$\sigma_\mathrm{HH}=2.50\,\text{\AA}$,
-$\varepsilon_\mathrm{HH}=0.030\,\text{kcal/mol}$; cross-terms from
-geometric mixing rules).
-
-\textbf{Effective backbone torsional potential.}
-
-In OPLS-AA, rotating a single C--C bond changes nine distinct dihedral
-angles: one C--C--C--C, four C--C--C--H, and four H--C--C--H. Computing
-all nine at every MC step is expensive for a code designed to run
-millions of steps. An \emph{effective backbone potential} was therefore
-constructed by summing the OPLS-AA Fourier coefficients for all nine
-dihedral types analytically, producing a single set of effective
-coefficients that reproduce the combined torsional energy from the
-C--C--C--C backbone coordinates alone:
-
-\begin{equation}
-  c_1^\mathrm{eff} = 0.870,\quad
-  c_2^\mathrm{eff} = -0.0785,\quad
-  c_3^\mathrm{eff} = 1.5075 \quad \text{(kcal/mol)}
-\end{equation}
-
-The OPLS-AA Lennard-Jones parameters are taken from the framework of
-Sæther et al.~[4]; the effective coefficient derivation is an original
-contribution of this work. The same polynomial form used for the UA
-model is then applied with these coefficients, so the all-atom
-torsional evaluation has the same arithmetic cost as the united-atom one.
-
-The corresponding \texttt{torsion\_single} function in
-\texttt{energy\_all\_atoms.f90} is:
-
+  % Source ownership:
+  % - Oliwier: energy models, OPLS-AA, topology, delta_energy
+  % - Manel: Geweke runtime equilibration and MC workflow
+  % - Arthur: integration / prose cleanup
+ 
+  % - Keep modular because Oliwier will still update references
+ 
+  \section{Energy Evaluation and Monte Carlo Engine}
+  \label{sec:energy_mc}
+ 
+  \subsection{Energy Calculations}
+ 
+  The energy evaluation modules, \texttt{energy.f90} and \texttt{energy\_all\_atoms.f90}, were designed and implemented to compute the total potential energy of the chain and the $\Delta E$ increments required by the Metropolis acceptance/rejection step.
+ 
+  \subsubsection{United-Atom (UA) Model \& TraPPE-UA}
+ 
+  \textbf{Trigonometric bypass in dihedral calculations.}
+ 
+  The standard approach to evaluating a dihedral angle requires an
+  \texttt{acos} or \texttt{atan2} call, both of which are transcendental
+  functions with significant CPU cost relative to basic arithmetic.
+  Instead, \texttt{compute\_cos\_dihedral} computes $\cos\phi$ directly
+  from the dot product of the normal vectors of the two planes defined by
+  the carbon backbone:
+ 
+  \begin{equation}
+    \cos\phi = \frac{\mathbf{n}_1 \cdot \mathbf{n}_2}{|\mathbf{n}_1|\,|\mathbf{n}_2|},
+    \qquad
+    \mathbf{n}_1 = \mathbf{b}_1 \times \mathbf{b}_2,\quad
+    \mathbf{n}_2 = \mathbf{b}_2 \times \mathbf{b}_3
+  \end{equation}
+ 
+  where $\mathbf{b}_i$ are successive bond vectors. A guard clause handles
+  collinear atoms (degenerate normals) by setting $\cos\phi = 1$ as a
+  fallback. The function is declared \texttt{pure}, signalling to the compiler
+  that it has no side effects, which allows it to be called safely
+  from within parallel regions and \texttt{forall} constructs.
+ 
 \begin{lstlisting}
+! Snippet from energy.f90: Direct cosine calculation
+pure function compute_cos_dihedral(r1, r2, r3, r4) result(cos_phi)
+  ! ... variable declarations ...
+  b1 = r2 - r1
+  b2 = r3 - r2
+  b3 = r4 - r3
+ 
+  n1 = cross_product(b1, b2)
+  n2 = cross_product(b2, b3)
+ 
+  nn1 = sum(n1**2)
+  nn2 = sum(n2**2)
+ 
+  ! Guard against collinear atoms (zero-length normals)
+  if (nn1 < 1.0d-28 .or. nn2 < 1.0d-28) then
+    cos_phi = 1.0d0   ! default to trans
+    return
+  end if
+ 
+  ! cos(phi) = (n1 . n2) / (|n1| * |n2|)
+  cos_phi = dot_product(n1, n2) / (sqrt(nn1) * sqrt(nn2))
+end function compute_cos_dihedral
+\end{lstlisting}
+ 
+  \textbf{Polynomial expansion for TraPPE-UA.}
+ 
+  The TraPPE-UA torsional potential~[2] is:
+ 
+  \begin{equation}
+    U(\phi) = c_1(1+\cos\phi) + c_2(1-\cos 2\phi) + c_3(1+\cos 3\phi)
+  \end{equation}
+ 
+  Substituting $y = \cos\phi$ and applying the identities
+  $\cos 2\phi = 2y^2-1$ and $\cos 3\phi = 4y^3-3y$ gives a polynomial
+  in $y$:
+ 
+  \begin{equation}
+    U(y) = c_1(1+y) + c_2(2-2y^2) + c_3(1-3y+4y^3)
+  \end{equation}
+ 
+  Since $y = \cos\phi$ is already available from the cross-product step,
+  the torsional energy is evaluated with only multiplications and
+  additions -- no further transcendental calls are needed in the MC loop.
+ 
+  \subsubsection{Explicit Hydrogens and the OPLS-AA Force Field}
+ 
+  The all-atom model requires handling a substantially more complex
+  topology. The OPLS-AA force field~[3] was adopted, with atom-specific
+  Lennard-Jones parameters for carbon and hydrogen
+  ($\sigma_\mathrm{CC}=3.50\,\text{\AA}$,
+  $\varepsilon_\mathrm{CC}=0.066\,\text{kcal/mol}$;
+  $\sigma_\mathrm{HH}=2.50\,\text{\AA}$,
+  $\varepsilon_\mathrm{HH}=0.030\,\text{kcal/mol}$; cross-terms from
+  geometric mixing rules).
+ 
+  \textbf{Effective backbone torsional potential.}
+ 
+  In OPLS-AA, rotating a single C--C bond changes nine distinct dihedral
+  angles: one C--C--C--C, four C--C--C--H, and four H--C--C--H. Computing
+  all nine at every MC step is expensive for a code designed to run
+  millions of steps. An \emph{effective backbone potential} was therefore
+  constructed by summing the OPLS-AA Fourier coefficients for all nine
+  dihedral types analytically, producing a single set of effective
+  coefficients that reproduce the combined torsional energy from the
+  C--C--C--C backbone coordinates alone:
+ 
+  \begin{equation}
+    c_1^\mathrm{eff} = 0.870,\quad
+    c_2^\mathrm{eff} = -0.0785,\quad
+    c_3^\mathrm{eff} = 1.5075 \quad \text{(kcal/mol)}
+  \end{equation}
+ 
+  The OPLS-AA Lennard-Jones parameters are taken from the framework of
+  Sæther et al.~[3]; the effective coefficient derivation is an original
+  contribution of this work. The same polynomial form used for the UA
+  model is then applied with these coefficients, so the all-atom
+  torsional evaluation has the same arithmetic cost as the united-atom one.
+ 
+  The corresponding \texttt{torsion\_single} function in
+  \texttt{energy\_all\_atoms.f90} is:
+ 
+\begin{lstlisting}
+! Snippet from energy_all_atoms.f90: OPLS-AA Effective Potential evaluation
 pure function torsion_single(cos_phi) result(e)
   double precision, intent(in) :: cos_phi
   double precision :: e, y, y2, y3
-
-  y  = cos_phi
+ 
+  y  = cos_phi   ! corresponds to trans = -1, cis = 1
   y2 = y * y
   y3 = y2 * y
-
+ 
+  ! OPLS-AA evaluation using trigonometric identities
+  ! cos(2x) = 2*cos^2(x) - 1 => 1 - cos(2x) = 2 - 2y^2
+  ! cos(3x) = 4*cos^3(x) - 3*cos(x) => 1 + cos(3x) = 1 - 3y + 4y^3
   e = opls_c1 * (1.0d0 + y)            &
     + opls_c2 * (2.0d0 - 2.0d0 * y2)   &
     + opls_c3 * (1.0d0 - 3.0d0 * y + 4.0d0 * y3)
 end function torsion_single
 \end{lstlisting}
-
-\textbf{Topology mapping and exclusion matrix.}
-
-Non-bonded Lennard-Jones interactions must be suppressed for atom pairs
-separated by fewer than four bonds (1-2, 1-3, and 1-4), since those
-interactions are already captured by the bonded energy terms. The
-initialisation routine \texttt{init\_energy\_topology} assigns each
-hydrogen to its parent carbon by geometric distance (C--H threshold
-$1.2\,\text{\AA}$), records the backbone position index for every atom,
-and builds a global Boolean matrix \texttt{is\_excluded}. Each pair is
-then looked up in $O(1)$ per call, avoiding any bond traversal during
-the MC loop.
-
-The exclusion criterion uses a uniform backbone-position threshold: pair
-$(i,j)$ is excluded when
-$|\text{backbone\_pos}(i) - \text{backbone\_pos}(j)| < 4$.
-For C--C pairs this is exact. For C--H and H--H pairs the actual bond
-count exceeds the backbone-position difference by one and two
-respectively, so the threshold over-excludes some 1-5 and 1-6
-interactions. The torsional potential partially compensates, since its
-parameterisation implicitly encodes the conformational barriers arising
-from steric repulsion. The single-chain, vacuum context of the
-simulation further limits the practical impact relative to a condensed
-phase. Correcting the exclusion criterion to a bond-count-aware rule is
-left for future work.
-
-\textbf{Dynamic atom lists for $\Delta E$.}
-
-At each pivot move only atoms downstream of the chosen bond change
-position. Recomputing the full $O(N^2)$ LJ sum is therefore unnecessary.
-Instead, the atoms are partitioned into \texttt{fixed\_list} and
-\texttt{moved\_list} by comparing old and new coordinate arrays:
-
+ 
+  \textbf{Topology mapping and exclusion matrix.}
+ 
+  Non-bonded Lennard-Jones interactions must be suppressed for atom pairs
+  separated by fewer than four bonds (1-2, 1-3, and 1-4), since those
+  interactions are already captured by the bonded energy terms. The
+  initialisation routine \texttt{init\_energy\_topology} assigns each
+  hydrogen to its parent carbon by geometric distance (C--H threshold
+  $1.2\,\text{\AA}$), records the backbone position index for every atom,
+  and builds a global Boolean matrix \texttt{is\_excluded}. Each pair is
+  then looked up in $O(1)$ per call, avoiding any bond traversal during
+  the MC loop.
+ 
+  The exclusion criterion uses a uniform backbone-position threshold: pair
+  $(i,j)$ is excluded when
+  $|\text{backbone\_pos}(i) - \text{backbone\_pos}(j)| < 4$.
+  For C--C pairs this is exact. For C--H and H--H pairs the actual bond
+  count exceeds the backbone-position difference by one and two
+  respectively, so the threshold over-excludes some 1-5 and 1-6
+  interactions. The torsional potential partially compensates, since its
+  parameterisation implicitly encodes the conformational barriers arising
+  from steric repulsion. The single-chain, vacuum context of the
+  simulation further limits the practical impact relative to a condensed
+  phase. Correcting the exclusion criterion to a bond-count-aware rule is
+  left for future work.
+ 
+  \textbf{Dynamic atom lists for $\Delta E$.}
+ 
+  At each pivot move only atoms downstream of the chosen bond change
+  position. Recomputing the full $O(N^2)$ LJ sum is therefore unnecessary.
+  Instead, the atoms are partitioned into \texttt{fixed\_list} and
+  \texttt{moved\_list} by comparing old and new coordinate arrays:
+ 
 \begin{lstlisting}
+! Snippet from energy_all_atoms.f90: Dynamic lists for delta E
 n_fixed = 0
 n_moved = 0
 do i = 1, n_atoms
@@ -153,160 +183,233 @@ do i = 1, n_atoms
   end if
 end do
 \end{lstlisting}
-
-Only cross-interactions between fixed and moved atoms are re-evaluated,
-reducing the $\Delta E$ cost to $O(N_\mathrm{fixed} \times
-N_\mathrm{moved})$. A secondary \texttt{pair\_type\_matrix} routes each
-valid pair to the pre-computed C--C, C--H, or H--H LJ parameters in a
-single array lookup.
-
-\subsection{Pivot Move and Monte Carlo Step}
-
-The conformational sampling mechanism used throughout the project is the
-pivot move. Rather than perturbing the whole chain diffusely, the
-algorithm selects one internal C--C bond and rotates the entire tail of
-the polymer as a rigid body around that bond axis. This generates large
-collective rearrangements and allows the chain to explore configuration
-space much more efficiently than local coordinate displacements.
-
-The rigid-body rotation is implemented with Rodrigues' rotation formula.
-If \(\mathbf{v}\) is the position of an atom relative to the pivot
-point, \(\mathbf{k}\) is the unit vector along the selected bond, and
-\(\theta\) is the random rotation angle, the rotated vector is
-\[
-\mathbf{v}_{\mathrm{rot}}
-=
-\mathbf{v}\cos\theta
-+
-(\mathbf{k}\times\mathbf{v})\sin\theta
-+
-\mathbf{k}(\mathbf{k}\cdot\mathbf{v})(1-\cos\theta).
-\]
-This construction preserves bond lengths and bond angles while applying
-a clean rigid-body rotation to the selected downstream segment.
-
-In all-atom mode, the same geometric transformation must be applied not
-only to the carbon backbone but also to the hydrogens attached to every
-rotating carbon. Because these hydrogens represent an approximately
-tetrahedral \(\mathrm{sp}^3\) environment, any inconsistency between the
-carbon motion and the attached hydrogen motion would immediately distort
-the local geometry and generate unphysical configurations. The AA
-rotation routine therefore identifies the hydrogens attached to each
-moving carbon and applies the exact same pivot point, axis, and angle to
-them.
-
-Each call to \texttt{mc\_step} performs one trial move. First, the code
-draws a random internal bond index and a random rotation angle. Second,
-a trial configuration is generated by rotating the corresponding tail
-segment while leaving the current coordinates unchanged. Third, the
-change in energy is computed using the model-appropriate \(\Delta E\)
-routine: a united-atom path for UA simulations and an all-atom path for
-AA simulations. Fourth, the trial move is accepted or rejected using the
-Metropolis criterion.
-
-The Metropolis rule is standard. If the move lowers the total energy, it
-is accepted unconditionally. Otherwise, it is accepted with probability
-\[
-P_{\mathrm{acc}} = \exp(-\beta \Delta E),
-\qquad
-\beta = \frac{1}{k_B T}.
-\]
-If accepted, the trial coordinates replace the current coordinates and
-the total, Lennard-Jones, and torsional energies are updated in place.
-If rejected, the trial geometry is discarded and the original state is
-retained. Repeating this procedure generates a Markov chain whose
-stationary distribution is the desired Boltzmann distribution.
-
-\subsection{Geweke Convergence Detection}
-
-Detecting equilibration in a Markov chain is non-trivial because
-successive configurations are strongly autocorrelated. Earlier versions
-of the workflow relied on a fixed burn-in length and a posterior
-post-processing check, but this was often too rigid and could either
-discard too much data or fail to detect persistent transients. To make
-equilibration detection adaptive, the serial Monte Carlo engine was
-extended with an in-simulation Geweke diagnostic.
-
-The Geweke test compares the mean of an early window of the trajectory
-with the mean of a late window of the same trajectory. In our
-implementation, the monitored quantity is the total energy. If the chain
-has equilibrated, both windows should be consistent with the same
-stationary distribution. The resulting \(z\)-score is
-\[
-z = \frac{\bar{x}_A - \bar{x}_B}
-         {\sqrt{\mathrm{SE}_A^2 + \mathrm{SE}_B^2}},
-\]
-where \(\bar{x}_A\) and \(\bar{x}_B\) are the mean energies in the early
-and late windows, and \(\mathrm{SE}_A\) and \(\mathrm{SE}_B\) are their
-standard errors.
-
-A crucial point is that the standard errors cannot be estimated from the
-raw sample variance as if the measurements were independent. Monte Carlo
-trajectories are correlated, so such a treatment would underestimate the
-uncertainty and produce false positives. To account for this, the code
-uses batch means. The window is partitioned into contiguous blocks, the
-mean of each block is computed, and the variance of those block means is
-used as an estimator of the uncertainty in the presence of
-autocorrelation.
-
-The implementation uses an accumulated buffer of \(N=300\) energy
-samples. The early window contains the first \(f_A=10\%\) of the buffer
-and the late window contains the last \(f_B=50\%\). With these values,
-the two windows contain \(n_A=30\) and \(n_B=150\) samples respectively.
-The block decomposition then produces several batch means for each
-window, from which the corresponding standard errors are estimated.
-
-Under the null hypothesis of stationarity, the Geweke statistic follows
-an approximately standard normal distribution. Equilibrium is declared
-when
-\[
-|z| < z_{\mathrm{crit}} = 1.96
-\]
-at the 95\% confidence level on three consecutive evaluations. Requiring
-multiple consecutive passes prevents the algorithm from mistaking a
-temporary plateau for genuine equilibration. The diagnostic is evaluated
-periodically once the rolling buffer is full, so the simulation can stop
-the equilibration phase as soon as a statistically stable regime has
-been reached.
-
-\subsection{Main Program Workflow Notes}
-
-The serial driver was updated so that equilibration is no longer treated
-as a hard-coded number of initial steps. Instead, the program reads the
-simulation parameters from \texttt{input.dat}, builds the initial
-coordinates, and enters a dedicated equilibration phase that continues
-until the Geweke criterion is satisfied.
-
-If a previously equilibrated geometry is already available, it can be
-loaded directly to bypass the initial search. Otherwise, the simulation
-starts from the generated initial chain and repeatedly performs Monte
-Carlo steps while monitoring the total energy and structural
-observables. This turns equilibration into a data-driven phase of the
-workflow rather than an externally imposed burn-in guess.
-
-The main equilibration loop is therefore a \texttt{do while
-(.not. is\_equilibrated)} structure. At each step, the code updates the
-temperature-dependent parameter \(\beta\), performs one Monte Carlo
-trial move, and increments acceptance statistics when appropriate.
-Although the code retains a temperature schedule of the form
-\[
-T = T_{\mathrm{ini}} - \Delta T \, (\texttt{istep}-1),
-\]
-the project simulations themselves are run at fixed temperature, so this
-acts mainly as a retained hook for possible future simulated-annealing
-tests.
-
-Observables and trajectory information are written only at
-\texttt{print\_interval} checkpoints rather than every single Monte
-Carlo step. At those checkpoints, the code records the total energy,
-Lennard-Jones energy, torsional energy, radius of gyration, end-to-end
-distance, and other phase-specific outputs required later by the
-plotting scripts.
-
-Once the Geweke criterion has been satisfied for the required number of
-consecutive checks, the equilibration phase ends. The equilibrated
-geometry is saved and used as the starting point for the production
-phase. The production run then proceeds with its own step counter and
-output files, ensuring that the equilibrated and production data remain
-cleanly separated both scientifically and in the downstream
-post-processing pipeline.
+ 
+  Only cross-interactions between fixed and moved atoms are re-evaluated,
+  reducing the $\Delta E$ cost to $O(N_\mathrm{fixed} \times
+  N_\mathrm{moved})$. A secondary \texttt{pair\_type\_matrix} routes each
+  valid pair to the pre-computed C--C, C--H, or H--H LJ parameters in a
+  single array lookup.
+ 
+  \subsection{Pivot Move and Monte Carlo Step}
+ 
+  The conformational sampling mechanism used throughout the project is the
+  pivot move. Rather than perturbing the whole chain diffusely, the
+  algorithm selects one internal C--C bond and rotates the entire tail of
+  the polymer as a rigid body around that bond axis. This generates large
+  collective rearrangements and allows the chain to explore configuration
+  space much more efficiently than local coordinate displacements.
+ 
+  The rigid-body rotation is implemented with Rodrigues' rotation formula.
+  If \(\mathbf{v}\) is the position of an atom relative to the pivot
+  point, \(\mathbf{k}\) is the unit vector along the selected bond, and
+  \(\theta\) is the random rotation angle, the rotated vector is
+  \[
+  \mathbf{v}_{\mathrm{rot}}
+  =
+  \mathbf{v}\cos\theta
+  +
+  (\mathbf{k}\times\mathbf{v})\sin\theta
+  +
+  \mathbf{k}(\mathbf{k}\cdot\mathbf{v})(1-\cos\theta).
+  \]
+  This construction preserves bond lengths and bond angles while applying
+  a clean rigid-body rotation to the selected downstream segment.
+ 
+  \subsubsection{Handling $sp^3$ Hybridisation in All-Atom Mode}
+ 
+  In all-atom mode, the same geometric transformation must be applied not
+  only to the carbon backbone but also to the hydrogens attached to every
+  rotating carbon. Because these hydrogens represent an approximately
+  tetrahedral $\mathrm{sp}^3$ environment, any inconsistency between the
+  carbon motion and the attached hydrogen motion would immediately distort
+  the local geometry and generate unphysical configurations. The AA
+  rotation routine therefore identifies the hydrogens attached to each
+  moving carbon and applies the exact same pivot point, axis, and angle to
+  them, using a C--H bond threshold of $1.2\,\text{\AA}$:
+ 
+\begin{lstlisting}
+if (explicit_h) then
+  ! Hydrogens are stored after the carbon backbone in the coords array
+  do i = n_carbons + 1, n_atoms
+    do j = k + 1, n_carbons
+      ! Identify if hydrogen i is bonded to the moving carbon j
+      v = coords(i, :) - coords(j, :)
+      if (vnorm(v) < 1.2d0) then
+        ! Apply Rodrigues' rotation relative to the pivot point
+        v = coords(i, :) - pivot
+        dot_uv = sum(axis * v)
+        v_rot = v * cos_p + cross(axis, v) * sin_p &
+              + axis * dot_uv * (1.0d0 - cos_p)
+        coords_new(i, :) = pivot + v_rot
+        exit  ! Hydrogen found, move to the next atom
+      end if
+    end do
+  end do
+end if
+\end{lstlisting}
+ 
+  \subsubsection{The MC Step and Metropolis Criterion}
+ 
+  Each call to \texttt{mc\_step} performs one trial move. First, a random
+  internal bond index $k$ is drawn uniformly from $[1,\, N_C - 2]$, and a
+  random rotation angle $\phi$ is sampled uniformly from
+  $[-\Delta\phi_{\max},\, \Delta\phi_{\max}]$; the parameter
+  \texttt{max\_delta} is tuned to achieve a reasonable acceptance rate.
+  Second, a trial configuration is generated by rotating the corresponding
+  tail segment while leaving the current coordinates unchanged. Third, the
+  change in energy is computed using the model-appropriate $\Delta E$
+  routine: \texttt{delta\_energy\_aa} for all-atom mode and
+  \texttt{delta\_energy\_ua} for united-atom mode, dispatched via the
+  \texttt{explicit\_h} flag. Fourth, the trial move is accepted or
+  rejected using the Metropolis criterion.
+ 
+  The Metropolis rule is standard. If the move lowers the total energy, it
+  is accepted unconditionally. Otherwise, it is accepted with probability
+  \[
+  P_{\mathrm{acc}} = \exp(-\beta \Delta E),
+  \qquad
+  \beta = \frac{1}{k_B T}.
+  \]
+  If accepted, the trial coordinates replace the current coordinates and
+  the total, Lennard-Jones, and torsional energies are updated in place.
+  If rejected, the trial geometry is discarded and the original state is
+  retained. Repeating this procedure generates a Markov chain whose
+  stationary distribution is the desired Boltzmann distribution.
+ 
+\begin{lstlisting}
+! d. Metropolis acceptance criterion
+call random_number(random_value)
+if (dE < 0.0d0 .or. random_value < exp(-beta * dE)) then
+  coords  = coords_new
+  E_total = E_total + dE
+  E_lj    = E_lj    + dE_lj
+  E_tors  = E_tors  + dE_tors
+  accepted = .true.
+end if
+\end{lstlisting}
+ 
+  \subsection{Geweke Convergence Detection}
+ 
+  Detecting equilibration in a Markov chain is non-trivial because
+  successive configurations are strongly autocorrelated. Earlier versions
+  of the workflow relied on a fixed burn-in length and a posterior
+  post-processing check based on a Fast-Fourier Transform (FFT) script to
+  estimate the integrated autocorrelation time $\tau_\mathrm{int}$, but
+  this was often too rigid and could either discard too much data or fail
+  to detect persistent transients, sometimes reporting that the production
+  portion was 0\% of the 10M steps. To make equilibration detection
+  adaptive, the serial Monte Carlo engine was extended with an
+  in-simulation Geweke diagnostic~[1].
+ 
+  The Geweke test compares the mean of an early window of the trajectory
+  with the mean of a late window of the same trajectory. In our
+  implementation, the monitored quantity is the total energy. If the chain
+  has equilibrated, both windows should be consistent with the same
+  stationary distribution. The resulting $z$-score is
+  \[
+  z = \frac{\bar{x}_A - \bar{x}_B}
+          {\sqrt{\mathrm{SE}_A^2 + \mathrm{SE}_B^2}},
+  \]
+  where $\bar{x}_A$ and $\bar{x}_B$ are the mean energies in the early
+  and late windows, and $\mathrm{SE}_A$ and $\mathrm{SE}_B$ are their
+  standard errors.
+ 
+  A crucial point is that the standard errors cannot be estimated from the
+  raw sample variance as if the measurements were independent. Monte Carlo
+  trajectories are correlated, so such a treatment would underestimate the
+  uncertainty and produce false positives. To account for this, the code
+  uses batch means. The window is partitioned into contiguous blocks, the
+  mean of each block is computed, and the variance of those block means is
+  used as an estimator of the uncertainty in the presence of
+  autocorrelation:
+ 
+  \begin{equation}
+    SE_A^2 = \frac{1}{b_A(b_A-1)}\sum_{i=1}^{b_A}\left(\bar{x}_i - \bar{x}_A\right)^2
+  \end{equation}
+ 
+  where $\bar{x}_i$ is the mean of block $i$ and $\bar{x}_A$ is the mean
+  of the full window. $SE_B^2$ is computed analogously over window B.
+ 
+  The implementation uses an accumulated buffer of $N=300$ energy samples.
+  The early window contains the first $f_A=10\%$ of the buffer ($n_A=30$
+  samples, $b_A=\lfloor\sqrt{30}\rfloor=5$ blocks) and the late window
+  contains the last $f_B=50\%$ ($n_B=150$ samples,
+  $b_B=\lfloor\sqrt{150}\rfloor=12$ blocks). Because block means of
+  sufficiently large blocks behave approximately as independent, this
+  estimator correctly absorbs the autocorrelation structure of the chain.
+ 
+  Under the null hypothesis of stationarity, $z$ follows a standard
+  normal distribution. Equilibrium is declared when
+  $|z| < z_\mathrm{crit} = 1.96$ (95\% confidence level) on
+  $n_\mathrm{consec} = 3$ consecutive evaluations, preventing false
+  positives caused by temporary plateaus. The test is re-evaluated every
+  \texttt{eval\_freq} synchronisation points once the buffer is full,
+  so the simulation can stop the equilibration phase as soon as a
+  statistically stable regime has been reached. The production phase then
+  natively restarts step counting from 1.
+ 
+  \subsection{Main Program Workflow Notes}
+ 
+  The serial driver was updated so that equilibration is no longer treated
+  as a hard-coded number of initial steps. Instead, the program reads the
+  simulation parameters from \texttt{input.dat}, builds the initial
+  coordinates, and enters a dedicated equilibration phase that continues
+  until the Geweke criterion is satisfied. If a previously equilibrated
+  geometry is already available, it can be loaded directly to bypass the
+  initial search.
+ 
+  The main equilibration loop is a \texttt{do while (.not.\ is\_equilibrated)}
+  structure. At each step the code updates $\beta$, performs one MC trial
+  move, and increments acceptance statistics when appropriate:
+ 
+\begin{lstlisting}
+  do while (.not. is_equilibrated)
+    istep = istep + 1
+ 
+    ! Annealing:
+    if (istep <= n_steps) then
+      T = T_ini - dT * dble(istep - 1)
+    else
+      T = T_fin
+    end if
+ 
+    ! Monte Carlo Step
+    call mc_step(n_carbons, n_atoms, coords, symbols, explicit_h, &
+                 beta, max_delta, E_total, E_lj, E_tors, accepted_step)
+ 
+    if (accepted_step) total_accepted = total_accepted + 1
+ 
+    ! Output periodically
+    if (mod(istep, print_interval) == 0 .or. istep == 1) then
+      ! Energies
+      write(u_ener, '(I10, 3F15.4)') istep, E_total, E_lj, E_tors
+ 
+      ! Observables
+      rg2  = compute_rg(n_carbons, coords)
+      ree2 = compute_end_to_end(n_carbons, coords)
+      write(u_obs, '(I10, 2F15.4)') istep, sqrt(rg2), sqrt(ree2)
+      ...
+\end{lstlisting}
+ 
+  \begin{itemize}
+    \item \texttt{do while (.not.\ is\_equilibrated)}: Replaces traditional
+      hard-coded burn-in periods with a dynamic loop that stays alive until
+      equilibration is met.
+    \item \texttt{T = T\_ini - dT * dble(istep - 1)}: Retained hook for
+      simulated annealing; the project simulations themselves run at fixed
+      temperature with \texttt{T\_ini} $=$ \texttt{T\_fin}.
+    \item \texttt{call mc\_step(...)}: Subroutine to perform a single Monte
+      Carlo step.
+    \item Observables (energy, radius of gyration, end-to-end distance,
+      trajectory, etc.) are written only at \texttt{print\_interval}
+      checkpoints to avoid excessive I/O.
+  \end{itemize}
+ 
+  Once the Geweke criterion has been satisfied for the required number of
+  consecutive checks, the equilibration phase ends. The equilibrated
+  geometry is saved and used as the starting point for the production
+  phase, whose step counter and output files are kept cleanly separate
+  from the equilibration data. The parallel version of the program
+  implements a much more sophisticated workflow, separating tasks between
+  a main orchestrator and worker nodes; this is discussed in further
+  detail in the Parallelization Techniques section.
