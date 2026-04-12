@@ -38,7 +38,7 @@ from within parallel regions and \texttt{forall} constructs.
 
 \textbf{Polynomial expansion for TraPPE-UA.}
 
-The TraPPE-UA torsional potential~[2] is:
+The TraPPE-UA torsional potential~[3] is:
 
 \begin{equation}
   U(\phi) = c_1(1+\cos\phi) + c_2(1-\cos 2\phi) + c_3(1+\cos 3\phi)
@@ -59,7 +59,7 @@ additions -- no further transcendental calls are needed in the MC loop.
 \subsubsection{Explicit Hydrogens and the OPLS-AA Force Field}
 
 The all-atom model requires handling a substantially more complex
-topology. The OPLS-AA force field~[3] was adopted, with atom-specific
+topology. The OPLS-AA force field~[4] was adopted, with atom-specific
 Lennard-Jones parameters for carbon and hydrogen
 ($\sigma_\mathrm{CC}=3.50\,\text{\AA}$,
 $\varepsilon_\mathrm{CC}=0.066\,\text{kcal/mol}$;
@@ -85,7 +85,7 @@ C--C--C--C backbone coordinates alone:
 \end{equation}
 
 The OPLS-AA Lennard-Jones parameters are taken from the framework of
-Sæther et al.~[3]; the effective coefficient derivation is an original
+Sæther et al.~[4]; the effective coefficient derivation is an original
 contribution of this work. The same polynomial form used for the UA
 model is then applied with these coefficients, so the all-atom
 torsional evaluation has the same arithmetic cost as the united-atom one.
