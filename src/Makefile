@@ -157,7 +157,7 @@ $(OBJ_DIR)/main_parallel_observables.o: main_parallel_observables.f90 $(LIB_OBJ)
 	@mkdir -p $(OBJ_DIR)
 	$(FC) $(FFLAGS) -J$(OBJ_DIR) -I$(OBJ_DIR) -c $< -o $@
 
-.PHONY: all clean run figures pipeline \
+.PHONY: all clean run figures figures_parallel pipeline \
         serial_equil run_serial_equil \
         parallel_star run_parallel_star pipeline_parallel_star \
         parallel_combined run_parallel_combined \
@@ -210,6 +210,10 @@ pipeline_parallel_star:
 	$(MAKE) run_parallel_star
 	$(MAKE) figures
 
+pipeline_parallel_combined:
+	$(MAKE) run_parallel_combined NP=7 OMP_THREADS=2
+	$(MAKE) figures_parallel
+
 pipeline_parallel_replicas:
 	$(MAKE) run_parallel_replicas
 	$(MAKE) figures
@@ -217,6 +221,9 @@ pipeline_parallel_replicas:
 # Utility targets
 figures:
 	python lib/plot_results.py
+
+figures_parallel:
+	python lib/plot_results_parallel.py
 
 clean:
 	rm -f $(OBJ_DIR)/*.o $(OBJ_DIR)/*.mod
