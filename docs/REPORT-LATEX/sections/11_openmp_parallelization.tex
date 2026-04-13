@@ -49,12 +49,12 @@ A dedicated benchmark program performs 10\,000 consecutive calls to \texttt{comp
 \end{figure}
  
 Three features stand out. First, at small chain sizes ($N \leq 100$)
-adding threads increases wall time — at $N = 20$, three and four
-threads are slower than serial — confirming that the computation volume
+adding threads increases wall time -- at $N = 20$, three and four
+threads are slower than serial -- confirming that the computation volume
 is too small to cover thread-management overhead. Second, even at
 $N = 500$ all thread counts converge to essentially the same wall time
 ($\approx 99$--$104\,\text{s}$), with efficiencies of 0.53, 0.35, and
-0.26 for 2, 3, and 4 threads respectively -- well below ideal, with only marginal improvement as $N$ grows.. 
+0.26 for 2, 3, and 4 threads respectively -- well below ideal, with only marginal improvement as $N$ grows.
 This indicates that the bottleneck is not arithmetic
 but memory bandwidth: the triangular LJ loop accesses coordinate data
 in a pattern that generates cache misses, so threads stall waiting for
@@ -69,7 +69,7 @@ full-energy evaluations occur during the MC loop. Given that
 parallelisation of this routine yields no measurable benefit, the
 \texttt{omp\_total\_energy} flag was disabled for all production
 simulations.
- 
+
 \subsection{Benchmarking: \texttt{delta\_energy}}
  
 Because \texttt{compute\_total\_energy} is called only at
@@ -77,7 +77,7 @@ initialisation, the actual runtime cost of a 1\,M-step simulation is
 dominated entirely by \texttt{delta\_energy}. At $N = 500$ with one
 thread, the benchmark records $6{,}592\,\text{s}$ for $10^6$ steps,
 compared to $0.01\,\text{s}$ for the single \texttt{compute\_total\_energy}
-call — a factor of ${\sim}660{,}000$ difference.
+call -- a factor of ${\sim}660{,}000$ difference.
  
 The \texttt{delta\_energy} benchmark was run as a full
 $10^6$-step MC simulation rather than an isolated call counter,
@@ -130,7 +130,7 @@ The practical conclusion is that 3 threads is the effective optimum
 for \texttt{delta\_energy} (tested on the \texttt{cerqt01.q} cluster queue):
 it delivers a consistent ${\approx}1.5\times$ speedup with
 ${\approx}50\%$ efficiency, reducing the wall time for a $10^6$-step
-simulation at $N = 500$ carbons from 6{,}592\,s to 4{,}333\,s — a
+simulation at $N = 500$ carbons from 6{,}592\,s to 4{,}333\,s -- a
 34\% reduction. Four threads provides no benefit on this hardware,
 and is slower than serial for smaller chain sizes.
 

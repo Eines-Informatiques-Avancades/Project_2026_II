@@ -148,7 +148,6 @@ energy kernel, the nested Lennard-Jones loop in
 handles macro-level task distribution while OpenMP performs
 micro-level acceleration inside each Monte Carlo step.
 
-
 A key design choice is that the simulation is separated into phases so
 that resources can be reused dynamically. If an equilibrated geometry
 already exists, the master can bypass the equilibration stage for that

@@ -1,34 +1,19 @@
 # Project_2026_II
 
-List of participants:
+| Name | Github | Files (Principal Author) | Parallelization Contributions |
+| ---- | ------ | ----------------------- | ----------------------------- |
+| MANEL DÍAZ CALVO | ManelDC55 | Monte Carlo, qsub script, Plotting* | Equilibration Optimization |
+| OLIWIER MISZTAL | omisztal | Energy, Shell Scripts, Plotting* | Energy Calculations |
+| ITXASO MUÑOZ ALDALUR | itxasoma | Initial Configurations, Shell Scripts, File I/O, Plotting* | Independent Replicas, Orchestrator Read/Broadcasting |
+| ARTHUR IAN MURPHY (_Project Leader_) | ai-murphy | Makefile, Main, Observables, Plotting* | Ensemble Averaging |
 
-- MANEL DÍAZ CALVO (github: ManelDC55)
-- Itxaso MUÑOZ ALDALUR (github: itxasoma)
-- ARTHUR IAN MURPHY  (github: ai-murphy, Project Leader)
-- OLIWIER MISZTAL (github: omisztal)
+<p align='right' style='italics'>
+<em>*Everyone participated in Plotting</em>
+</p>
 
----
+<br>
 
-### List of tasks:
-
-- MonteCarlo: Manel Díaz Calvo
-- Initial Conditions: Itxaso Muñoz Aldalur
-- Post-Processing: Arthur Ian Murphy
-- Energy: Oliwier Misztal
-
----
-
-### Parallelization Efforts:
-
-- Multiple configurations simulataneously: Itxaso Muñoz Aldalur
-- Broadcasting input parameters to all workers: Itxaso Muñoz Aldalur
-- Equilibrium optimization: Manel Díaz Calvo
-- Energy calculations: Oliwier Misztal
-- Ensemble averaging after equilibrium: Arthur Ian Murphy
-
----
-
-### File Structure:
+## File Structure:
 
 ```Project_2026_II\```
    * ```src\```: Source code
@@ -38,9 +23,11 @@ List of participants:
       * ```img\```: Final images used in reports
    * ```results\```: Data output files & plots
 
----
+<br>
 
-### Run Instructions from cerqt2.q:
+## Run Instructions from cerqt2.q:
+
+The following steps will run a parallelized version of the code, utilizing 13 processing cores, with results of the simulation being placed in the `/results` directory.
 
 1. **Navigate to the** `src` **directory:**
    ```bash
@@ -52,45 +39,55 @@ List of participants:
    qsub run_parallel.sh
    ```
 
-### Run Instructions (Advanced):
-
-1. **Navigate to the** ```src``` **directory:**
+3. **Generate plots:**
+   
    ```bash
-   cd src
+   python plot_results_parallel.py
    ```
 
+<br>
 
-2. **Compile & run the simulation with plots (serial):**
-   ```bash
-   make pipeline
-   ```
-   - This will create the executable file ```main_serial.x``` (as well as all of the ```.o``` and ```.mod``` files) in the ```bin``` directory. 
-   - It will also run the simulation using the parameters defined in the ```input.dat``` file & save the results in the ```results``` directory.
-   - Lastly, it will generate plots of the results and save them in the ```results``` directory.
+See below for advanced options, including pipelines, individual parallelization technique implementations, and more.
+
+<br>
+
+## Run Instructions (Advanced):
+
+Many additional features are avalable depending on the type of simulation desired (serial, parallel, parallel with only certain features, etc.). The following options make use of the robust Makefile from this project and perform different simulations:
+
+-  `make clean && make run_serial_equil`
+    - This will run a serialized version of the program on a single processor, where the initial configuration type is determined by the setting on line 4 (conf_type) of `input.dat` from the `confs` directoy. See report for an explanation of configuration types.
+-  `make clean && make run_parallel_replicas`
+    - This will run a parallelized version of the program, where configuration types 1, 4, & 5 will be simulated simultaneously. Equilibration is determined through an earlier iteration of an auto-correlation mechanism (not Geweke check). _Minimum 3 CPU cores required_
+-  `make clean && make run_parallel_observables`
+    - This will run post-processing to obtain observables
+-  `make clean && make run_parallel_star`
+    - This will run a parallelized version of the program, where configuration types 1, 4, & 5 will be simulated simultaneously. Equilibration is determined by a Geweke check. _Minimum 4 cores required if energy parallelization is off. Default is on, with 7 cores utilized_
+-  `make clean && make run_parallel_combined`
+    - This will run a parallelized version of the program, where configuration types 1, 4, & 5 will be simulated simultaneously. Equilibration is determined by a Geweke check, Orchestrator/Worker logic is implemented, Energy caldulations are threaded, and Ensemble Averaging is implemented. 
+-  `make clean && make pipeline_parallel_combined`
+    - This will do the same as above (`make clean && make run_parallel_combined`) while also running plotting on the output data from the parallelized simulation. _Statically assigns 13 CPU cores_
+-  `make figures_parallel`
+    - This will make plots on the pre-existing output data from the parallelized simulation. _Non-parallelized_
 
 
-3. **Compile & run the simulation with plots (parallel):**
-   ```bash
-   make pipeline_parallel NP=4 OMP_THREADS=2
-   ```
-   - This will perform the same actions as `make pipeline` but will run the simulation in parallel using MPI and OpenMP. The executable created will be `main_parallel.x`.
-   - Optional arguments:
-     - `NP`: Number of MPI processes (default: 4)
-     - `OMP_THREADS`: Number of OpenMP threads (default: 2)
-     - _Caution: These numbers compound as $$(\text{NP}-1) * \text{OMP\_THREADS} = \text{Number of cores used}$$ due to multiple types of parallelism. Defaults use 7 cores._
-
-4. **Generate plots (serial):**
-   ```bash
-   make figures
-   ```
-   This will generate plots of the serial results and save them in the ```results``` directory.
 
 
-5. **Clean the code:**
-   ```bash
-   make clean
-   ```
-   This will remove all of the compiled files and the executable(s).
+**Notes:**
+- All simulations and plotting create and look for data within the results directory. It it possible for these files to be overwritten between simulations. Best practice is to move any plots or output data files to a save location (such as a new folder within the `results` directory) before running a new simulation
+- `input.dat` also has variables that control whether an equilibration step is used or not within the simulation. An example equilibrated geometry is already saved in the `confs` directory under the name `equil_conf4_initial.xyz`.
+
+## Resource Allocation
+There are 2 compile-time arguments for controlling the number of CPUs allotted within parallel versions of the program:
+- `NP` (Number of Processors) - controls the number of Orchestrators and workers via MPI. 
+    - Minimum: 1 Orchestrator + 1 Worker 
+    - Default: 4
+- `OMP_THREADS` - controls the number of threads for energy calculations via openMP. 
+    - If set to 1, energy parallelization is turned off.
+    - Default: 2
+- _Caution: Because there are 2 separate parallelization frameworks combined, these numbers compound as $$(\text{NP}-1) * \text{OMP\_THREADS} + 1 = \text{Number of cores used}$$ Defaults use 7 cores._
+
+
 
 
 ## Dependencies / Requirements

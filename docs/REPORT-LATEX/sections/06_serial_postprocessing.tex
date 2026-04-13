@@ -6,6 +6,48 @@
 \section{Serial Driver, Results and Post-Processing}
 \label{sec:serial_post}
 
+\subsection{Main Program Workflow Notes}
+
+The serial driver was updated so that equilibration is no longer treated
+as a hard-coded number of initial steps. Instead, the program reads the
+simulation parameters from \texttt{input.dat}, builds the initial
+coordinates, and enters a dedicated equilibration phase that continues
+until the Geweke criterion is satisfied.
+
+If a previously equilibrated geometry is already available, it can be
+loaded directly to bypass the initial search. Otherwise, the simulation
+starts from the generated initial chain and repeatedly performs Monte
+Carlo steps while monitoring the total energy and structural
+observables. This turns equilibration into a data-driven phase of the
+workflow rather than an externally imposed burn-in guess.
+
+The main equilibration loop is therefore a \texttt{do while
+(.not. is\_equilibrated)} structure. At each step, the code updates the
+temperature-dependent parameter \(\beta\), performs one Monte Carlo
+trial move, and increments acceptance statistics when appropriate.
+Although the code retains a temperature schedule of the form
+\[
+T = T_{\mathrm{ini}} - \Delta T \, (\texttt{istep}-1),
+\]
+the project simulations themselves are run at fixed temperature, so this
+acts mainly as a retained hook for possible future simulated-annealing
+tests.
+
+Observables and trajectory information are written only at
+\texttt{print\_interval} checkpoints rather than every single Monte
+Carlo step. At those checkpoints, the code records the total energy,
+Lennard-Jones energy, torsional energy, radius of gyration, end-to-end
+distance, and other phase-specific outputs required later by the
+plotting scripts.
+
+Once the Geweke criterion has been satisfied for the required number of
+consecutive checks, the equilibration phase ends. The equilibrated
+geometry is saved and used as the starting point for the production
+phase. The production run then proceeds with its own step counter and
+output files, ensuring that the equilibrated and production data remain
+cleanly separated both scientifically and in the downstream
+post-processing pipeline.
+
 \subsection{Two-Phase Simulation Structure}
 
 The updated serial workflow is built around a two-phase execution model:
@@ -23,7 +65,7 @@ assigning an arbitrary burn-in length in advance. Once equilibration is
 detected, the corresponding geometry is written to disk and becomes the
 starting point for Phase 2.
 
-Phase 2 is the production run proper. Here, the serial driver resets the
+Phase 2 is the proper production run. Here, the serial driver resets the
 step counter and performs the requested number of Monte Carlo steps
 starting from the equilibrated geometry. In the serial reference case
 used throughout the report, this corresponds to a \(10{,}000{,}000\)-step
@@ -45,10 +87,10 @@ fixed at 300 K, so this block acts mainly as a configurable extension
 point rather than a physically active part of the production protocol.
 
 As a performance reference, the serial code was run on a single core of
-an Intel Core i7-11800H processor. In the benchmark comparison used in
-the report, one full serial production run required 8 hours, 18
-minutes, and 31.91 seconds. This timing serves as the baseline against
-which the parallel implementations were later compared.
+the University of Barcelona's High Performance Computing (HPC) cluster. 
+In the benchmark comparison used in the report, one full serial production 
+run required 19 hours, 33 minutes, and 22 seconds. This timing serves 
+as the baseline against which the parallel implementations were later compared.
 
 \subsection{Automated Equilibration Detection}
 
