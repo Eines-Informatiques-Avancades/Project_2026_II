@@ -29,13 +29,13 @@ energy.o: energy.f90 parameters.o
 
 # For MC with hydrogen atoms
 # energy_all_atoms.o: energy_all_atoms.f90 parameters.o
-# 	$(FC) $(FFLAGS) -c $<
+#	$(FC) $(FFLAGS) -c $<
 
 main-ini.o: main-ini.f90 parameters.o io.o initial-conf.o
 	$(FC) $(FFLAGS) -c $<
 
 run: all
-	./$(EXE)
+	cd .. && lib/$(EXE)
 
 clean:
 	rm -f *.o *.mod $(EXE)

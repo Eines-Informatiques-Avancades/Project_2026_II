@@ -159,18 +159,18 @@ These shortcuts make it possible to compile, execute, clean, and post-process th
 \subsection{Shell Scripting}\label{shell-scripting}
 % Itxaso bit added + Arthur's explanation merged
 
-Shell scripting was used to make our runs compatible with the CERQT2
+Shell scripting was used to make the runs compatible with the CERQT2
 cluster environment and to automate benchmarking. The scripts
 initialize the runtime environment, load the required modules, and set
 variables such as \texttt{OMP\_NUM\_THREADS}, \texttt{NSLOTS}, and
 \texttt{MPLBACKEND=Agg} for stable non-interactive execution. They were
 also used to automate parameter sweeps, build explicit trajectory
 manifests for the observables analysis, and collect timing data into
-summary files for MPI and OpenMP tests.
+summary files for the MPI and OpenMP benchmarks.
 
-A qsub script \texttt{run\_collab.qsub} was also written during the
-testing of the program to submit an individual portion of the simulation
-to the HPC cluster. It involved loading the appropriate modules for that
-queue, selecting a custom makefile (separate from the main program's
-Makefile), indentifying the correct commandline arguments to pass at
-compile time, and submit the mpirun command.
+A qsub submission script, \texttt{run\_collab.qsub}, was also written
+during program testing to launch an individual portion of the simulation
+on the HPC cluster. This script loads the modules required by the target
+queue, selects a custom Makefile separate from the main program
+Makefile, passes the appropriate command-line compilation arguments, and
+finally launches the simulation with \texttt{mpirun}.
